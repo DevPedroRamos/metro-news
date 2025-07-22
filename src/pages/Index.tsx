@@ -1,3 +1,4 @@
+
 import { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -13,8 +14,8 @@ const Index = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    if (!loading && !user) {
-      navigate('/login');
+    if (!loading && user) {
+      navigate('/dashboard');
     }
   }, [user, loading, navigate]);
 
@@ -40,8 +41,8 @@ const Index = () => {
     );
   }
 
-  if (!user) {
-    return null; // Will redirect to login
+  if (user) {
+    return null; // Will redirect to dashboard
   }
 
   return (
@@ -62,19 +63,16 @@ const Index = () => {
           </div>
           
           <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-2 text-sm">
-              <User className="h-4 w-4 text-muted-foreground" />
-              <span className="text-foreground">{user.email}</span>
-            </div>
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={handleSignOut}
-              className="transition-all duration-200 hover:scale-105"
-            >
-              <LogOut className="h-4 w-4 mr-2" />
-              Sair
-            </Button>
+            <Link to="/login">
+              <Button variant="outline" size="sm">
+                Entrar
+              </Button>
+            </Link>
+            <Link to="/signup">
+              <Button size="sm">
+                Criar Conta
+              </Button>
+            </Link>
           </div>
         </div>
       </header>
@@ -104,9 +102,11 @@ const Index = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button className="w-full" variant="outline">
-                Ver Notícias
-              </Button>
+              <Link to="/login">
+                <Button className="w-full" variant="outline">
+                  Ver Notícias
+                </Button>
+              </Link>
             </CardContent>
           </Card>
 
@@ -114,18 +114,20 @@ const Index = () => {
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
                 <div className="w-8 h-8 rounded-full bg-accent/10 flex items-center justify-center">
-                  <span className="text-accent font-bold">📊</span>
+                  <span className="text-accent font-bold">🎓</span>
                 </div>
-                <span>Relatórios</span>
+                <span>Treinamentos</span>
               </CardTitle>
               <CardDescription>
-                Visualize relatórios e métricas de desempenho
+                Desenvolva suas habilidades com nossos programas
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button className="w-full" variant="outline">
-                Ver Relatórios
-              </Button>
+              <Link to="/login">
+                <Button className="w-full" variant="outline">
+                  Ver Treinamentos
+                </Button>
+              </Link>
             </CardContent>
           </Card>
 
@@ -135,16 +137,18 @@ const Index = () => {
                 <div className="w-8 h-8 rounded-full bg-metro-green/10 flex items-center justify-center">
                   <span className="text-metro-green font-bold">⚙️</span>
                 </div>
-                <span>Configurações</span>
+                <span>Processos</span>
               </CardTitle>
               <CardDescription>
-                Gerencie suas preferências e configurações
+                Acesse documentos e procedimentos importantes
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button className="w-full" variant="outline">
-                Configurar
-              </Button>
+              <Link to="/login">
+                <Button className="w-full" variant="outline">
+                  Ver Processos
+                </Button>
+              </Link>
             </CardContent>
           </Card>
         </div>
