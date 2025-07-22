@@ -46,7 +46,7 @@ export function AppSidebar() {
           <img 
             src="/lovable-uploads/181eacc0-0dbb-4e16-8c77-31c86f9c49d0.png" 
             alt="Metro News" 
-            className="h-8 w-auto"
+            className="h-auto w-full"
           />
         </div>
       </SidebarHeader>
