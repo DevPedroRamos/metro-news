@@ -48,12 +48,6 @@ export function AppSidebar() {
             alt="Metro News" 
             className="h-8 w-auto"
           />
-          {!isCollapsed && (
-            <div>
-              <h1 className="text-lg font-bold text-foreground">Metro News</h1>
-              <p className="text-xs text-muted-foreground">Portal Corporativo</p>
-            </div>
-          )}
         </div>
       </SidebarHeader>
 
