@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -9,71 +8,67 @@ import ImageUpload from '@/components/profile/ImageUpload';
 import { TrendingUp, DollarSign, FileText, Users } from 'lucide-react';
 import { formatCurrency } from '@/lib/utils';
 import defaultCover from '@/assets/default-cover.jpg';
-
 const Perfil = () => {
-  const { data, loading, error, updateProfileImages } = useProfileData();
-
+  const {
+    data,
+    loading,
+    error,
+    updateProfileImages
+  } = useProfileData();
   if (loading) {
     return <ProfileLoadingSpinner />;
   }
-
   if (error) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
+    return <div className="min-h-screen flex items-center justify-center">
         <Card className="p-6">
           <CardContent>
             <p className="text-destructive">Erro ao carregar perfil: {error}</p>
           </CardContent>
         </Card>
-      </div>
-    );
+      </div>;
   }
-
   if (!data) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
+    return <div className="min-h-screen flex items-center justify-center">
         <Card className="p-6">
           <CardContent>
             <p className="text-muted-foreground">Nenhum dado encontrado</p>
           </CardContent>
         </Card>
-      </div>
-    );
+      </div>;
   }
-
   const getRankingBadge = (position: number) => {
-    if (position === 1) return { emoji: '🥇', color: 'bg-yellow-500' };
-    if (position === 2) return { emoji: '🥈', color: 'bg-gray-400' };
-    if (position === 3) return { emoji: '🥉', color: 'bg-amber-600' };
-    return { emoji: '🏅', color: 'bg-primary' };
+    if (position === 1) return {
+      emoji: '🥇',
+      color: 'bg-yellow-500'
+    };
+    if (position === 2) return {
+      emoji: '🥈',
+      color: 'bg-gray-400'
+    };
+    if (position === 3) return {
+      emoji: '🥉',
+      color: 'bg-amber-600'
+    };
+    return {
+      emoji: '🏅',
+      color: 'bg-primary'
+    };
   };
-
   const rankingBadge = getRankingBadge(data.ranking.position);
-
   const getUserInitials = (name: string) => {
     return name.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase();
   };
-
-  return (
-    <div className="space-y-6">
+  return <div className="space-y-6">
       {/* Header Section */}
       <Card className="overflow-hidden">
         <div className="relative">
           {/* Cover Image */}
-          <div 
-            className="h-48 relative"
-            style={{
-              backgroundImage: data.user.cover_url ? `url(${data.user.cover_url})` : `url(${defaultCover})`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center'
-            }}
-          >
-            <ImageUpload
-              currentImage={data.user.cover_url}
-              onImageUpdate={(url) => updateProfileImages('cover_url', url)}
-              type="cover"
-              className="top-4 right-4"
-            />
+          <div className="h-48 relative" style={{
+          backgroundImage: data.user.cover_url ? `url(${data.user.cover_url})` : `url(${defaultCover})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center'
+        }}>
+            <ImageUpload currentImage={data.user.cover_url} onImageUpdate={url => updateProfileImages('cover_url', url)} type="cover" className="top-4 right-4" />
           </div>
 
           {/* Avatar and Info */}
@@ -86,12 +81,7 @@ const Perfil = () => {
                     {getUserInitials(data.user.name)}
                   </AvatarFallback>
                 </Avatar>
-                <ImageUpload
-                  currentImage={data.user.avatar_url}
-                  onImageUpdate={(url) => updateProfileImages('avatar_url', url)}
-                  type="avatar"
-                  className="bottom-2 right-2"
-                />
+                <ImageUpload currentImage={data.user.avatar_url} onImageUpdate={url => updateProfileImages('avatar_url', url)} type="avatar" className="bottom-2 right-2" />
               </div>
 
               <div className="mt-4 sm:mt-0 flex-1 min-w-0">
@@ -139,18 +129,18 @@ const Perfil = () => {
             <div className="text-2xl font-bold text-green-600">
               {formatCurrency(data.metrics.recebimento)}
             </div>
-            <p className="text-xs text-muted-foreground">Total em comissões</p>
+            <p className="text-xs text-muted-foreground">Recebimento recebido</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Contratos</CardTitle>
+            <CardTitle className="text-sm font-medium">Pré-Vendas</CardTitle>
             <FileText className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-blue-600">{data.metrics.contratos}</div>
-            <p className="text-xs text-muted-foreground">Outros contratos</p>
+            <p className="text-xs text-muted-foreground">Todos contratos assinados</p>
           </CardContent>
         </Card>
 
@@ -165,8 +155,6 @@ const Perfil = () => {
           </CardContent>
         </Card>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default Perfil;
