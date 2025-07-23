@@ -73,7 +73,7 @@ const Perfil = () => {
 
           {/* Avatar and Info */}
           <div className="relative px-6 pb-6">
-            <div className="flex flex-col sm:flex-col sm:items-start sm:space-x-6 -mt-16">
+            <div className="flex flex-col sm:flex-row sm:items-end sm:space-x-6 -mt-16">
               <div className="relative">
                 <Avatar className="h-32 w-32 border-4 border-background">
                   <AvatarImage src={data.user.avatar_url} />
