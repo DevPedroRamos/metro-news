@@ -98,16 +98,19 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          idobra: string | null
           nome: string
         }
         Insert: {
           created_at?: string
           id?: string
+          idobra?: string | null
           nome: string
         }
         Update: {
           created_at?: string
           id?: string
+          idobra?: string | null
           nome?: string
         }
         Relationships: []
@@ -210,6 +213,8 @@ export type Database = {
       }
       profiles: {
         Row: {
+          avatar_url: string | null
+          cover_url: string | null
           cpf: string
           created_at: string | null
           id: string
@@ -217,6 +222,8 @@ export type Database = {
           role: string
         }
         Insert: {
+          avatar_url?: string | null
+          cover_url?: string | null
           cpf: string
           created_at?: string | null
           id: string
@@ -224,11 +231,40 @@ export type Database = {
           role?: string
         }
         Update: {
+          avatar_url?: string | null
+          cover_url?: string | null
           cpf?: string
           created_at?: string | null
           id?: string
           name?: string
           role?: string
+        }
+        Relationships: []
+      }
+      sales: {
+        Row: {
+          corretor_cpf: string | null
+          id: number
+          idobra: number
+          sinal: number | null
+          status: string
+          venda_data: string
+        }
+        Insert: {
+          corretor_cpf?: string | null
+          id?: number
+          idobra: number
+          sinal?: number | null
+          status: string
+          venda_data: string
+        }
+        Update: {
+          corretor_cpf?: string | null
+          id?: number
+          idobra?: number
+          sinal?: number | null
+          status?: string
+          venda_data?: string
         }
         Relationships: []
       }

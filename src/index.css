@@ -41,6 +41,7 @@ All colors MUST be HSL.
 
     /* Custom Metro News colors */
     --metro-red: 0 85% 60%;
+    --metro-red-dark: 0 85% 45%;
     --metro-green: 142 69% 58%;
     --metro-blue: 207 90% 54%;
 

@@ -53,6 +53,7 @@ export default {
 					foreground: 'hsl(var(--card-foreground))'
 				},
 				'metro-red': 'hsl(var(--metro-red))',
+				'metro-red-dark': 'hsl(var(--metro-red-dark))',
 				'metro-green': 'hsl(var(--metro-green))',
 				'metro-blue': 'hsl(var(--metro-blue))',
 				sidebar: {
