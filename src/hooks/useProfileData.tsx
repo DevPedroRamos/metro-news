@@ -101,7 +101,7 @@ export const useProfileData = () => {
         const { data: monthlyVisits, error: visitsError } = await supabase
           .from('visits')
           .select('id')
-          .eq('corretor_id', userData.id)
+          .eq('corretor_id', userDetails.id)
           .gte('horario_entrada', startMonth.toISOString())
           .lte('horario_entrada', endMonth.toISOString());
 
