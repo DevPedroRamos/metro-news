@@ -13,7 +13,7 @@ const ProfileLoadingSpinner: React.FC = () => {
           }}
         />
         <img 
-          src="/lovable-uploads/181eacc0-0dbb-4e16-8c77-31c86f9c49d0.png" 
+          src="/lovable-uploads/e694e1f5-9413-4775-bc42-153d43c49fa6.png" 
           alt="MetroNews" 
           className="h-14"
         />
