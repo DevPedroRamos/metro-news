@@ -73,7 +73,7 @@ const Perfil = () => {
 
           {/* Avatar and Info */}
           <div className="relative px-6 pb-6">
-            <div className="flex flex-col sm:flex-row sm:items-end sm:space-x-6 -mt-16">
+            <div className="flex flex-col sm:flex-col sm:items-start sm:space-x-6 -mt-16">
               <div className="relative">
                 <Avatar className="h-32 w-32 border-4 border-background">
                   <AvatarImage src={data.user.avatar_url} />
@@ -85,23 +85,21 @@ const Perfil = () => {
               </div>
 
               <div className="mt-4 sm:mt-0 flex-1 min-w-0">
-                <div className="flex flex-col">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
                   <div>
                     <h1 className="text-2xl font-bold text-foreground truncate">
                       {data.user.apelido || data.user.name}
                     </h1>
-                    <div className="mt-1 text-sm text-muted-foreground">
-                      <p>
-                        Superintendência: <strong>{data.user.superintendente}</strong> • Gerência: <strong>{data.user.gerente}</strong> • Cargo: <strong>{data.user.role}</strong>
-                      </p>
+                    <div className="mt-1 space-y-1 text-sm text-muted-foreground">
+                      <p><strong>Superintendência:</strong> {data.user.superintendente}</p>
+                      <p><strong>Gerência:</strong> {data.user.gerente}</p>
+                      <p><strong>Cargo:</strong> {data.user.role}</p>
                     </div>
                   </div>
                   
-                  <div className="mt-3">
-                    <Badge className={`${rankingBadge.color} text-white text-sm font-semibold`}>
-                      {rankingBadge.emoji} {data.ranking.position}º Lugar
-                    </Badge>
-                  </div>
+                  <Badge className={`${rankingBadge.color} text-white text-sm font-semibold mt-3 sm:mt-0`}>
+                    {rankingBadge.emoji} {data.ranking.position}º Lugar
+                  </Badge>
                 </div>
               </div>
             </div>
