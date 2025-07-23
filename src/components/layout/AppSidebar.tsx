@@ -24,10 +24,10 @@ import {
 
 const menuItems = [
   { title: 'Notícias', url: '/noticias', icon: Newspaper },
+  { title: 'Campeões', url: '/campeoes', icon: Trophy },
   { title: 'Treinamento', url: '/treinamento', icon: GraduationCap },
   { title: 'Processos', url: '/processos', icon: Settings },
   { title: 'Links Úteis', url: '/links-uteis', icon: Link },
-  { title: 'Campeões', url: '/campeoes', icon: Trophy },
   { title: 'Superintendência', url: '/superintendencia', icon: Users },
   { title: 'Meu Perfil', url: '/perfil', icon: User },
 ];
