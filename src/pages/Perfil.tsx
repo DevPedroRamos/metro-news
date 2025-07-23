@@ -73,7 +73,7 @@ const Perfil = () => {
 
           {/* Avatar and Info */}
           <div className="relative px-6 pb-6">
-            <div className="flex flex-col sm:flex-row sm:items-end sm:space-x-6 -mt-16">
+            <div className="flex flex-col items-center sm:items-start -mt-16">
               <div className="relative">
                 <Avatar className="h-32 w-32 border-4 border-background">
                   <AvatarImage src={data.user.avatar_url} />
@@ -84,7 +84,7 @@ const Perfil = () => {
                 <ImageUpload currentImage={data.user.avatar_url} onImageUpdate={url => updateProfileImages('avatar_url', url)} type="avatar" className="bottom-2 right-2" />
               </div>
 
-              <div className="mt-4 sm:mt-0 flex-1 min-w-0">
+              <div className="mt-4 flex-1 min-w-0 text-center sm:text-left">
                 <div className="flex flex-col">
                   <div>
                     <h1 className="text-2xl font-bold text-foreground truncate">
