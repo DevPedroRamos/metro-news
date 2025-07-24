@@ -1,215 +1,247 @@
-import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from './useAuth';
+import { useAuth } from '@/hooks/useAuth';
+import { startOfMonth, endOfMonth } from 'date-fns';
 
 export type RankingType = 'corretor' | 'gerente' | 'superintendente';
 
-export interface RankingData {
+interface RankingData {
   id: string;
   name: string;
-  nickname: string;
-  sales: number;
-  revenue: number;
-  visits: number;
-  contracts: number;
+  apelido: string;
+  vendas: number;
+  recebimento: number;
+  visitas: number;
+  contratos: number;
+  cpf?: string;
   avatar_url?: string;
 }
 
-interface ChampionsCache {
-  [key: string]: {
-    data: RankingData[];
-    totalCount: number;
-    timestamp: number;
-    pages: { [page: number]: RankingData[] };
-  };
-}
-
-interface UseChampionsDataOptions {
-  pageSize?: number;
-  searchTerm?: string;
-}
-
-const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
-const cache: ChampionsCache = {};
-
-export const useChampionsData = (
-  rankingType: RankingType, 
-  options: UseChampionsDataOptions = {}
-) => {
-  const { user } = useAuth();
-  const { pageSize = 20, searchTerm = '' } = options;
-  
+export const useChampionsData = (rankingType: RankingType) => {
+  const { user: authUser } = useAuth();
   const [data, setData] = useState<RankingData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalCount, setTotalCount] = useState(0);
-  const [hasMore, setHasMore] = useState(true);
-  const [loadingMore, setLoadingMore] = useState(false);
-  
-  const debounceRef = useRef<NodeJS.Timeout>();
-  const cacheKey = `${rankingType}-${searchTerm}`;
 
-  // Check cache validity
-  const isCacheValid = useCallback((cacheEntry: any) => {
-    return cacheEntry && (Date.now() - cacheEntry.timestamp) < CACHE_DURATION;
-  }, []);
-
-  // Fetch data from Supabase using the optimized function
-  const fetchChampionsData = useCallback(async (page: number, reset: boolean = false) => {
-    try {
-      if (reset) {
+  useEffect(() => {
+    const fetchChampionsData = async () => {
+      try {
         setLoading(true);
         setError(null);
-      } else {
-        setLoadingMore(true);
-      }
 
-      // Check cache first
-      const cachedData = cache[cacheKey];
-      if (isCacheValid(cachedData) && cachedData.pages[page]) {
-        if (reset) {
-          setData(cachedData.pages[page]);
-          setTotalCount(cachedData.totalCount);
-          setHasMore(page * pageSize < cachedData.totalCount);
-          setLoading(false);
+        const validSalesStatuses = [
+          'VENDA - SV - VALIDADO DIRETO/NR (SV)',
+          'VENDA - SV - VALIDADO CEF (SV)'
+        ];
+
+        // Buscar todos os usuários
+        const { data: allUsers, error: usersError } = await supabase
+          .from('users')
+          .select('*');
+
+        if (usersError) throw usersError;
+
+        // Buscar perfis para avatars
+        const { data: profiles, error: profilesError } = await supabase
+          .from('profiles')
+          .select('id, avatar_url, cpf');
+
+        if (profilesError) throw profilesError;
+
+        const startMonth = startOfMonth(new Date());
+        const endMonth = endOfMonth(new Date());
+
+        let rankings: RankingData[] = [];
+
+        if (rankingType === 'corretor') {
+          // Ranking individual por corretor
+          rankings = await Promise.all(
+            allUsers.map(async (user) => {
+              const [validSales, contracts, visits] = await Promise.all([
+                // Vendas validadas
+                supabase
+                  .from('sales')
+                  .select('sinal')
+                  .eq('corretor_cpf', user.cpf)
+                  .in('status', validSalesStatuses),
+                
+                // Contratos (outras vendas)
+                supabase
+                  .from('sales')
+                  .select('id')
+                  .eq('corretor_cpf', user.cpf)
+                  .not('status', 'in', `(${validSalesStatuses.map(s => `"${s}"`).join(',')})`),
+                
+                // Visitas do mês
+                supabase
+                  .from('visits')
+                  .select('id')
+                  .eq('corretor_id', user.id)
+                  .gte('horario_entrada', startMonth.toISOString())
+                  .lte('horario_entrada', endMonth.toISOString())
+              ]);
+
+              const profile = profiles.find(p => p.cpf === user.cpf);
+
+              return {
+                id: user.id,
+                name: user.name,
+                apelido: user.apelido,
+                cpf: user.cpf,
+                vendas: validSales.data?.length || 0,
+                recebimento: validSales.data?.reduce((sum, sale) => sum + (Number(sale.sinal) || 0), 0) || 0,
+                contratos: contracts.data?.length || 0,
+                visitas: visits.data?.length || 0,
+                avatar_url: profile?.avatar_url
+              };
+            })
+          );
+        } else if (rankingType === 'gerente') {
+          // Agrupar por gerente
+          const managers = [...new Set(allUsers.map(u => u.gerente))].filter(Boolean);
+          
+          rankings = await Promise.all(
+            managers.map(async (gerente) => {
+              const corretoresDoGerente = allUsers.filter(u => u.gerente === gerente);
+              
+              let totalVendas = 0;
+              let totalRecebimento = 0;
+              let totalContratos = 0;
+              let totalVisitas = 0;
+
+              for (const corretor of corretoresDoGerente) {
+                const [validSales, contracts, visits] = await Promise.all([
+                  supabase
+                    .from('sales')
+                    .select('sinal')
+                    .eq('corretor_cpf', corretor.cpf)
+                    .in('status', validSalesStatuses),
+                  
+                  supabase
+                    .from('sales')
+                    .select('id')
+                    .eq('corretor_cpf', corretor.cpf)
+                    .not('status', 'in', `(${validSalesStatuses.map(s => `"${s}"`).join(',')})`),
+                  
+                  supabase
+                    .from('visits')
+                    .select('id')
+                    .eq('corretor_id', corretor.id)
+                    .gte('horario_entrada', startMonth.toISOString())
+                    .lte('horario_entrada', endMonth.toISOString())
+                ]);
+
+                totalVendas += validSales.data?.length || 0;
+                totalRecebimento += validSales.data?.reduce((sum, sale) => sum + (Number(sale.sinal) || 0), 0) || 0;
+                totalContratos += contracts.data?.length || 0;
+                totalVisitas += visits.data?.length || 0;
+              }
+
+              return {
+                id: `gerente-${gerente}`,
+                name: gerente,
+                apelido: gerente,
+                vendas: totalVendas,
+                recebimento: totalRecebimento,
+                contratos: totalContratos,
+                visitas: totalVisitas
+              };
+            })
+          );
         } else {
-          setData(prev => [...prev, ...cachedData.pages[page]]);
-          setHasMore(page * pageSize < cachedData.totalCount);
-          setLoadingMore(false);
-        }
-        return;
-      }
+          // Agrupar por superintendente
+          const superintendents = [...new Set(allUsers.map(u => u.superintendente))].filter(Boolean);
+          
+          rankings = await Promise.all(
+            superintendents.map(async (superintendente) => {
+              const corretoresDoSuperintendente = allUsers.filter(u => u.superintendente === superintendente);
+              
+              let totalVendas = 0;
+              let totalRecebimento = 0;
+              let totalContratos = 0;
+              let totalVisitas = 0;
 
-      const offset = (page - 1) * pageSize;
-      
-      const { data: result, error: dbError } = await supabase
-        .rpc('get_champions_ranking', {
-          ranking_type: rankingType,
-          limit_count: pageSize,
-          offset_count: offset
+              for (const corretor of corretoresDoSuperintendente) {
+                const [validSales, contracts, visits] = await Promise.all([
+                  supabase
+                    .from('sales')
+                    .select('sinal')
+                    .eq('corretor_cpf', corretor.cpf)
+                    .in('status', validSalesStatuses),
+                  
+                  supabase
+                    .from('sales')
+                    .select('id')
+                    .eq('corretor_cpf', corretor.cpf)
+                    .not('status', 'in', `(${validSalesStatuses.map(s => `"${s}"`).join(',')})`),
+                  
+                  supabase
+                    .from('visits')
+                    .select('id')
+                    .eq('corretor_id', corretor.id)
+                    .gte('horario_entrada', startMonth.toISOString())
+                    .lte('horario_entrada', endMonth.toISOString())
+                ]);
+
+                totalVendas += validSales.data?.length || 0;
+                totalRecebimento += validSales.data?.reduce((sum, sale) => sum + (Number(sale.sinal) || 0), 0) || 0;
+                totalContratos += contracts.data?.length || 0;
+                totalVisitas += visits.data?.length || 0;
+              }
+
+              return {
+                id: `superintendente-${superintendente}`,
+                name: superintendente,
+                apelido: superintendente,
+                vendas: totalVendas,
+                recebimento: totalRecebimento,
+                contratos: totalContratos,
+                visitas: totalVisitas
+              };
+            })
+          );
+        }
+
+        // Ordenar por vendas (e recebimento como desempate)
+        rankings.sort((a, b) => {
+          if (a.vendas !== b.vendas) {
+            return b.vendas - a.vendas;
+          }
+          return b.recebimento - a.recebimento;
         });
 
-      if (dbError) throw dbError;
+        setData(rankings);
 
-      if (!result || result.length === 0) {
-        if (reset) {
-          setData([]);
-          setTotalCount(0);
-        }
-        setHasMore(false);
-        return;
-      }
-
-      const formattedData: RankingData[] = result.map((item: any) => ({
-        id: item.user_id || item.name,
-        name: item.name,
-        nickname: item.nickname,
-        sales: Number(item.sales_count) || 0,
-        revenue: Number(item.revenue) || 0,
-        visits: Number(item.visits_count) || 0,
-        contracts: Number(item.contracts_count) || 0,
-        avatar_url: item.avatar_url
-      }));
-
-      const totalRecords = result[0]?.total_count || 0;
-
-      // Update cache
-      if (!cache[cacheKey]) {
-        cache[cacheKey] = {
-          data: [],
-          totalCount: totalRecords,
-          timestamp: Date.now(),
-          pages: {}
-        };
-      }
-      
-      cache[cacheKey].pages[page] = formattedData;
-      cache[cacheKey].totalCount = totalRecords;
-      cache[cacheKey].timestamp = Date.now();
-
-      if (reset) {
-        setData(formattedData);
-        setTotalCount(totalRecords);
-      } else {
-        setData(prev => [...prev, ...formattedData]);
-      }
-      
-      setHasMore(page * pageSize < totalRecords);
-
-    } catch (err) {
-      console.error('Error fetching champions data:', err);
-      setError('Erro ao carregar dados dos campeões');
-    } finally {
-      if (reset) {
+      } catch (err) {
+        console.error('Error fetching champions data:', err);
+        setError(err instanceof Error ? err.message : 'Erro ao carregar dados');
+      } finally {
         setLoading(false);
-      } else {
-        setLoadingMore(false);
-      }
-    }
-  }, [rankingType, pageSize, searchTerm, cacheKey, isCacheValid]);
-
-  // Load more data for pagination
-  const loadMore = useCallback(() => {
-    if (!loadingMore && hasMore) {
-      const nextPage = currentPage + 1;
-      setCurrentPage(nextPage);
-      fetchChampionsData(nextPage, false);
-    }
-  }, [currentPage, loadingMore, hasMore, fetchChampionsData]);
-
-  // Debounced search effect
-  useEffect(() => {
-    if (debounceRef.current) {
-      clearTimeout(debounceRef.current);
-    }
-
-    debounceRef.current = setTimeout(() => {
-      setCurrentPage(1);
-      fetchChampionsData(1, true);
-    }, searchTerm ? 300 : 0);
-
-    return () => {
-      if (debounceRef.current) {
-        clearTimeout(debounceRef.current);
       }
     };
-  }, [rankingType, searchTerm, fetchChampionsData]);
 
-  // Initial load
-  useEffect(() => {
-    setCurrentPage(1);
-    fetchChampionsData(1, true);
+    fetchChampionsData();
   }, [rankingType]);
 
-  // Calculate user position in ranking  
+  // Encontrar posição do usuário logado
   const userPosition = useMemo(() => {
-    if (!user?.id || !data.length) return null;
+    if (!authUser?.id || !data.length) return null;
     
-    let position = -1;
+    const position = data.findIndex(item => {
+      if (rankingType === 'corretor') {
+        return item.id === authUser.id;
+      }
+      // Para gerente/superintendente, precisaríamos buscar pelos dados do usuário
+      return false;
+    });
     
-    if (rankingType === 'corretor') {
-      position = data.findIndex(item => item.id === user.id) + 1;
-    } else if (rankingType === 'gerente') {
-      // Would need user's gerente info - simplified for now
-      position = -1;
-    } else if (rankingType === 'superintendente') {
-      // Would need user's superintendente info - simplified for now  
-      position = -1;
-    }
-    
-    return position > 0 ? position : null;
-  }, [data, user?.id, rankingType]);
+    return position >= 0 ? position + 1 : null;
+  }, [data, authUser?.id, rankingType]);
 
   return {
     data,
     loading,
     error,
-    userPosition,
-    totalCount,
-    hasMore,
-    loadingMore,
-    loadMore,
-    currentPage
+    userPosition
   };
 };

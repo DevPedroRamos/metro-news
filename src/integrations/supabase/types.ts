@@ -395,25 +395,6 @@ export type Database = {
         Args: { corretor_uuid: string; link_titulo?: string }
         Returns: string
       }
-      get_champions_ranking: {
-        Args: {
-          ranking_type?: string
-          limit_count?: number
-          offset_count?: number
-        }
-        Returns: {
-          user_id: string
-          name: string
-          nickname: string
-          sales_count: number
-          revenue: number
-          visits_count: number
-          contracts_count: number
-          avatar_url: string
-          role: string
-          total_count: number
-        }[]
-      }
       get_corretor_stats: {
         Args: { corretor_uuid: string }
         Returns: {
