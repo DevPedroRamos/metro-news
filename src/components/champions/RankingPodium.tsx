@@ -4,7 +4,6 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { formatCurrency } from '@/lib/utils';
 import { Trophy, Medal, Award, Users, FileText } from 'lucide-react';
-
 interface RankingData {
   id: string;
   name: string;
@@ -15,11 +14,9 @@ interface RankingData {
   contratos: number;
   avatar_url?: string;
 }
-
 interface RankingPodiumProps {
   topThree: RankingData[];
 }
-
 const getRankIcon = (position: number) => {
   switch (position) {
     case 1:
@@ -32,7 +29,6 @@ const getRankIcon = (position: number) => {
       return null;
   }
 };
-
 const getCardSize = (position: number) => {
   switch (position) {
     case 1:
@@ -45,39 +41,29 @@ const getCardSize = (position: number) => {
       return "";
   }
 };
-
-export const RankingPodium: React.FC<RankingPodiumProps> = ({ topThree }) => {
+export const RankingPodium: React.FC<RankingPodiumProps> = ({
+  topThree
+}) => {
   if (topThree.length === 0) {
-    return (
-      <div className="text-center py-8">
+    return <div className="text-center py-8">
         <p className="text-muted-foreground">Nenhum dado encontrado</p>
-      </div>
-    );
+      </div>;
   }
-
-  return (
-    <div className="mb-8">
+  return <div className="mb-8">
       <h2 className="text-2xl font-bold text-center mb-6">🏆 Pódio dos Campeões</h2>
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6">
         {topThree.map((person, index) => {
-          const position = index + 1;
-          const formatRecebimento = (value: number) => {
-            if (value >= 1000000) {
-              return `R$ ${(value / 1000000).toFixed(1)}M`;
-            } else if (value >= 1000) {
-              return `R$ ${(value / 1000).toFixed(0)}k`;
-            }
-            return formatCurrency(value);
-          };
-
-          return (
-            <Card 
-              key={person.id} 
-              className={`relative overflow-hidden transition-all duration-300 hover:shadow-lg ${getCardSize(position)} ${
-                position === 1 ? 'border-yellow-200 bg-gradient-to-br from-yellow-50 to-white' : ''
-              }`}
-            >
+        const position = index + 1;
+        const formatRecebimento = (value: number) => {
+          if (value >= 1000000) {
+            return `R$ ${(value / 1000000).toFixed(1)}M`;
+          } else if (value >= 1000) {
+            return `R$ ${(value / 1000).toFixed(0)}k`;
+          }
+          return formatCurrency(value);
+        };
+        return <Card key={person.id} className={`relative overflow-hidden transition-all duration-300 hover:shadow-lg ${getCardSize(position)} ${position === 1 ? 'border-yellow-200 bg-gradient-to-br from-yellow-50 to-white' : ''}`}>
               <CardContent className="p-6 text-center">
                 {/* Rank Icon */}
                 <div className="flex justify-center mb-4">
@@ -99,16 +85,17 @@ export const RankingPodium: React.FC<RankingPodiumProps> = ({ topThree }) => {
                 <p className="text-sm text-muted-foreground mb-4">{person.name}</p>
 
                 {/* Stats */}
-                <div className="space-y-3">
-                  <div>
-                    <p className="text-sm text-muted-foreground"><b>Vendas:</b> {person.vendas}</p>
+                <div className="space-y-3 text-left">
+                  <div className="text-left">
+                    <p className="text-2xl font-bold text-primary">{person.vendas}</p>
+                    <p className="text-sm text-muted-foreground">Vendas</p>
                   </div>
                   
                   <div>
                     <p className="text-lg font-semibold text-accent">
+                      {formatRecebimento(person.recebimento)}
                     </p>
-                    <p className="text-sm text-muted-foreground"><b>Recebimento:</b> {formatRecebimento(person.recebimento)}
-</p>
+                    <p className="text-sm text-muted-foreground">Recebimento</p>
                   </div>
 
                   {/* Badges */}
@@ -124,10 +111,8 @@ export const RankingPodium: React.FC<RankingPodiumProps> = ({ topThree }) => {
                   </div>
                 </div>
               </CardContent>
-            </Card>
-          );
-        })}
+            </Card>;
+      })}
       </div>
-    </div>
-  );
+    </div>;
 };
