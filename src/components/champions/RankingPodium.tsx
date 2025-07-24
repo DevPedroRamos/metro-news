@@ -114,11 +114,11 @@ export const RankingPodium: React.FC<RankingPodiumProps> = ({ topThree }) => {
                 <div className="flex justify-center gap-3">
                   <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100 border-yellow-200">
                     <Trophy className="w-3 h-3 mr-1" />
-                    {person.visitas}
+                    {person.visitas} Visitas
                   </Badge>
                   <Badge className="bg-pink-100 text-red-600 hover:bg-pink-100 border-pink-200">
                     <FileText className="w-3 h-3 mr-1" />
-                    {person.contratos}
+                    {person.contratos} Contratos
                   </Badge>
                 </div>
               </CardContent>
