@@ -76,9 +76,9 @@ export const RankingPodium: React.FC<RankingPodiumProps> = ({ topThree }) => {
               key={person.id} 
               className={`relative overflow-hidden transition-all duration-300 hover:shadow-lg ${getCardSize(position)}`}
             >
-              <CardContent className="p-6">
-                {/* Header com Avatar e Badge de Posição */}
-                <div className="flex items-start gap-4 mb-4">
+              <CardContent className="p-6 text-center">
+                {/* Avatar com Badge de Posição */}
+                <div className="flex justify-center mb-4">
                   <div className="relative">
                     <Avatar className="w-16 h-16">
                       <AvatarImage src={person.avatar_url} alt={person.apelido} className="object-cover" />
@@ -91,27 +91,27 @@ export const RankingPodium: React.FC<RankingPodiumProps> = ({ topThree }) => {
                       {position}
                     </div>
                   </div>
+                </div>
 
-                  {/* Informações do corretor */}
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-bold text-lg text-foreground mb-1 truncate">{person.apelido}</h3>
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2 text-sm">
-                        <span className="text-muted-foreground">Vendas:</span>
-                        <span className="font-semibold text-primary">{person.vendas}</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-sm">
-                        <span className="text-muted-foreground">💰</span>
-                        <span className="font-semibold text-foreground">
-                          {formatRecebimento(person.recebimento)}
-                        </span>
-                      </div>
-                    </div>
+                {/* Nome do corretor */}
+                <h3 className="font-bold text-lg text-foreground mb-4">{person.apelido}</h3>
+
+                {/* Vendas e Recebimento lado a lado */}
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <div>
+                    <p className="text-xl font-bold text-primary">{person.vendas}</p>
+                    <p className="text-sm text-muted-foreground">Vendas</p>
+                  </div>
+                  <div>
+                    <p className="text-xl font-bold text-foreground">
+                      {formatRecebimento(person.recebimento)}
+                    </p>
+                    <p className="text-sm text-muted-foreground">💰 Recebimento</p>
                   </div>
                 </div>
 
                 {/* Badges na parte inferior */}
-                <div className="flex justify-center gap-3 pt-2">
+                <div className="flex justify-center gap-3">
                   <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100 border-yellow-200">
                     <Trophy className="w-3 h-3 mr-1" />
                     {person.visitas}
