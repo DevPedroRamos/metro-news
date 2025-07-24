@@ -57,7 +57,7 @@ export const RankingPodium: React.FC<RankingPodiumProps> = ({ topThree }) => {
 
   return (
     <div className="mb-8">
-      <h2 className="text-2xl font-bold text-center mb-6">🏆 Pódio dos Campeões</h2>
+      
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6">
         {topThree.map((person, index) => {
