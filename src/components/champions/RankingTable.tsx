@@ -2,8 +2,9 @@ import React from 'react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
 import { formatCurrency } from '@/lib/utils';
-import { Users, FileText } from 'lucide-react';
+import { Users, FileText, ChevronDown } from 'lucide-react';
 
 interface RankingData {
   id: string;
@@ -20,9 +21,19 @@ interface RankingTableProps {
   data: RankingData[];
   userPosition: number | null;
   currentUserId?: string;
+  loadMore: () => void;
+  hasMore: boolean;
+  loadingMore: boolean;
 }
 
-export const RankingTable: React.FC<RankingTableProps> = ({ data, userPosition, currentUserId }) => {
+export const RankingTable: React.FC<RankingTableProps> = ({ 
+  data, 
+  userPosition, 
+  currentUserId, 
+  loadMore, 
+  hasMore, 
+  loadingMore 
+}) => {
   // Exibir do 4º colocado em diante
   const tableData = data.slice(3);
 
@@ -125,6 +136,30 @@ export const RankingTable: React.FC<RankingTableProps> = ({ data, userPosition, 
           })}
         </TableBody>
       </Table>
+      
+      {/* Botão carregar mais */}
+      {hasMore && (
+        <div className="p-4 border-t bg-gray-50">
+          <Button 
+            onClick={loadMore}
+            disabled={loadingMore}
+            variant="outline"
+            className="w-full"
+          >
+            {loadingMore ? (
+              <>
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary mr-2"></div>
+                Carregando...
+              </>
+            ) : (
+              <>
+                <ChevronDown className="w-4 h-4 mr-2" />
+                Carregar mais
+              </>
+            )}
+          </Button>
+        </div>
+      )}
     </div>
   );
 };

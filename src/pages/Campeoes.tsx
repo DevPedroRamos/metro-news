@@ -5,6 +5,7 @@ import { FilterTabs } from '@/components/champions/FilterTabs';
 import { MotivationalBanner } from '@/components/champions/MotivationalBanner';
 import { RankingPodium } from '@/components/champions/RankingPodium';
 import { RankingTable } from '@/components/champions/RankingTable';
+import { PodiumSkeleton, TableSkeleton } from '@/components/champions/RankingSkeleton';
 import ProfileLoadingSpinner from '@/components/profile/ProfileLoadingSpinner';
 const Campeoes = () => {
   const {
@@ -15,11 +16,12 @@ const Campeoes = () => {
     data,
     loading,
     error,
-    userPosition
+    userPosition,
+    loadMore,
+    hasMore,
+    loadingMore
   } = useChampionsData(activeFilter);
-  if (loading) {
-    return <ProfileLoadingSpinner />;
-  }
+  
   if (error) {
     return <div className="space-y-6">
         <div className="mb-8">
@@ -34,16 +36,30 @@ const Campeoes = () => {
       </div>;
   }
   const topThree = data.slice(0, 3);
+  
   return <div className="space-y-6">
-      
-
       <FilterTabs activeFilter={activeFilter} onFilterChange={setActiveFilter} />
 
       <MotivationalBanner />
 
-      <RankingPodium topThree={topThree} />
-
-      <RankingTable data={data} userPosition={userPosition} currentUserId={user?.id} />
+      {loading ? (
+        <>
+          <PodiumSkeleton />
+          <TableSkeleton />
+        </>
+      ) : (
+        <>
+          <RankingPodium topThree={topThree} />
+          <RankingTable 
+            data={data} 
+            userPosition={userPosition} 
+            currentUserId={user?.id}
+            loadMore={loadMore}
+            hasMore={hasMore}
+            loadingMore={loadingMore}
+          />
+        </>
+      )}
     </div>;
 };
 export default Campeoes;
