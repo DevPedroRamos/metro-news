@@ -1,28 +1,28 @@
 import React from 'react';
-import { Button } from '@/components/ui/button';
-import { Trophy } from 'lucide-react';
 
 export const MotivationalBanner: React.FC = () => {
   return (
-    <div className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground rounded-lg p-6 mb-6">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <div className="bg-primary-foreground/20 p-3 rounded-full">
-            <Trophy className="w-6 h-6" />
-          </div>
-          <div>
-            <h2 className="text-xl font-bold mb-1">Meta Mensal 2025</h2>
-            <p className="text-primary-foreground/90">
-              Supere seus limites e conquiste o topo do ranking!
-            </p>
-          </div>
+    <div className="bg-red-600 text-white rounded-lg p-8 mb-6 relative overflow-hidden">
+      <div className="flex items-center justify-between relative z-10">
+        <div className="flex-1">
+          <p className="text-lg font-medium leading-relaxed">
+            De pessoas para pessoas: juntos{' '}
+            <span className="bg-white text-red-600 px-2 py-1 rounded font-bold">
+              construímos
+            </span>{' '}
+            o{' '}
+            <span className="bg-white text-red-600 px-2 py-1 rounded font-bold">
+              futuro
+            </span>
+          </p>
         </div>
-        <Button 
-          variant="outline" 
-          className="bg-primary-foreground text-primary hover:bg-primary-foreground/90"
-        >
-          Saber Mais
-        </Button>
+        <div className="flex-shrink-0 ml-8">
+          <img 
+            src="/lovable-uploads/e453533d-276d-404c-947e-d5bf9f2c73cb.png" 
+            alt="Profissionais"
+            className="w-48 h-32 object-contain"
+          />
+        </div>
       </div>
     </div>
   );

@@ -74,9 +74,7 @@ export const RankingPodium: React.FC<RankingPodiumProps> = ({ topThree }) => {
           return (
             <Card 
               key={person.id} 
-              className={`relative overflow-hidden transition-all duration-300 hover:shadow-lg ${getCardSize(position)} ${
-                position === 1 ? 'border-yellow-200 bg-gradient-to-br from-yellow-50 to-white' : ''
-              }`}
+              className={`relative overflow-hidden transition-all duration-300 hover:shadow-lg ${getCardSize(position)}`}
             >
               <CardContent className="p-6 text-center">
                 {/* Rank Icon */}

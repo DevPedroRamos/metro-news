@@ -83,10 +83,13 @@ export const RankingTable: React.FC<RankingTableProps> = ({ data, userPosition, 
                         {person.apelido.charAt(0).toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
-                    <div>
-                      <p className="font-medium">{person.apelido}</p>
-                      <p className="text-xs text-muted-foreground">{person.name}</p>
-                    </div>
+                     <div>
+                       <p className="font-medium">
+                         {person.apelido}
+                         {isCurrentUser && <span className="text-primary font-bold ml-1">(You)</span>}
+                       </p>
+                       <p className="text-xs text-muted-foreground">{person.name}</p>
+                     </div>
                   </div>
                 </TableCell>
                 
@@ -100,18 +103,18 @@ export const RankingTable: React.FC<RankingTableProps> = ({ data, userPosition, 
                   </span>
                 </TableCell>
                 
-                <TableCell className="text-center">
-                  <div className="flex items-center justify-center gap-2">
-                    <Badge variant="secondary" className="text-xs">
-                      <Users className="w-3 h-3 mr-1" />
-                      {person.visitas}
-                    </Badge>
-                    <Badge variant="outline" className="text-xs">
-                      <FileText className="w-3 h-3 mr-1" />
-                      {person.contratos}
-                    </Badge>
-                  </div>
-                </TableCell>
+                 <TableCell className="text-center">
+                   <div className="flex items-center justify-center gap-2">
+                     <Badge variant={isCurrentUser ? "default" : "secondary"} className="text-xs">
+                       <Users className="w-3 h-3 mr-1" />
+                       {person.visitas}
+                     </Badge>
+                     <Badge variant={isCurrentUser ? "default" : "outline"} className="text-xs">
+                       <FileText className="w-3 h-3 mr-1" />
+                       {person.contratos}
+                     </Badge>
+                   </div>
+                 </TableCell>
               </TableRow>
             );
           })}

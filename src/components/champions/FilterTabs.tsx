@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from '@/components/ui/button';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { RankingType } from '@/hooks/useChampionsData';
 
 interface FilterTabsProps {
@@ -8,24 +8,13 @@ interface FilterTabsProps {
 }
 
 export const FilterTabs: React.FC<FilterTabsProps> = ({ activeFilter, onFilterChange }) => {
-  const filters = [
-    { key: 'corretor' as RankingType, label: 'Corretor' },
-    { key: 'gerente' as RankingType, label: 'Gerente' },
-    { key: 'superintendente' as RankingType, label: 'Superintendente' }
-  ];
-
   return (
-    <div className="flex gap-2 mb-6">
-      {filters.map((filter) => (
-        <Button
-          key={filter.key}
-          variant={activeFilter === filter.key ? 'default' : 'outline'}
-          onClick={() => onFilterChange(filter.key)}
-          className="px-6 py-2 font-medium"
-        >
-          {filter.label}
-        </Button>
-      ))}
-    </div>
+    <Tabs value={activeFilter} onValueChange={(value) => onFilterChange(value as RankingType)} className="mb-6">
+      <TabsList className="grid w-full max-w-md grid-cols-3">
+        <TabsTrigger value="corretor">Corretor</TabsTrigger>
+        <TabsTrigger value="gerente">Gerente</TabsTrigger>
+        <TabsTrigger value="superintendente">Superintendente</TabsTrigger>
+      </TabsList>
+    </Tabs>
   );
 };
