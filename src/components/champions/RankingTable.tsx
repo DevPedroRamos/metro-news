@@ -45,10 +45,6 @@ export const RankingTable: React.FC<RankingTableProps> = ({ data, userPosition, 
 
   return (
     <div className="bg-white rounded-lg border">
-      <div className="p-4 border-b">
-        <h3 className="text-lg font-semibold">Classificação Geral</h3>
-      </div>
-      
       <Table>
         <TableHeader>
           <TableRow>
