@@ -6,15 +6,36 @@ import { FilterTabs } from '@/components/champions/FilterTabs';
 import { MotivationalBanner } from '@/components/champions/MotivationalBanner';
 import { RankingPodium } from '@/components/champions/RankingPodium';
 import { RankingTable } from '@/components/champions/RankingTable';
-import ProfileLoadingSpinner from '@/components/profile/ProfileLoadingSpinner';
+import { PodiumSkeleton, TableSkeleton, FilterTabsSkeleton } from '@/components/champions/ChampionsSkeleton';
 
 const Campeoes = () => {
   const { user } = useAuth();
   const [activeFilter, setActiveFilter] = useState<RankingType>('corretor');
-  const { data, loading, error, userPosition } = useChampionsData(activeFilter);
+  const { 
+    data, 
+    loading, 
+    error, 
+    userPosition, 
+    hasMore, 
+    loadingMore, 
+    loadMore 
+  } = useChampionsData(activeFilter);
 
   if (loading) {
-    return <ProfileLoadingSpinner />;
+    return (
+      <div className="space-y-6">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-foreground mb-2">Campeões</h1>
+          <p className="text-lg text-muted-foreground">
+            Reconhecimento aos nossos melhores colaboradores
+          </p>
+        </div>
+        <FilterTabsSkeleton />
+        <MotivationalBanner />
+        <PodiumSkeleton />
+        <TableSkeleton />
+      </div>
+    );
   }
 
   if (error) {
@@ -57,6 +78,9 @@ const Campeoes = () => {
         data={data} 
         userPosition={userPosition}
         currentUserId={user?.id}
+        hasMore={hasMore}
+        loadingMore={loadingMore}
+        onLoadMore={loadMore}
       />
     </div>
   );

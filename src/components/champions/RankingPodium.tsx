@@ -8,11 +8,11 @@ import { Trophy, Medal, Award, Users, FileText } from 'lucide-react';
 interface RankingData {
   id: string;
   name: string;
-  apelido: string;
-  vendas: number;
-  recebimento: number;
-  visitas: number;
-  contratos: number;
+  nickname: string;
+  sales: number;
+  revenue: number;
+  visits: number;
+  contracts: number;
   avatar_url?: string;
 }
 
@@ -87,27 +87,27 @@ export const RankingPodium: React.FC<RankingPodiumProps> = ({ topThree }) => {
                 {/* Avatar */}
                 <div className="flex justify-center mb-4">
                   <Avatar className="w-16 h-16">
-                    <AvatarImage src={person.avatar_url} alt={person.apelido} />
+                    <AvatarImage src={person.avatar_url} alt={person.nickname} />
                     <AvatarFallback className="bg-primary text-primary-foreground text-lg font-bold">
-                      {person.apelido.charAt(0).toUpperCase()}
+                      {person.nickname.charAt(0).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
                 </div>
 
                 {/* Name */}
-                <h3 className="font-bold text-lg mb-1">{person.apelido}</h3>
+                <h3 className="font-bold text-lg mb-1">{person.nickname}</h3>
                 <p className="text-sm text-muted-foreground mb-4">{person.name}</p>
 
                 {/* Stats */}
                 <div className="space-y-3">
                   <div>
-                    <p className="text-2xl font-bold text-primary">{person.vendas}</p>
+                    <p className="text-2xl font-bold text-primary">{person.sales}</p>
                     <p className="text-sm text-muted-foreground">Vendas</p>
                   </div>
                   
                   <div>
                     <p className="text-lg font-semibold text-accent">
-                      {formatRecebimento(person.recebimento)}
+                      {formatRecebimento(person.revenue)}
                     </p>
                     <p className="text-sm text-muted-foreground">Recebimento</p>
                   </div>
@@ -116,11 +116,11 @@ export const RankingPodium: React.FC<RankingPodiumProps> = ({ topThree }) => {
                   <div className="flex justify-center gap-2 flex-wrap">
                     <Badge variant="secondary" className="text-xs">
                       <Users className="w-3 h-3 mr-1" />
-                      {person.visitas}
+                      {person.visits}
                     </Badge>
                     <Badge variant="outline" className="text-xs">
                       <FileText className="w-3 h-3 mr-1" />
-                      {person.contratos}
+                      {person.contracts}
                     </Badge>
                   </div>
                 </div>
