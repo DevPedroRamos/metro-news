@@ -78,42 +78,54 @@ export const RankingPodium: React.FC<RankingPodiumProps> = ({ topThree }) => {
                 position === 1 ? 'border-yellow-200 bg-gradient-to-br from-yellow-50 to-white' : ''
               }`}
             >
-              <CardContent className="p-6 text-center">
-                {/* Rank Icon */}
-                <div className="flex justify-center mb-4">
-                  {getRankIcon(position)}
+              <CardContent className="p-6">
+                {/* Header with Avatar and Info */}
+                <div className="flex items-start gap-4 mb-4">
+                  {/* Avatar with Ranking Badge */}
+                  <div className="relative">
+                    <Avatar className="w-16 h-16">
+                      <AvatarImage src={person.avatar_url} alt={person.apelido} className="object-cover" />
+                      <AvatarFallback className="bg-primary text-primary-foreground text-lg font-bold">
+                        {person.apelido.charAt(0).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                    {/* Ranking Badge */}
+                    <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-yellow-400 rounded-full flex items-center justify-center border-2 border-white">
+                      <span className="text-xs font-bold text-yellow-900">{position}</span>
+                    </div>
+                  </div>
+
+                  {/* Name and Stats */}
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-bold text-lg mb-1 truncate">{person.apelido}</h3>
+                    <p className="text-sm text-muted-foreground mb-3 truncate">{person.name}</p>
+                    
+                    {/* Sales and Revenue */}
+                    <div className="flex items-center gap-4 text-sm">
+                      <div className="flex items-center gap-1">
+                        <span className="text-muted-foreground">Vendas:</span>
+                        <span className="font-semibold">{person.vendas}</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <span className="text-muted-foreground">💰</span>
+                        <span className="font-semibold">{formatRecebimento(person.recebimento)}</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
-                {/* Avatar */}
-                <div className="flex justify-center mb-4">
-                  <Avatar className="w-16 h-16">
-                    <AvatarImage src={person.avatar_url} alt={person.apelido} />
-                    <AvatarFallback className="bg-primary text-primary-foreground text-lg font-bold">
-                      {person.apelido.charAt(0).toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
-                </div>
-
-                {/* Name */}
-                <h3 className="font-bold text-lg mb-1">{person.apelido}</h3>
-                <p className="text-sm text-muted-foreground mb-4">{person.name}</p>
-
-                {/* Stats */}
-                <div className="space-y-3">
-                  <div>
-                    <p className="text-sm text-muted-foreground"><b>Vendas:</b>{person.vendas} - <b>Recebimento:</b>{formatRecebimento(person.recebimento)} </p>
-                  </div>
-                  {/* Badges */}
-                  <div className="flex justify-center gap-2 flex-wrap">
-                    <Badge variant="secondary" className="text-xs">
-                      <Users className="w-3 h-3 mr-1" />
-                      {person.visitas}
-                    </Badge>
-                    <Badge variant="outline" className="text-xs">
-                      <FileText className="w-3 h-3 mr-1" />
-                      {person.contratos}
-                    </Badge>
-                  </div>
+                {/* Bottom Badges */}
+                <div className="flex justify-center gap-3">
+                  <Badge className="bg-yellow-100 text-yellow-800 border-yellow-200 hover:bg-yellow-100">
+                    <span className="mr-1">🏆</span>
+                    <span className="font-medium">{person.visitas}</span>
+                    <span className="ml-1 text-xs">visitas</span>
+                  </Badge>
+                  <Badge className="bg-rose-100 text-rose-700 border-rose-200 hover:bg-rose-100">
+                    <span className="mr-1">📍</span>
+                    <span className="font-medium">{person.contratos}</span>
+                    <span className="ml-1 text-xs">pré vendas</span>
+                  </Badge>
                 </div>
               </CardContent>
             </Card>
