@@ -10,6 +10,8 @@ import { useProfileData } from '@/hooks/useProfileData';
 import { signOut } from '@/lib/auth';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
+import { VisitButton } from '@/components/visits/VisitButton';
+
 export function AppNavbar() {
   const {
     user
@@ -57,6 +59,8 @@ export function AppNavbar() {
           <Mail className="h-5 w-5" />
           <span className="absolute -top-1 -right-1 h-3 w-3 bg-metro-green rounded-full text-xs"></span>
         </Button>
+
+        <VisitButton />
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
