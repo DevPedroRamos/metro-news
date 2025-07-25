@@ -395,6 +395,44 @@ export type Database = {
         Args: { corretor_uuid: string; link_titulo?: string }
         Returns: string
       }
+      get_champions_ranking: {
+        Args: {
+          ranking_type?: string
+          limit_count?: number
+          offset_count?: number
+        }
+        Returns: {
+          user_id: string
+          name: string
+          nickname: string
+          sales_count: number
+          revenue: number
+          visits_count: number
+          contracts_count: number
+          avatar_url: string
+          role: string
+          total_count: number
+        }[]
+      }
+      get_champions_ranking_optimized: {
+        Args: {
+          ranking_type?: string
+          limit_count?: number
+          offset_count?: number
+        }
+        Returns: {
+          user_id: string
+          name: string
+          nickname: string
+          sales_count: number
+          revenue: number
+          visits_count: number
+          contracts_count: number
+          avatar_url: string
+          role: string
+          total_count: number
+        }[]
+      }
       get_corretor_stats: {
         Args: { corretor_uuid: string }
         Returns: {
@@ -426,6 +464,26 @@ export type Database = {
           visitas_finalizadas_hoje: number
           mesas_ocupadas: number
           clientes_lista_espera: number
+        }[]
+      }
+      get_profile_stats: {
+        Args: { user_uuid: string }
+        Returns: {
+          user_id: string
+          user_name: string
+          user_apelido: string
+          user_cpf: string
+          user_gerente: string
+          user_superintendente: string
+          user_role: string
+          avatar_url: string
+          cover_url: string
+          vendas_count: number
+          recebimento: number
+          contratos_count: number
+          visitas_count: number
+          ranking_position: number
+          total_users: number
         }[]
       }
       validate_cpf_and_create_profile: {

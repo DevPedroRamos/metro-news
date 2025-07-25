@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
-import { startOfMonth, endOfMonth } from 'date-fns';
 
 interface ProfileData {
   user: {
@@ -41,110 +40,40 @@ export const useProfileData = () => {
         setLoading(true);
         setError(null);
 
-        // Buscar dados do perfil
-        const { data: profile, error: profileError } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', authUser.id)
-          .single();
+        // Usar função otimizada do PostgreSQL
+        const { data: profileStats, error } = await supabase
+          .rpc('get_profile_stats', { user_uuid: authUser.id });
 
-        if (profileError) throw profileError;
+        if (error) throw error;
 
-        // Buscar dados do usuário na tabela users usando o CPF
-        const { data: userDetails, error: userError } = await supabase
-          .from('users')
-          .select('*')
-          .eq('cpf', profile.cpf)
-          .single();
+        if (!profileStats || profileStats.length === 0) {
+          throw new Error('Dados do perfil não encontrados');
+        }
 
-        if (userError) throw userError;
+        const stats = profileStats[0];
 
         const userData = {
-          id: profile.id,
-          name: userDetails.name,
-          apelido: userDetails.apelido,
-          cpf: userDetails.cpf,
-          gerente: userDetails.gerente,
-          superintendente: userDetails.superintendente,
-          role: userDetails.role,
-          avatar_url: profile.avatar_url,
-          cover_url: profile.cover_url
+          id: stats.user_id,
+          name: stats.user_name,
+          apelido: stats.user_apelido,
+          cpf: stats.user_cpf,
+          gerente: stats.user_gerente,
+          superintendente: stats.user_superintendente,
+          role: stats.user_role,
+          avatar_url: stats.avatar_url,
+          cover_url: stats.cover_url
         };
 
-        // Buscar vendas válidas
-        const validSalesStatuses = [
-          'VENDA - SV - VALIDADO DIRETO/NR (SV)',
-          'VENDA - SV - VALIDADO CEF (SV)'
-        ];
-
-        const { data: validSales, error: validSalesError } = await supabase
-          .from('sales')
-          .select('sinal')
-          .eq('corretor_cpf', userData.cpf)
-          .in('status', validSalesStatuses);
-
-        if (validSalesError) throw validSalesError;
-
-        // Buscar contratos (outros status)
-        const { data: contracts, error: contractsError } = await supabase
-          .from('sales')
-          .select('id')
-          .eq('corretor_cpf', userData.cpf)
-          .not('status', 'in', `(${validSalesStatuses.map(s => `"${s}"`).join(',')})`);
-
-        if (contractsError) throw contractsError;
-
-        // Buscar visitas do mês atual
-        const startMonth = startOfMonth(new Date());
-        const endMonth = endOfMonth(new Date());
-
-        const { data: monthlyVisits, error: visitsError } = await supabase
-          .from('visits')
-          .select('id')
-          .eq('corretor_id', userDetails.id)
-          .gte('horario_entrada', startMonth.toISOString())
-          .lte('horario_entrada', endMonth.toISOString());
-
-        if (visitsError) throw visitsError;
-
-        // Calcular ranking - buscar todos os corretores com suas vendas
-        const { data: allCorretores, error: rankingError } = await supabase
-          .from('users')
-          .select('cpf');
-
-        if (rankingError) throw rankingError;
-
-        const corretorSales = await Promise.all(
-          allCorretores.map(async (corretor) => {
-            const { data: sales } = await supabase
-              .from('sales')
-              .select('id')
-              .eq('corretor_cpf', corretor.cpf)
-              .in('status', validSalesStatuses);
-            
-            return {
-              cpf: corretor.cpf,
-              salesCount: sales?.length || 0
-            };
-          })
-        );
-
-        // Ordenar por vendas e encontrar posição
-        const sortedCorretores = corretorSales
-          .sort((a, b) => b.salesCount - a.salesCount);
-        
-        const userPosition = sortedCorretores.findIndex(c => c.cpf === userData.cpf) + 1;
-
         const metrics = {
-          vendas: validSales?.length || 0,
-          recebimento: validSales?.reduce((sum, sale) => sum + (Number(sale.sinal) || 0), 0) || 0,
-          contratos: contracts?.length || 0,
-          visitas: monthlyVisits?.length || 0
+          vendas: Number(stats.vendas_count) || 0,
+          recebimento: Number(stats.recebimento) || 0,
+          contratos: Number(stats.contratos_count) || 0,
+          visitas: Number(stats.visitas_count) || 0
         };
 
         const ranking = {
-          position: userPosition,
-          total: allCorretores.length
+          position: Number(stats.ranking_position) || 0,
+          total: Number(stats.total_users) || 0
         };
 
         setData({
