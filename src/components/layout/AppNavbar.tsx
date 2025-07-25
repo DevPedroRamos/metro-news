@@ -6,6 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { useAuth } from '@/hooks/useAuth';
+import { useProfileData } from '@/hooks/useProfileData';
 import { signOut } from '@/lib/auth';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
@@ -13,6 +14,7 @@ export function AppNavbar() {
   const {
     user
   } = useAuth();
+  const { data: profileData } = useProfileData();
   const navigate = useNavigate();
   const {
     toast
@@ -58,9 +60,9 @@ export function AppNavbar() {
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="flex items-center space-x-2 px-3 hover:bg-[#FF000F]/70 hover:shadow-md transition-all">
+            <Button variant="ghost" className="flex items-center space-x-2 px-3 hover:bg-[#FF000F]/70 hover:text-white hover:shadow-md transition-all">
               <Avatar className="h-8 w-8">
-                <AvatarImage src="" />
+                <AvatarImage src={profileData?.user?.avatar_url || ""} />
                 <AvatarFallback className="bg-metro-red text-white text-sm">
                   {user?.email ? getUserInitials(user.email) : 'U'}
                 </AvatarFallback>
@@ -71,7 +73,7 @@ export function AppNavbar() {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigate('/perfil')}>
               <User className="mr-2 h-4 w-4" />
               <span>Meu Perfil</span>
             </DropdownMenuItem>
