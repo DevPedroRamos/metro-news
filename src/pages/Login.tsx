@@ -75,21 +75,20 @@ const Login = () => {
             alt="Metro News" 
             className="h-16 mx-auto mb-4"
           />
-          <h1 className="text-2xl font-bold text-foreground">Portal Metro News</h1>
-          <p className="text-muted-foreground">Acesse sua conta corporativa</p>
+          
         </div>
 
         <Card className="shadow-lg border-0 bg-card/90 backdrop-blur-sm animate-slide-in">
           <CardHeader className="space-y-1">
             <CardTitle className="text-2xl font-bold text-center">Login</CardTitle>
             <CardDescription className="text-center">
-              Entre com suas credenciais corporativas
+              Entre com seu E-mail @Metrocasa.com.br
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email">E-mail corporativo</Label>
+                <Label htmlFor="email">E-mail Metrocasa</Label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                   <Input
