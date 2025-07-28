@@ -34,26 +34,26 @@ export const useCommissionsData = (): UseCommissionsDataReturn => {
       setLoading(true);
       setError(null);
 
-      // Primeiro buscar o CPF do usuário na tabela profiles
-      const { data: profileData, error: profileError } = await supabase
-        .from('profiles')
-        .select('cpf')
+      // Primeiro buscar o apelido do usuário na tabela users
+      const { data: userData, error: userError } = await supabase
+        .from('users')
+        .select('apelido')
         .eq('id', user.id)
         .single();
 
-      if (profileError) {
-        throw new Error('Erro ao buscar dados do perfil');
+      if (userError) {
+        throw new Error('Erro ao buscar dados do usuário');
       }
 
-      if (!profileData?.cpf) {
-        throw new Error('CPF não encontrado no perfil');
+      if (!userData?.apelido) {
+        throw new Error('Apelido não encontrado no perfil');
       }
 
-      // Buscar comissões na view filtrado pelo CPF
+      // Buscar comissões na view filtrado pelo apelido
       const { data: commissionsData, error: commissionsError } = await supabase
         .from('v_comissoes')
         .select('unidade, venda_data, empreendimento, total_corretor')
-        .eq('corretor', profileData.cpf);
+        .eq('apelido', userData.apelido);
 
       if (commissionsError) {
         throw new Error('Erro ao buscar comissões');
