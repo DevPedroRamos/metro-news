@@ -34,11 +34,26 @@ export const useCommissionsData = (): UseCommissionsDataReturn => {
       setLoading(true);
       setError(null);
 
-      // Primeiro buscar o apelido do usuário na tabela users
+      // Primeiro buscar o CPF do usuário na tabela profiles
+      const { data: profileData, error: profileError } = await supabase
+        .from('profiles')
+        .select('cpf')
+        .eq('id', user.id)
+        .single();
+
+      if (profileError) {
+        throw new Error('Erro ao buscar dados do perfil');
+      }
+
+      if (!profileData?.cpf) {
+        throw new Error('CPF não encontrado no perfil');
+      }
+
+      // Buscar apelido na tabela users usando o CPF
       const { data: userData, error: userError } = await supabase
         .from('users')
         .select('apelido')
-        .eq('id', user.id)
+        .eq('cpf', profileData.cpf)
         .single();
 
       if (userError) {
