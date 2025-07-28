@@ -22,21 +22,58 @@ export const useActiveVisits = () => {
   const { toast } = useToast();
 
   const fetchActiveVisits = async () => {
-    if (!user?.id) return;
+    if (!user?.id) {
+      console.log('No user ID available for fetching visits');
+      return;
+    }
+    
+    console.log('Fetching active visits for profile user:', user.id);
     
     try {
       setLoading(true);
+      
+      // First, get the current user's profile to get their CPF
+      const { data: profileData, error: profileError } = await supabase
+        .from('profiles')
+        .select('cpf')
+        .eq('id', user.id)
+        .single();
+
+      if (profileError) throw profileError;
+
+      console.log('Profile CPF:', profileData.cpf);
+
+      // Now find the corresponding user in the users table by CPF
+      const { data: userData, error: userError } = await supabase
+        .from('users')
+        .select('id')
+        .eq('cpf', profileData.cpf)
+        .single();
+
+      if (userError) {
+        console.log('User not found in users table by CPF');
+        throw userError;
+      }
+
+      console.log('Found user in users table:', userData.id);
+
+      // Now query visits using the users table ID
       const { data, error } = await supabase
         .from('visits')
         .select('*')
-        .eq('corretor_id', user.id)
-        .eq('status', 'ativo')
+        .eq('corretor_id', userData.id)
+        .or('status.eq.ativo,status.is.null')
+        .is('horario_saida', null)
         .order('horario_entrada', { ascending: false });
+
+      console.log('Query result:', { data, error });
+      console.log('Number of visits found:', data?.length || 0);
 
       if (error) throw error;
       setVisits(data || []);
       setError(null);
     } catch (err) {
+      console.error('Error fetching visits:', err);
       setError(err instanceof Error ? err.message : 'Erro ao carregar visitas');
     } finally {
       setLoading(false);

@@ -39,7 +39,7 @@ export function ActiveVisitsPopover({ visits, loading, onFinalizeVisit }: Active
 
   if (visits.length === 0) {
     return (
-      <div className="w-80 p-4 text-center">
+      <div className="w-100 min-h-50 h-auto p-4 text-center">
         <Clock className="h-12 w-12 mx-auto text-muted-foreground mb-3" />
         <h3 className="font-medium text-foreground mb-2">Nenhuma visita ativa</h3>
         <p className="text-sm text-muted-foreground">
@@ -50,7 +50,7 @@ export function ActiveVisitsPopover({ visits, loading, onFinalizeVisit }: Active
   }
 
   return (
-    <div className="w-80 max-h-96 overflow-y-auto">
+    <div className="w-100 min-h-50 h-auto overflow-y-auto">
       <div className="p-3 border-b">
         <h3 className="font-semibold text-foreground flex items-center gap-2">
           <Clock className="h-4 w-4" />

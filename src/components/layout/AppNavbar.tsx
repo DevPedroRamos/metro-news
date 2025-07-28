@@ -50,7 +50,7 @@ export function AppNavbar() {
       </div>
 
       <div className="flex items-center space-x-4">
-        <Button variant="ghost" size="icon" className="relative text-base hover:bg-[#FF000F]/70 hover:shadow-md transition-all">
+        {/* <Button variant="ghost" size="icon" className="relative text-base hover:bg-[#FF000F]/70 hover:shadow-md transition-all">
           <Bell className="h-5 w-5" />
           <span className="absolute -top-1 -right-1 h-3 w-3 bg-metro-red rounded-full text-xs"></span>
         </Button>
@@ -58,13 +58,13 @@ export function AppNavbar() {
         <Button variant="ghost" size="icon" className="relative hover:bg-[#FF000F]/70 hover:shadow-md transition-all">
           <Mail className="h-5 w-5" />
           <span className="absolute -top-1 -right-1 h-3 w-3 bg-metro-green rounded-full text-xs"></span>
-        </Button>
+        </Button> */}
 
         <VisitButton />
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="flex items-center space-x-2 px-3 hover:bg-[#FF000F]/70 hover:text-white hover:shadow-md transition-all">
+            <Button variant="ghost" className="flex items-center space-x-2 p-3 hover:bg-[#000000]/10 hover:shadow-md transition-all">
               <Avatar className="h-8 w-8">
                 <AvatarImage src={profileData?.user?.avatar_url || ""} />
                 <AvatarFallback className="bg-metro-red text-white text-sm">
