@@ -115,6 +115,36 @@ export type Database = {
         }
         Relationships: []
       }
+      invoice_uploads: {
+        Row: {
+          created_at: string | null
+          file_name: string
+          file_size: number
+          file_type: string
+          file_url: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          file_name: string
+          file_size: number
+          file_type: string
+          file_url: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          file_name?: string
+          file_size?: number
+          file_type?: string
+          file_url?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       lista_espera: {
         Row: {
           cliente_cpf: string
@@ -154,6 +184,39 @@ export type Database = {
           loja?: string
           status?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      payments: {
+        Row: {
+          created_at: string | null
+          id: number
+          observacoes: string | null
+          total_corretor: number
+          total_gerente: number
+          total_super: number
+          unidade: string
+          vendedor: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: number
+          observacoes?: string | null
+          total_corretor: number
+          total_gerente: number
+          total_super: number
+          unidade: string
+          vendedor: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: number
+          observacoes?: string | null
+          total_corretor?: number
+          total_gerente?: number
+          total_super?: number
+          unidade?: string
+          vendedor?: string
         }
         Relationships: []
       }
@@ -248,6 +311,7 @@ export type Database = {
           idobra: number
           sinal: number | null
           status: string
+          unidade: string | null
           venda_data: string
         }
         Insert: {
@@ -256,6 +320,7 @@ export type Database = {
           idobra: number
           sinal?: number | null
           status: string
+          unidade?: string | null
           venda_data: string
         }
         Update: {
@@ -264,6 +329,7 @@ export type Database = {
           idobra?: number
           sinal?: number | null
           status?: string
+          unidade?: string | null
           venda_data?: string
         }
         Relationships: []
@@ -362,7 +428,21 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      v_comissoes: {
+        Row: {
+          apelido: string | null
+          corretor: string | null
+          empreendimento: string | null
+          gerente: string | null
+          superintendente: string | null
+          total_corretor: number | null
+          total_gerente: number | null
+          total_super: number | null
+          unidade: string | null
+          venda_data: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       buscar_cliente_por_cpf: {

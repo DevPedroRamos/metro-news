@@ -8,6 +8,8 @@ import ImageUpload from '@/components/profile/ImageUpload';
 import { TrendingUp, DollarSign, FileText, Users } from 'lucide-react';
 import { formatCurrency } from '@/lib/utils';
 import defaultCover from '@/assets/default-cover.jpg';
+import { CommissionsTable } from '@/components/profile/CommissionsTable';
+import { InvoiceUpload } from '@/components/profile/InvoiceUpload';
 const Perfil = () => {
   const {
     data,
@@ -156,6 +158,12 @@ const Perfil = () => {
             <p className="text-xs text-muted-foreground">Visitas este mês</p>
           </CardContent>
         </Card>
+      </div>
+
+      {/* Seção de Comissões */}
+      <div className="space-y-6">
+        <CommissionsTable />
+        <InvoiceUpload />
       </div>
     </div>;
 };
