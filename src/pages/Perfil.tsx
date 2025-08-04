@@ -10,6 +10,7 @@ import { formatCurrency } from '@/lib/utils';
 import defaultCover from '@/assets/default-cover.jpg';
 import { CommissionsTable } from '@/components/profile/CommissionsTable';
 import { InvoiceUpload } from '@/components/profile/InvoiceUpload';
+import { PaymentHistory } from '@/components/profile/PaymentHistory';
 const Perfil = () => {
   const {
     data,
@@ -164,6 +165,7 @@ const Perfil = () => {
       <div className="space-y-6">
         <CommissionsTable />
         <InvoiceUpload />
+        <PaymentHistory />
       </div>
     </div>;
 };
