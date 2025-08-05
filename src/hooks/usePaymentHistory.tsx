@@ -79,12 +79,12 @@ export const usePaymentHistory = (): UsePaymentHistoryReturn => {
         throw new Error('Apelido não encontrado no perfil');
       }
 
-      // Buscar pagamentos na tabela payments filtrado pelo vendedor (apelido)
+      // Buscar comissões na view v_comissoes filtrado pelo apelido
       const { data: paymentsData, error: paymentsError } = await supabase
-        .from('payments')
-        .select('total_corretor, created_at')
-        .eq('vendedor', userData.apelido)
-        .order('created_at', { ascending: false });
+        .from('v_comissoes')
+        .select('total_corretor, venda_data')
+        .eq('apelido', userData.apelido)
+        .order('venda_data', { ascending: false });
 
       if (paymentsError) {
         throw new Error('Erro ao buscar histórico de pagamentos');
@@ -94,7 +94,7 @@ export const usePaymentHistory = (): UsePaymentHistoryReturn => {
       const weeklyData = new Map<string, { total: number; count: number; weekStart: Date; weekEnd: Date }>();
 
       paymentsData?.forEach(payment => {
-        const paymentDate = new Date(payment.created_at);
+        const paymentDate = new Date(payment.venda_data);
         const { weekStart, weekEnd } = getWeekBounds(paymentDate);
         const weekKey = weekStart.toISOString().split('T')[0];
 
