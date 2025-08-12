@@ -8,7 +8,8 @@ import {
   Link, 
   Trophy, 
   Users,
-  User
+  User,
+  CreditCard
 } from 'lucide-react';
 import {
   Sidebar,
@@ -29,6 +30,7 @@ const menuItems = [
   { title: 'Processos', url: '/processos', icon: Settings },
   { title: 'Links Úteis', url: '/links-uteis', icon: Link },
   { title: 'Superintendência', url: '/superintendencia', icon: Users },
+  { title: 'Pagamentos', url: '/pagamentos', icon: CreditCard },
   { title: 'Meu Perfil', url: '/perfil', icon: User },
 ];
 

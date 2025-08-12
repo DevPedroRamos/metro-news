@@ -64,6 +64,82 @@ export type Database = {
           },
         ]
       }
+      checklist_fotos: {
+        Row: {
+          checklist_item_id: string | null
+          created_at: string | null
+          foto_url: string
+          id: string
+          nome_arquivo: string | null
+        }
+        Insert: {
+          checklist_item_id?: string | null
+          created_at?: string | null
+          foto_url: string
+          id?: string
+          nome_arquivo?: string | null
+        }
+        Update: {
+          checklist_item_id?: string | null
+          created_at?: string | null
+          foto_url?: string
+          id?: string
+          nome_arquivo?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "checklist_fotos_checklist_item_id_fkey"
+            columns: ["checklist_item_id"]
+            isOneToOne: false
+            referencedRelation: "checklist_itens"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      checklist_itens: {
+        Row: {
+          ambiente: string
+          created_at: string | null
+          fotos: string[] | null
+          id: string
+          item_nome: string
+          observacao: string | null
+          status: string
+          updated_at: string | null
+          vistoria_id: string | null
+        }
+        Insert: {
+          ambiente: string
+          created_at?: string | null
+          fotos?: string[] | null
+          id?: string
+          item_nome: string
+          observacao?: string | null
+          status?: string
+          updated_at?: string | null
+          vistoria_id?: string | null
+        }
+        Update: {
+          ambiente?: string
+          created_at?: string | null
+          fotos?: string[] | null
+          id?: string
+          item_nome?: string
+          observacao?: string | null
+          status?: string
+          updated_at?: string | null
+          vistoria_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "checklist_itens_vistoria_id_fkey"
+            columns: ["vistoria_id"]
+            isOneToOne: false
+            referencedRelation: "vistorias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       corretor_links: {
         Row: {
           ativo: boolean
@@ -96,22 +172,114 @@ export type Database = {
       }
       empreendimentos: {
         Row: {
+          address: string | null
           created_at: string
           id: string
           idobra: string | null
           nome: string
+          project_status: string | null
         }
         Insert: {
+          address?: string | null
           created_at?: string
           id?: string
           idobra?: string | null
           nome: string
+          project_status?: string | null
         }
         Update: {
+          address?: string | null
           created_at?: string
           id?: string
           idobra?: string | null
           nome?: string
+          project_status?: string | null
+        }
+        Relationships: []
+      }
+      faq_articles: {
+        Row: {
+          category_id: string
+          content: string
+          created_at: string
+          display_order: number | null
+          id: string
+          is_active: boolean | null
+          is_featured: boolean | null
+          keywords: string[] | null
+          slug: string | null
+          title: string
+          updated_at: string
+          view_count: number | null
+        }
+        Insert: {
+          category_id: string
+          content: string
+          created_at?: string
+          display_order?: number | null
+          id?: string
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          keywords?: string[] | null
+          slug?: string | null
+          title: string
+          updated_at?: string
+          view_count?: number | null
+        }
+        Update: {
+          category_id?: string
+          content?: string
+          created_at?: string
+          display_order?: number | null
+          id?: string
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          keywords?: string[] | null
+          slug?: string | null
+          title?: string
+          updated_at?: string
+          view_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "faq_articles_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "faq_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      faq_categories: {
+        Row: {
+          created_at: string
+          description: string | null
+          display_order: number | null
+          icon: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          display_order?: number | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          display_order?: number | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -334,6 +502,98 @@ export type Database = {
         }
         Relationships: []
       }
+      search_logs: {
+        Row: {
+          created_at: string
+          id: string
+          results_count: number | null
+          search_term: string
+          user_ip: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          results_count?: number | null
+          search_term: string
+          user_ip?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          results_count?: number | null
+          search_term?: string
+          user_ip?: string | null
+        }
+        Relationships: []
+      }
+      unidades: {
+        Row: {
+          bloco: string
+          created_at: string | null
+          data_limpeza_agendada: string | null
+          empreendimento_id: string | null
+          id: string
+          metragem: number | null
+          numero: string
+          status: string
+          status_limpeza: string | null
+          tipologia: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          bloco: string
+          created_at?: string | null
+          data_limpeza_agendada?: string | null
+          empreendimento_id?: string | null
+          id?: string
+          metragem?: number | null
+          numero: string
+          status?: string
+          status_limpeza?: string | null
+          tipologia?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          bloco?: string
+          created_at?: string | null
+          data_limpeza_agendada?: string | null
+          empreendimento_id?: string | null
+          id?: string
+          metragem?: number | null
+          numero?: string
+          status?: string
+          status_limpeza?: string | null
+          tipologia?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "unidades_empreendimento_id_fkey"
+            columns: ["empreendimento_id"]
+            isOneToOne: false
+            referencedRelation: "empreendimentos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
       users: {
         Row: {
           apelido: string
@@ -422,6 +682,50 @@ export type Database = {
             columns: ["corretor_id"]
             isOneToOne: false
             referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vistorias: {
+        Row: {
+          created_at: string | null
+          data_vistoria: string | null
+          id: string
+          observacoes: string | null
+          status_final: string | null
+          unidade_id: string | null
+          updated_at: string | null
+          vistoriador_id: string | null
+          vistoriador_nome: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          data_vistoria?: string | null
+          id?: string
+          observacoes?: string | null
+          status_final?: string | null
+          unidade_id?: string | null
+          updated_at?: string | null
+          vistoriador_id?: string | null
+          vistoriador_nome?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          data_vistoria?: string | null
+          id?: string
+          observacoes?: string | null
+          status_final?: string | null
+          unidade_id?: string | null
+          updated_at?: string | null
+          vistoriador_id?: string | null
+          vistoriador_nome?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vistorias_unidade_id_fkey"
+            columns: ["unidade_id"]
+            isOneToOne: false
+            referencedRelation: "unidades"
             referencedColumns: ["id"]
           },
         ]
@@ -566,13 +870,31 @@ export type Database = {
           total_users: number
         }[]
       }
+      has_role: {
+        Args: {
+          _user_id: string
+          _role: Database["public"]["Enums"]["app_role"]
+        }
+        Returns: boolean
+      }
+      search_faq_articles: {
+        Args: { search_term: string }
+        Returns: {
+          id: string
+          category_id: string
+          category_name: string
+          title: string
+          content: string
+          relevance: number
+        }[]
+      }
       validate_cpf_and_create_profile: {
         Args: { user_cpf: string }
         Returns: boolean
       }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -699,6 +1021,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+    },
   },
 } as const

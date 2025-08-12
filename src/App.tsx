@@ -17,6 +17,7 @@ import LinksUteis from "./pages/LinksUteis";
 import Campeoes from "./pages/Campeoes";
 import Superintendencia from "./pages/Superintendencia";
 import Perfil from "./pages/Perfil";
+import Pagamentos from "./pages/Pagamentos";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -86,6 +87,13 @@ const App = () => (
             <ProtectedRoute>
               <DashboardLayout>
                 <Perfil />
+              </DashboardLayout>
+            </ProtectedRoute>
+          } />
+          <Route path="/pagamentos" element={
+            <ProtectedRoute>
+              <DashboardLayout>
+                <Pagamentos />
               </DashboardLayout>
             </ProtectedRoute>
           } />
