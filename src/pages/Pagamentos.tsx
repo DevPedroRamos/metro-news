@@ -102,9 +102,55 @@ const Pagamentos: React.FC = () => {
       try {
         setLoading(true);
         setError(null);
-        const { data, error } = await supabase.functions.invoke<ApiResponse>("pagamentos");
+        const { data: authData } = await supabase.auth.getUser();
+        const userId = authData?.user?.id;
+        if (!userId) {
+          throw new Error("Usuário não autenticado");
+        }
+        const { data: rows, error } = await (supabase as any)
+          .from("payments.resume" as any)
+          .select("*")
+          .eq("user_id", userId)
+          .order("period_end", { ascending: false })
+          .limit(1);
         if (error) throw error as unknown as Error;
-        setData(data ?? null);
+        const row = rows?.[0] as any;
+        const mapped: ApiResponse = row
+          ? {
+              period_start: row.period_start ?? "",
+              period_end: row.period_end ?? "",
+              receita: {
+                valor_base: Number(row.valor_base || 0),
+                pagar: Number(row.pagar || 0),
+                comissao: Number(row.comissao || 0),
+                premio: Number(row.premio || 0),
+                saldo_cef: Number(row.saldo_cef || 0),
+                outras: Number(row.outras || 0),
+              },
+              descontos: {
+                adiantamento: Number(row.adiantamento || 0),
+                antecipacao: Number(row.antecipacao || 0),
+                distrato: Number(row.distrato || 0),
+                outros: Number(row.outros_desc || 0),
+                saldo_permuta: Number(row.saldo_permuta || 0),
+                saldo_neg_periodos_anteriores: Number(row.saldo_neg_periodos_anteriores || 0),
+              },
+              saldo_negativo_total:
+                Number(row.adiantamento || 0) +
+                Number(row.antecipacao || 0) +
+                Number(row.distrato || 0) +
+                Number(row.outros_desc || 0) +
+                Number(row.saldo_permuta || 0) +
+                Number(row.saldo_neg_periodos_anteriores || 0),
+            }
+          : {
+              period_start: "",
+              period_end: "",
+              receita: { valor_base: 0, pagar: 0, comissao: 0, premio: 0, saldo_cef: 0, outras: 0 },
+              descontos: { adiantamento: 0, antecipacao: 0, distrato: 0, outros: 0, saldo_permuta: 0, saldo_neg_periodos_anteriores: 0 },
+              saldo_negativo_total: 0,
+            };
+        setData(mapped);
       } catch (err) {
         console.error("Erro ao carregar pagamentos", err);
         setError("Não foi possível carregar os pagamentos.");
