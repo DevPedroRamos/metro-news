@@ -732,6 +732,78 @@ export type Database = {
       }
     }
     Views: {
+      resume: {
+        Row: {
+          adiantamento: number | null
+          antecipacao: number | null
+          comissao: number | null
+          cpf: string | null
+          created_at: string | null
+          distrato: number | null
+          id: string | null
+          outras: number | null
+          outros: number | null
+          pagar: number | null
+          premio: number | null
+          saldo_cef: number | null
+          saldo_neg_periodos_anteriores: number | null
+          saldo_permuta: number | null
+          user_id: string | null
+          valor_base: number | null
+        }
+        Insert: {
+          adiantamento?: number | null
+          antecipacao?: number | null
+          comissao?: number | null
+          cpf?: string | null
+          created_at?: string | null
+          distrato?: number | null
+          id?: string | null
+          outras?: number | null
+          outros?: number | null
+          pagar?: number | null
+          premio?: number | null
+          saldo_cef?: number | null
+          saldo_neg_periodos_anteriores?: number | null
+          saldo_permuta?: number | null
+          user_id?: string | null
+          valor_base?: number | null
+        }
+        Update: {
+          adiantamento?: number | null
+          antecipacao?: number | null
+          comissao?: number | null
+          cpf?: string | null
+          created_at?: string | null
+          distrato?: number | null
+          id?: string | null
+          outras?: number | null
+          outros?: number | null
+          pagar?: number | null
+          premio?: number | null
+          saldo_cef?: number | null
+          saldo_neg_periodos_anteriores?: number | null
+          saldo_permuta?: number | null
+          user_id?: string | null
+          valor_base?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_resume_user"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "resume_cpf_fk"
+            columns: ["cpf"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["cpf"]
+          },
+        ]
+      }
       v_comissoes: {
         Row: {
           apelido: string | null
