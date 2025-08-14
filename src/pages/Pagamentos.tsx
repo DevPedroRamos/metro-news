@@ -308,7 +308,8 @@ const Pagamentos: React.FC = () => {
     return (data.receita.pagar || 0) + 
            (data.receita.comissao || 0) + 
            (data.receita.premio || 0) + 
-           (data.receita.outras || 0);
+           (data.receita.outras || 0) +
+           (data.receita.saldo_cef || 0);
   }, [data]);
 
   const totalDescontos = useMemo(() => {
