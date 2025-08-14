@@ -5,117 +5,32 @@ import { NewsCard } from '@/components/news/NewsCard';
 import { NewsListItem } from '@/components/news/NewsListItem';
 import { CategoryFilter } from '@/components/news/CategoryFilter';
 import { Button } from '@/components/ui/button';
-import { ArrowRight } from 'lucide-react';
-
-// Mock data
-const featuredNews = {
-  id: '1',
-  title: 'Novo programa Minha Casa Minha Vida oferece condições especiais para primeira compra',
-  description: 'O governo federal anunciou novas facilidades para quem deseja adquirir o primeiro imóvel através do programa habitacional.',
-  image: '/public/lovable-uploads/181eacc0-0dbb-4e16-8c77-31c86f9c49d0.png',
-  category: 'Minha Casa Minha Vida',
-  date: '12 Jan 2024',
-  author: 'Redação Metro News',
-};
-
-const latestNews = [
-  {
-    id: '2',
-    title: 'Tendências de decoração para 2024: cores e estilos que estão em alta',
-    description: 'Descubra as principais tendências de decoração que prometen dominar o mercado imobiliário este ano.',
-    image: '/public/lovable-uploads/e694e1f5-9413-4775-bc42-153d43c49fa6.png',
-    category: 'Decoração',
-    date: '10 Jan 2024',
-    author: 'Ana Santos',
-  },
-  {
-    id: '3',
-    title: 'Mercado imobiliário apresenta crescimento de 8% no último trimestre',
-    description: 'Dados do setor mostram recuperação significativa nas vendas de imóveis residenciais.',
-    image: '/public/lovable-uploads/181eacc0-0dbb-4e16-8c77-31c86f9c49d0.png',
-    category: 'Mercado',
-    date: '08 Jan 2024',
-    author: 'Carlos Silva',
-  },
-  {
-    id: '4',
-    title: 'Novo empreendimento no centro da cidade oferece apartamentos a partir de R$ 180 mil',
-    description: 'Lançamento conta com área de lazer completa e localização privilegiada próxima ao transporte público.',
-    image: '/public/lovable-uploads/e694e1f5-9413-4775-bc42-153d43c49fa6.png',
-    category: 'Empreendimento',
-    date: '05 Jan 2024',
-    author: 'Marina Costa',
-  },
-];
-
-const categoryNews = [
-  {
-    id: '5',
-    title: 'Como escolher o melhor financiamento imobiliário',
-    description: 'Guia completo com dicas essenciais para tomar a melhor decisão na hora de financiar seu imóvel.',
-    image: '/public/lovable-uploads/181eacc0-0dbb-4e16-8c77-31c86f9c49d0.png',
-    category: 'Financiamento',
-    date: '03 Jan 2024',
-    author: 'Pedro Oliveira',
-  },
-  {
-    id: '6',
-    title: 'Regularização fundiária: entenda seus direitos',
-    description: 'Saiba como funciona o processo de regularização e quais documentos são necessários.',
-    image: '/public/lovable-uploads/e694e1f5-9413-4775-bc42-153d43c49fa6.png',
-    category: 'Documentação',
-    date: '01 Jan 2024',
-    author: 'Julia Mendes',
-  },
-  {
-    id: '7',
-    title: 'Plantas de casas: como escolher o projeto ideal',
-    description: 'Dicas importantes para escolher a planta que melhor se adapta às suas necessidades.',
-    image: '/public/lovable-uploads/181eacc0-0dbb-4e16-8c77-31c86f9c49d0.png',
-    category: 'Projetos',
-    date: '30 Dez 2023',
-    author: 'Roberto Lima',
-  },
-];
-
-const mostReadNews = [
-  {
-    id: '8',
-    title: 'Documentos necessários para compra do primeiro imóvel',
-    description: 'Lista completa com toda documentação exigida no processo.',
-    image: '/public/lovable-uploads/e694e1f5-9413-4775-bc42-153d43c49fa6.png',
-    category: 'Documentação',
-    date: '28 Dez 2023',
-    author: 'Fernanda Rocha',
-  },
-  {
-    id: '9',
-    title: 'Investir em imóveis: vale a pena em 2024?',
-    description: 'Análise do mercado e perspectivas para investimentos imobiliários.',
-    image: '/public/lovable-uploads/181eacc0-0dbb-4e16-8c77-31c86f9c49d0.png',
-    category: 'Investimento',
-    date: '25 Dez 2023',
-    author: 'Lucas Barbosa',
-  },
-  {
-    id: '10',
-    title: 'Reforma de apartamento: dicas para economizar',
-    description: 'Como fazer uma reforma completa gastando menos.',
-    image: '/public/lovable-uploads/e694e1f5-9413-4775-bc42-153d43c49fa6.png',
-    category: 'Reforma',
-    date: '22 Dez 2023',
-    author: 'Patricia Alves',
-  },
-];
-
-const categories = ['Minha Casa Minha Vida', 'Decoração', 'Empreendimento', 'Financiamento', 'Documentação', 'Projetos', 'Mercado'];
+import { ArrowRight, Loader2 } from 'lucide-react';
+import { useNews, useFilteredNews } from '@/hooks/useNews';
+import { useNewsCategories } from '@/hooks/useNewsCategories';
 
 const Noticias = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const { featuredNews, latestNews, mostReadNews, loading: newsLoading, error: newsError } = useNews();
+  const { filteredNews, loading: filteredLoading } = useFilteredNews(selectedCategory);
+  const { categories, loading: categoriesLoading } = useNewsCategories();
 
-  const filteredNews = selectedCategory === 'all' 
-    ? categoryNews 
-    : categoryNews.filter(news => news.category === selectedCategory);
+  if (newsLoading || categoriesLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        <span className="ml-2 text-muted-foreground">Carregando notícias...</span>
+      </div>
+    );
+  }
+
+  if (newsError) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-destructive">Erro ao carregar notícias: {newsError}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8">
@@ -128,9 +43,11 @@ const Noticias = () => {
       </div>
 
       {/* Featured News */}
-      <section>
-        <FeaturedNews {...featuredNews} />
-      </section>
+      {featuredNews && (
+        <section>
+          <FeaturedNews {...featuredNews} />
+        </section>
+      )}
 
       {/* Latest Content */}
       <section>
@@ -141,11 +58,15 @@ const Noticias = () => {
             <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
           </Button>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {latestNews.map((news) => (
-            <NewsCard key={news.id} {...news} />
-          ))}
-        </div>
+        {latestNews.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {latestNews.map((news) => (
+              <NewsCard key={news.id} {...news} />
+            ))}
+          </div>
+        ) : (
+          <p className="text-center text-muted-foreground py-8">Nenhuma notícia encontrada.</p>
+        )}
       </section>
 
       {/* Content by Category */}
@@ -158,15 +79,23 @@ const Noticias = () => {
           </Button>
         </div>
         <CategoryFilter 
-          categories={categories}
+          categories={categories.map(cat => cat.name)}
           selectedCategory={selectedCategory}
           onCategoryChange={setSelectedCategory}
         />
-        <div className="space-y-4">
-          {filteredNews.map((news) => (
-            <NewsListItem key={news.id} {...news} />
-          ))}
-        </div>
+        {filteredLoading ? (
+          <div className="flex justify-center py-8">
+            <Loader2 className="w-6 h-6 animate-spin text-primary" />
+          </div>
+        ) : filteredNews.length > 0 ? (
+          <div className="space-y-4">
+            {filteredNews.map((news) => (
+              <NewsListItem key={news.id} {...news} />
+            ))}
+          </div>
+        ) : (
+          <p className="text-center text-muted-foreground py-8">Nenhuma notícia encontrada para esta categoria.</p>
+        )}
       </section>
 
       {/* Most Read */}
@@ -178,11 +107,15 @@ const Noticias = () => {
             <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
           </Button>
         </div>
-        <div className="space-y-4">
-          {mostReadNews.map((news) => (
-            <NewsListItem key={news.id} {...news} />
-          ))}
-        </div>
+        {mostReadNews.length > 0 ? (
+          <div className="space-y-4">
+            {mostReadNews.map((news) => (
+              <NewsListItem key={news.id} {...news} />
+            ))}
+          </div>
+        ) : (
+          <p className="text-center text-muted-foreground py-8">Nenhuma notícia encontrada.</p>
+        )}
       </section>
     </div>
   );
