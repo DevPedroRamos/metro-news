@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -18,6 +17,10 @@ import Campeoes from "./pages/Campeoes";
 import Superintendencia from "./pages/Superintendencia";
 import Perfil from "./pages/Perfil";
 import Pagamentos from "./pages/Pagamentos";
+import Vendas from "./pages/pagamentos/vendas";
+import Premiacao from "./pages/pagamentos/premiacao";
+import SaldoCef from "./pages/pagamentos/saldo-cef";
+import Distratos from "./pages/pagamentos/distratos";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -90,15 +93,45 @@ const App = () => (
               </DashboardLayout>
             </ProtectedRoute>
           } />
-          <Route path="/pagamentos" element={
-            <ProtectedRoute>
-              <DashboardLayout>
-                <Pagamentos />
-              </DashboardLayout>
-            </ProtectedRoute>
-          } />
+          <Route path="/pagamentos">
+            <Route index element={
+              <ProtectedRoute>
+                <DashboardLayout>
+                  <Pagamentos />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+            <Route path="vendas" element={
+              <ProtectedRoute>
+                <DashboardLayout>
+                  <Vendas />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+            <Route path="premiacao" element={
+              <ProtectedRoute>
+                <DashboardLayout>
+                  <Premiacao />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+            <Route path="saldo-cef" element={
+              <ProtectedRoute>
+                <DashboardLayout>
+                  <SaldoCef />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+            <Route path="distratos" element={
+              <ProtectedRoute>
+                <DashboardLayout>
+                  <Distratos />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+          </Route>
           
-          {/* Catch-all route */}
+          {/* 404 Route */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

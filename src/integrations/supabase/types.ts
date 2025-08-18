@@ -914,6 +914,48 @@ export type Database = {
           },
         ]
       }
+      base_de_vendas: {
+        Row: {
+          id: number
+          data_do_contrato: string
+          tipo_venda: string
+          data_sicaq: string | null
+          data_pagto: string | null
+          cliente: string
+          empreendimento: string
+          bl: string | null
+          unid: string
+          vlr_tabela: number
+          vlr_venda: number
+          perc_desconto: number | null
+          vlr_contrato: number
+          fluxo: number | null
+          entrada: number | null
+          recebido: number | null
+          receber: number | null
+          c_credito_baixada: number | null
+          c_credito_em_aberto: number | null
+          c_desconto_baixada: number | null
+          c_desconto_em_aberto: number | null
+          recebido_de_sinal: number | null
+          perc_sinal_recebido: number | null
+          assinatura_cef: string | null
+          origem: string | null
+          vendedor_parceiro: string | null
+          supervisor_coord_parceiro: string | null
+          gerente: string | null
+          superintendente: string | null
+          diretor: string | null
+          comissao_sinal_perc: number | null
+          comissao_vgv_pre_chaves_perc: number | null
+          comissao_extra_perc: number | null
+          comissao_integral_sinal: number | null
+          comissao_integral_vgv_pre_chaves: number | null
+          comissao_integral_extra: number | null
+          sinal_comissao_extra_vendedor: number | null
+          created_at: string
+        }
+      }
       v_comissoes: {
         Row: {
           apelido: string | null
