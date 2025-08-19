@@ -108,7 +108,7 @@ export default function VendasPage() {
   }
 
   return (
-    <div className="container p-0 m-0 space-y-6 max-w-[1200px] mx-auto">
+    <div className="space-y-6 w-full">
       {/* Header */}
       <div className="flex items-center gap-2">
         <TrendingUp className="h-8 w-8 text-primary" />
