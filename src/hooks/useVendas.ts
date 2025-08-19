@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useProfileUsers } from "./useProfileUsers";
+import { PeriodProps } from "@/types/period";
 
 export interface Venda {
   id: number;
@@ -56,27 +57,18 @@ export interface VendasData {
   };
 }
 
-interface UseVendasProps {
-  startDate?: string;
-  endDate?: string;
+// Função para converter data de DD/MM/YYYY para YYYY-MM-DD
+function formatDateToISO(dateStr?: string): string | undefined {
+  if (!dateStr) return undefined;
+  
+  const [day, month, year] = dateStr.split('/');
+  if (day && month && year) {
+    return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+  }
+  return undefined;
 }
 
-// Função para converter data de DD/MM/YYYY para YYYY-MM-DD
-const formatDateToISO = (dateStr?: string): string | undefined => {
-  if (!dateStr) return undefined;
-  try {
-    const [day, month, year] = dateStr.split('/');
-    if (day && month && year) {
-      return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
-    }
-    return undefined;
-  } catch (error) {
-    console.error('Erro ao formatar data:', error);
-    return undefined;
-  }
-};
-
-export const useVendas = ({ startDate, endDate }: UseVendasProps = {}) => {
+export const useVendas = ({ periodStart, periodEnd }: PeriodProps = {}) => {
   const [vendas, setVendas] = useState<Venda[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -108,24 +100,19 @@ export const useVendas = ({ startDate, endDate }: UseVendasProps = {}) => {
         throw new Error('Não foi possível carregar os dados do usuário');
       }
 
-      const userNickname = userData.apelido;
-      if (!userNickname) {
-        throw new Error('Usuário não possui apelido cadastrado');
-      }
-
-      console.log('Buscando vendas para o vendedor:', userNickname);
-      console.log('Período original:', { startDate, endDate });
+      const apelido = userData.apelido;
+      console.log('Apelido do usuário:', apelido);
       
-      // Converter datas para o formato ISO
-      const isoStartDate = formatDateToISO(startDate);
-      const isoEndDate = formatDateToISO(endDate);
+      // Converter datas para o formato ISO se existirem
+      const isoStartDate = periodStart ? formatDateToISO(periodStart) : undefined;
+      const isoEndDate = periodEnd ? formatDateToISO(periodEnd) : undefined;
       
-      console.log('Período convertido:', { isoStartDate, isoEndDate });
+      console.log('Buscando vendas para o período:', { isoStartDate, isoEndDate });
       
       let query = supabase
         .from('base_de_vendas')
         .select('*')
-        .eq('vendedor_parceiro', userNickname);
+        .eq('vendedor_parceiro', apelido);
       
       if (isoStartDate) {
         query = query.gte('data_do_contrato', isoStartDate);
@@ -153,7 +140,7 @@ export const useVendas = ({ startDate, endDate }: UseVendasProps = {}) => {
     }
   };
 
-  // Calculate totals
+  // Calcular totais
   const totais = useMemo(() => ({
     vlr_venda: vendas.reduce((sum, venda) => sum + (venda.vlr_venda || 0), 0),
     vlr_contrato: vendas.reduce((sum, venda) => sum + (venda.vlr_contrato || 0), 0),
@@ -173,14 +160,14 @@ export const useVendas = ({ startDate, endDate }: UseVendasProps = {}) => {
     ),
   }), [vendas]);
 
-  // Fetch vendas when user data or date range changes
+  // Buscar vendas quando o usuário ou o período mudar
   useEffect(() => {
     if (!userLoading && user?.id) {
       fetchVendas();
     }
-  }, [user, userLoading, startDate, endDate]);
+  }, [user, userLoading, periodStart, periodEnd]);
 
-  // Prepare the data to return
+  // Preparar os dados para retorno
   const data: VendasData = useMemo(() => ({
     vendas,
     totais
