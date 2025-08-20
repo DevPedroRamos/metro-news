@@ -48,7 +48,7 @@ export function useNews() {
           title: article.title,
           description: article.description,
           image: article.featured_image_url || '/src/assets/default-cover.jpg',
-          category: article.news_categories?.name || 'Geral',
+          category: (article.news_categories as any)?.name || 'Geral',
           date: new Date(article.published_at).toLocaleDateString('pt-BR', {
             day: '2-digit',
             month: 'short',

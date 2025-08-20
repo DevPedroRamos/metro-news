@@ -104,11 +104,17 @@ All colors MUST be HSL.
 }
 
 @layer base {
+  html, body, #root {
+    overflow-x: hidden;
+  }
+
   * {
     @apply border-border;
   }
 
   body {
     @apply bg-background text-foreground;
+    margin: 0;
+    padding: 0;
   }
 }
