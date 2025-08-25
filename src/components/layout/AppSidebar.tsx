@@ -41,6 +41,7 @@ const menuItems = [
       { title: 'Premiação', url: '/pagamentos/premiacao' },
       { title: 'Saldo CEF', url: '/pagamentos/saldo-cef' },
       { title: 'Distratos', url: '/pagamentos/distratos' },
+      { title: 'Outros', url: '/pagamentos/outros' },
     ]
   },
   { title: 'Meu Perfil', url: '/perfil', icon: User },

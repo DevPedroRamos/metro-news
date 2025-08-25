@@ -20,7 +20,8 @@ import Pagamentos from "./pages/Pagamentos";
 import Vendas from "./pages/pagamentos/vendas";
 import Premiacao from "./pages/pagamentos/premiacao";
 import SaldoCef from "./pages/pagamentos/saldo-cef";
-import Distratos from "./pages/pagamentos/distratos";
+import Distratos from "./pages/pagamentos/distratos"; 
+import Outros from "./pages/pagamentos/outros";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -126,6 +127,13 @@ const App = () => (
               <ProtectedRoute>
                 <DashboardLayout>
                   <Distratos />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+            <Route path="outros" element={
+              <ProtectedRoute>
+                <DashboardLayout>
+                  <Outros />
                 </DashboardLayout>
               </ProtectedRoute>
             } />
