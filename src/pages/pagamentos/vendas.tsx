@@ -109,43 +109,41 @@ export default function VendasPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="bg-white border-b border-gray-200 shadow-sm">
-        <div className="container mx-auto px-6 py-8">
+      <div className="bg-white border-b border-gray-200">
+        <div className="container mx-auto px-6 py-6">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="bg-red-600 p-3 rounded-xl shadow-lg">
-                <TrendingUp className="h-8 w-8 text-white" />
+            <div className="flex items-center gap-3">
+              <div className="bg-red-600 p-2 rounded-lg">
+                <TrendingUp className="h-6 w-6 text-white" />
               </div>
               <div>
-                <h1 className="text-3xl font-bold text-gray-900">Vendas</h1>
-                <p className="text-gray-600 mt-1">Gestão completa de vendas e comissões</p>
+                <h1 className="text-2xl font-semibold text-gray-900">Vendas</h1>
+                <p className="text-gray-600 text-sm">Gestão de vendas e comissões</p>
               </div>
             </div>
             {data?.vendas && (
-              <div className="bg-red-50 px-4 py-2 rounded-lg border border-red-200">
-                <span className="text-red-600 font-semibold">{data.vendas.length} vendas registradas</span>
+              <div className="bg-gray-100 px-3 py-1 rounded border">
+                <span className="text-gray-700 text-sm font-medium">{data.vendas.length} vendas</span>
               </div>
             )}
           </div>
         </div>
       </div>
 
-      <div className="container mx-auto px-6 py-8 space-y-8">
-        <Card className="shadow-sm border-0 bg-white">
-          <CardHeader className="bg-gray-50 border-b border-gray-100">
-            <CardTitle className="flex items-center gap-3 text-gray-900">
-              <div className="bg-blue-100 p-2 rounded-lg">
-                <Users className="h-5 w-5 text-blue-600" />
-              </div>
+      <div className="container mx-auto px-6 py-6 space-y-6">
+        <Card className="border border-gray-200">
+          <CardHeader className="border-b border-gray-100 pb-3">
+            <CardTitle className="flex items-center gap-2 text-gray-900 text-lg">
+              <Users className="h-5 w-5 text-gray-600" />
               Filtrar por Venda
             </CardTitle>
           </CardHeader>
-          <CardContent className="p-6">
+          <CardContent className="p-4">
             <Select
               value={selectedVendaId?.toString() || vendaMaisRecente?.id.toString() || ""}
               onValueChange={(value) => setSelectedVendaId(Number(value))}
             >
-              <SelectTrigger className="w-full h-12 border-gray-200 focus:border-red-500 focus:ring-red-500">
+              <SelectTrigger className="w-full border-gray-200 focus:border-red-500 focus:ring-red-500">
                 <SelectValue placeholder="Selecione uma venda..." />
               </SelectTrigger>
               <SelectContent>
@@ -166,143 +164,143 @@ export default function VendasPage() {
 
         {vendaSelecionada && (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <Card className="shadow-sm border-0 bg-white hover:shadow-md transition-shadow">
-                <CardHeader className="bg-blue-50 border-b border-blue-100 pb-4">
-                  <CardTitle className="flex items-center gap-3 text-blue-900">
-                    <div className="bg-blue-100 p-2 rounded-lg">
-                      <CalendarDays className="h-5 w-5 text-blue-600" />
-                    </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <Card className="border border-gray-200">
+                <CardHeader className="border-b border-gray-100 pb-3">
+                  <CardTitle className="flex items-center gap-2 text-gray-900 text-base">
+                    <CalendarDays className="h-4 w-4 text-gray-600" />
                     Informações do Contrato
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="p-6 space-y-4">
+                <CardContent className="p-4 space-y-3">
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-600 font-medium">Data do Contrato</span>
-                    <span className="font-semibold text-gray-900">{formatDate(vendaSelecionada.data_do_contrato)}</span>
+                    <span className="text-gray-600 text-sm">Data do Contrato</span>
+                    <span className="font-medium text-gray-900 text-sm">
+                      {formatDate(vendaSelecionada.data_do_contrato)}
+                    </span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-600 font-medium">Tipo Venda</span>
-                    <Badge variant="secondary" className="bg-blue-100 text-blue-800 border-blue-200">
+                    <span className="text-gray-600 text-sm">Tipo Venda</span>
+                    <Badge variant="outline" className="border-gray-300 text-gray-700 text-xs">
                       {vendaSelecionada.tipo_venda}
                     </Badge>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-600 font-medium">Data SICAQ</span>
-                    <span className="font-semibold text-gray-900">{formatDate(vendaSelecionada.data_sicaq)}</span>
+                    <span className="text-gray-600 text-sm">Data SICAQ</span>
+                    <span className="font-medium text-gray-900 text-sm">{formatDate(vendaSelecionada.data_sicaq)}</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-600 font-medium">Data Pagto</span>
-                    <span className="font-semibold text-gray-900">{formatDate(vendaSelecionada.data_pagto)}</span>
+                    <span className="text-gray-600 text-sm">Data Pagto</span>
+                    <span className="font-medium text-gray-900 text-sm">{formatDate(vendaSelecionada.data_pagto)}</span>
                   </div>
                 </CardContent>
               </Card>
 
-              <Card className="shadow-sm border-0 bg-white hover:shadow-md transition-shadow">
-                <CardHeader className="bg-green-50 border-b border-green-100 pb-4">
-                  <CardTitle className="flex items-center gap-3 text-green-900">
-                    <div className="bg-green-100 p-2 rounded-lg">
-                      <Building2 className="h-5 w-5 text-green-600" />
-                    </div>
+              <Card className="border border-gray-200">
+                <CardHeader className="border-b border-gray-100 pb-3">
+                  <CardTitle className="flex items-center gap-2 text-gray-900 text-base">
+                    <Building2 className="h-4 w-4 text-gray-600" />
                     Detalhes do Imóvel
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="p-6 space-y-4">
+                <CardContent className="p-4 space-y-3">
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-600 font-medium">Cliente</span>
-                    <span className="font-semibold text-gray-900">{vendaSelecionada.cliente}</span>
+                    <span className="text-gray-600 text-sm">Cliente</span>
+                    <span className="font-medium text-gray-900 text-sm">{vendaSelecionada.cliente}</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-600 font-medium">Empreendimento</span>
-                    <span className="font-semibold text-gray-900">{vendaSelecionada.empreendimento}</span>
+                    <span className="text-gray-600 text-sm">Empreendimento</span>
+                    <span className="font-medium text-gray-900 text-sm">{vendaSelecionada.empreendimento}</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-600 font-medium">BL</span>
-                    <span className="font-semibold text-gray-900">{vendaSelecionada.bl || "-"}</span>
+                    <span className="text-gray-600 text-sm">BL</span>
+                    <span className="font-medium text-gray-900 text-sm">{vendaSelecionada.bl || "-"}</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-600 font-medium">UNID</span>
-                    <span className="font-semibold text-gray-900">{vendaSelecionada.unid}</span>
+                    <span className="text-gray-600 text-sm">UNID</span>
+                    <span className="font-medium text-gray-900 text-sm">{vendaSelecionada.unid}</span>
                   </div>
                 </CardContent>
               </Card>
 
-              <Card className="shadow-sm border-0 bg-white hover:shadow-md transition-shadow">
-                <CardHeader className="bg-red-50 border-b border-red-100 pb-4">
-                  <CardTitle className="flex items-center gap-3 text-red-900">
-                    <div className="bg-red-100 p-2 rounded-lg">
-                      <DollarSign className="h-5 w-5 text-red-600" />
-                    </div>
+              <Card className="border border-gray-200">
+                <CardHeader className="border-b border-gray-100 pb-3">
+                  <CardTitle className="flex items-center gap-2 text-gray-900 text-base">
+                    <DollarSign className="h-4 w-4 text-gray-600" />
                     Valores Financeiros
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="p-6 space-y-4">
+                <CardContent className="p-4 space-y-3">
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-600 font-medium">VLR Tabela</span>
-                    <span className="font-semibold text-gray-900">{formatCurrency(vendaSelecionada.vlr_tabela)}</span>
+                    <span className="text-gray-600 text-sm">VLR Tabela</span>
+                    <span className="font-medium text-gray-900 text-sm">
+                      {formatCurrency(vendaSelecionada.vlr_tabela)}
+                    </span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-600 font-medium">VLR Venda</span>
-                    <span className="font-semibold text-gray-900">{formatCurrency(vendaSelecionada.vlr_venda)}</span>
+                    <span className="text-gray-600 text-sm">VLR Venda</span>
+                    <span className="font-medium text-gray-900 text-sm">
+                      {formatCurrency(vendaSelecionada.vlr_venda)}
+                    </span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-600 font-medium">% Desc</span>
-                    <span className="font-semibold text-gray-900">
+                    <span className="text-gray-600 text-sm">% Desc</span>
+                    <span className="font-medium text-gray-900 text-sm">
                       {formatPercentage(vendaSelecionada.perc_desconto)}
                     </span>
                   </div>
                   <div className="flex justify-between items-center pt-2 border-t border-gray-100">
-                    <span className="text-gray-600 font-medium">VLR Contrato</span>
-                    <span className="font-bold text-red-600 text-lg">
-                      {formatCurrency(vendaSelecionada.vlr_contrato)}
-                    </span>
+                    <span className="text-gray-600 text-sm">VLR Contrato</span>
+                    <span className="font-semibold text-red-600">{formatCurrency(vendaSelecionada.vlr_contrato)}</span>
                   </div>
                 </CardContent>
               </Card>
             </div>
 
-            <Card className="shadow-sm border-0 bg-white">
-              <CardHeader className="bg-purple-50 border-b border-purple-100">
-                <CardTitle className="flex items-center gap-3 text-purple-900">
-                  <div className="bg-purple-100 p-2 rounded-lg">
-                    <Calculator className="h-5 w-5 text-purple-600" />
-                  </div>
+            <Card className="border border-gray-200">
+              <CardHeader className="border-b border-gray-100 pb-3">
+                <CardTitle className="flex items-center gap-2 text-gray-900 text-base">
+                  <Calculator className="h-4 w-4 text-gray-600" />
                   Informações de Pagamento
                 </CardTitle>
               </CardHeader>
-              <CardContent className="p-6">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                  <div className="text-center bg-gray-50 p-4 rounded-lg">
-                    <div className="text-gray-600 font-medium mb-2">Fluxo</div>
-                    <div className="text-xl font-bold text-gray-900">{vendaSelecionada.fluxo || "-"}</div>
+              <CardContent className="p-4">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  <div className="text-center border border-gray-200 p-3 rounded">
+                    <div className="text-gray-600 text-sm mb-1">Fluxo</div>
+                    <div className="text-lg font-semibold text-gray-900">{vendaSelecionada.fluxo || "-"}</div>
                   </div>
-                  <div className="text-center bg-blue-50 p-4 rounded-lg">
-                    <div className="text-blue-600 font-medium mb-2">Entrada</div>
-                    <div className="text-xl font-bold text-blue-900">{formatCurrency(vendaSelecionada.entrada)}</div>
+                  <div className="text-center border border-gray-200 p-3 rounded">
+                    <div className="text-gray-600 text-sm mb-1">Entrada</div>
+                    <div className="text-lg font-semibold text-gray-900">
+                      {formatCurrency(vendaSelecionada.entrada)}
+                    </div>
                   </div>
-                  <div className="text-center bg-green-50 p-4 rounded-lg">
-                    <div className="text-green-600 font-medium mb-2">Recebido</div>
-                    <div className="text-xl font-bold text-green-700">{formatCurrency(vendaSelecionada.recebido)}</div>
+                  <div className="text-center border border-gray-200 p-3 rounded">
+                    <div className="text-gray-600 text-sm mb-1">Recebido</div>
+                    <div className="text-lg font-semibold text-gray-900">
+                      {formatCurrency(vendaSelecionada.recebido)}
+                    </div>
                   </div>
-                  <div className="text-center bg-orange-50 p-4 rounded-lg">
-                    <div className="text-orange-600 font-medium mb-2">A Receber</div>
-                    <div className="text-xl font-bold text-orange-700">{formatCurrency(vendaSelecionada.receber)}</div>
+                  <div className="text-center border border-gray-200 p-3 rounded">
+                    <div className="text-gray-600 text-sm mb-1">A Receber</div>
+                    <div className="text-lg font-semibold text-gray-900">
+                      {formatCurrency(vendaSelecionada.receber)}
+                    </div>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card className="shadow-sm border-0 bg-white">
-                <CardHeader className="bg-indigo-50 border-b border-indigo-100">
-                  <CardTitle className="text-indigo-900">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <Card className="border border-gray-200">
+                <CardHeader className="border-b border-gray-100 pb-3">
+                  <CardTitle className="text-gray-900 text-base">
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <span className="cursor-help flex items-center gap-2">
-                            <div className="bg-indigo-100 p-1 rounded">
-                              <TrendingUp className="h-4 w-4 text-indigo-600" />
-                            </div>
+                            <TrendingUp className="h-4 w-4 text-gray-600" />
                             Percentuais de Comissão
                           </span>
                         </TooltipTrigger>
@@ -313,122 +311,118 @@ export default function VendasPage() {
                     </TooltipProvider>
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="p-6 space-y-4">
-                  <div className="flex justify-between items-center py-2">
+                <CardContent className="p-4 space-y-3">
+                  <div className="flex justify-between items-center py-1">
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <span className="text-gray-600 font-medium cursor-help">Sinal</span>
+                          <span className="text-gray-600 text-sm cursor-help">Sinal</span>
                         </TooltipTrigger>
                         <TooltipContent>
                           <p>Comissão sobre o valor do sinal</p>
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
-                    <span className="font-bold text-gray-900">
+                    <span className="font-medium text-gray-900 text-sm">
                       {formatPercentage(vendaSelecionada.comissao_sinal_perc)}
                     </span>
                   </div>
                   <Separator className="bg-gray-200" />
-                  <div className="flex justify-between items-center py-2">
+                  <div className="flex justify-between items-center py-1">
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <span className="text-gray-600 font-medium cursor-help">VGV / Pré-Chaves</span>
+                          <span className="text-gray-600 text-sm cursor-help">VGV / Pré-Chaves</span>
                         </TooltipTrigger>
                         <TooltipContent>
                           <p>Comissão sobre o Valor Geral de Vendas até a entrega das chaves</p>
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
-                    <span className="font-bold text-gray-900">
+                    <span className="font-medium text-gray-900 text-sm">
                       {formatPercentage(vendaSelecionada.comissao_vgv_pre_chaves_perc)}
                     </span>
                   </div>
                   <Separator className="bg-gray-200" />
-                  <div className="flex justify-between items-center py-2">
+                  <div className="flex justify-between items-center py-1">
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <span className="text-gray-600 font-medium cursor-help">Extra Comissão</span>
+                          <span className="text-gray-600 text-sm cursor-help">Extra Comissão</span>
                         </TooltipTrigger>
                         <TooltipContent>
                           <p>Comissão extra por performance ou metas</p>
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
-                    <span className="font-bold text-gray-900">
+                    <span className="font-medium text-gray-900 text-sm">
                       {formatPercentage(vendaSelecionada.comissao_extra_perc)}
                     </span>
                   </div>
                 </CardContent>
               </Card>
 
-              <Card className="shadow-sm border-0 bg-white">
-                <CardHeader className="bg-green-50 border-b border-green-100">
-                  <CardTitle className="text-green-900 flex items-center gap-2">
-                    <div className="bg-green-100 p-1 rounded">
-                      <DollarSign className="h-4 w-4 text-green-600" />
-                    </div>
+              <Card className="border border-gray-200">
+                <CardHeader className="border-b border-gray-100 pb-3">
+                  <CardTitle className="text-gray-900 text-base flex items-center gap-2">
+                    <DollarSign className="h-4 w-4 text-gray-600" />
                     Valores da Comissão Integral
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="p-6 space-y-4">
-                  <div className="flex justify-between items-center py-2">
-                    <span className="text-gray-600 font-medium">Sinal</span>
-                    <span className="font-bold text-gray-900">
+                <CardContent className="p-4 space-y-3">
+                  <div className="flex justify-between items-center py-1">
+                    <span className="text-gray-600 text-sm">Sinal</span>
+                    <span className="font-medium text-gray-900 text-sm">
                       {formatCurrency(vendaSelecionada.comissao_integral_sinal)}
                     </span>
                   </div>
                   <Separator className="bg-gray-200" />
-                  <div className="flex justify-between items-center py-2">
-                    <span className="text-gray-600 font-medium">VGV / Pré-Chaves</span>
-                    <span className="font-bold text-gray-900">
+                  <div className="flex justify-between items-center py-1">
+                    <span className="text-gray-600 text-sm">VGV / Pré-Chaves</span>
+                    <span className="font-medium text-gray-900 text-sm">
                       {formatCurrency(vendaSelecionada.comissao_integral_vgv_pre_chaves)}
                     </span>
                   </div>
                   <Separator className="bg-gray-200" />
-                  <div className="flex justify-between items-center py-2">
-                    <span className="text-gray-600 font-medium">Extra Comissão</span>
-                    <span className="font-bold text-gray-900">
+                  <div className="flex justify-between items-center py-1">
+                    <span className="text-gray-600 text-sm">Extra Comissão</span>
+                    <span className="font-medium text-gray-900 text-sm">
                       {formatCurrency(vendaSelecionada.comissao_integral_extra)}
                     </span>
                   </div>
                   <Separator className="bg-gray-200" />
-                  <div className="flex justify-between items-center py-3 bg-red-50 px-4 rounded-lg border border-red-200">
-                    <span className="font-bold text-red-900">Total</span>
-                    <span className="font-bold text-red-600 text-xl">{formatCurrency(totalComissaoIntegral)}</span>
+                  <div className="flex justify-between items-center py-2 bg-gray-50 px-3 rounded border">
+                    <span className="font-medium text-gray-900 text-sm">Total</span>
+                    <span className="font-semibold text-red-600">{formatCurrency(totalComissaoIntegral)}</span>
                   </div>
                 </CardContent>
               </Card>
             </div>
 
-            <Card className="shadow-sm border-0 bg-white">
-              <CardHeader className="bg-yellow-50 border-b border-yellow-100">
-                <CardTitle className="text-yellow-900 flex items-center gap-2">
-                  <div className="bg-yellow-100 p-2 rounded-lg">
-                    <Calculator className="h-5 w-5 text-yellow-600" />
-                  </div>
+            <Card className="border border-gray-200">
+              <CardHeader className="border-b border-gray-100 pb-3">
+                <CardTitle className="text-gray-900 text-base flex items-center gap-2">
+                  <Calculator className="h-4 w-4 text-gray-600" />
                   Adiantamento Comissão
                 </CardTitle>
               </CardHeader>
-              <CardContent className="p-6">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div className="text-center bg-gray-50 p-4 rounded-lg">
-                    <div className="text-gray-600 font-medium mb-2">Cota (%)</div>
-                    <div className="text-xl font-bold text-gray-900">
+              <CardContent className="p-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="text-center border border-gray-200 p-3 rounded">
+                    <div className="text-gray-600 text-sm mb-1">Cota (%)</div>
+                    <div className="text-lg font-semibold text-gray-900">
                       {formatPercentage(vendaSelecionada.perc_sinal_recebido)}
                     </div>
                   </div>
-                  <div className="text-center bg-blue-50 p-4 rounded-lg">
-                    <div className="text-blue-600 font-medium mb-2">VGV / Pré-Chaves</div>
-                    <div className="text-xl font-bold text-blue-900">
+                  <div className="text-center border border-gray-200 p-3 rounded">
+                    <div className="text-gray-600 text-sm mb-1">VGV / Pré-Chaves</div>
+                    <div className="text-lg font-semibold text-gray-900">
                       {formatPercentage(vendaSelecionada.comissao_vgv_pre_chaves_perc)}
                     </div>
                   </div>
-                  <div className="text-center bg-red-50 p-4 rounded-lg border border-red-200">
-                    <div className="text-red-600 font-medium mb-2">Sinal + Comissão + Extra</div>
-                    <div className="text-xl font-bold text-red-600">
+                  <div className="text-center border border-red-200 bg-red-50 p-3 rounded">
+                    <div className="text-red-700 text-sm mb-1">Sinal + Comissão + Extra</div>
+                    <div className="text-lg font-semibold text-red-600">
                       {formatCurrency(vendaSelecionada.sinal_comissao_extra_vendedor)}
                     </div>
                   </div>
@@ -438,12 +432,10 @@ export default function VendasPage() {
           </>
         )}
 
-        <Card className="shadow-sm border-0 bg-white">
-          <CardHeader className="bg-gray-50 border-b border-gray-100">
-            <CardTitle className="text-gray-900 flex items-center gap-2">
-              <div className="bg-gray-100 p-2 rounded-lg">
-                <TrendingUp className="h-5 w-5 text-gray-600" />
-              </div>
+        <Card className="border border-gray-200">
+          <CardHeader className="border-b border-gray-100 pb-3">
+            <CardTitle className="text-gray-900 text-base flex items-center gap-2">
+              <TrendingUp className="h-4 w-4 text-gray-600" />
               Base de Vendas Completa
             </CardTitle>
           </CardHeader>
@@ -451,7 +443,7 @@ export default function VendasPage() {
             <div className="overflow-x-auto">
               <Table className="min-w-[2000px]">
                 <TableHeader>
-                  <TableRow className="bg-gray-50 border-b border-gray-200">
+                  <TableRow className="border-b border-gray-200">
                     <TableHead className="min-w-[60px] font-semibold text-gray-700">ID</TableHead>
                     <TableHead className="min-w-[120px] font-semibold text-gray-700">Data Contrato</TableHead>
                     <TableHead className="min-w-[150px] font-semibold text-gray-700">Cliente</TableHead>
@@ -493,7 +485,7 @@ export default function VendasPage() {
                       <TableRow
                         key={venda.id}
                         className={`hover:bg-gray-50 transition-colors ${
-                          venda.id === vendaSelecionada?.id ? "bg-red-50 border-l-4 border-l-red-500" : ""
+                          venda.id === vendaSelecionada?.id ? "bg-red-50 border-l-2 border-l-red-500" : ""
                         }`}
                       >
                         <TableCell className="font-mono text-xs text-gray-600">{venda.id}</TableCell>

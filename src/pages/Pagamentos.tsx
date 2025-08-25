@@ -80,14 +80,12 @@ const StatCard: React.FC<{
   const animated = useCountUp(value)
 
   const getTextColor = () => {
-    if (type === "positive") return "text-green-700"
-    if (type === "negative") return "text-red-700"
+    if (type === "positive") return "text-gray-900"
+    if (type === "negative") return "text-gray-900"
     return "text-gray-900"
   }
 
   const getIconBg = () => {
-    if (type === "positive") return "bg-green-50 text-green-600"
-    if (type === "negative") return "bg-red-50 text-red-600"
     return "bg-gray-50 text-gray-600"
   }
 
@@ -100,7 +98,7 @@ const StatCard: React.FC<{
         </div>
       </CardHeader>
       <CardContent>
-        <div className={`text-2xl font-bold ${getTextColor()}`}>{formatCurrency(animated)}</div>
+        <div className={`text-sm font-bold ${getTextColor()}`}>{formatCurrency(animated)}</div>
       </CardContent>
     </Card>
   )
@@ -112,9 +110,9 @@ const SectionHeader: React.FC<{
   description?: string
 }> = ({ title, icon, description }) => (
   <div className="flex items-center gap-3 mb-6">
-    <div className="p-3 bg-red-600 text-white rounded-lg">{icon}</div>
+    <div className="p-3 bg-gray-100 text-gray-600 rounded-lg">{icon}</div>
     <div>
-      <h2 className="text-2xl font-bold text-gray-900">{title}</h2>
+      <h2 className="text-base font-bold text-gray-900">{title}</h2>
       {description && <p className="text-gray-600 text-sm">{description}</p>}
     </div>
   </div>
@@ -421,45 +419,45 @@ const Pagamentos: React.FC = () => {
         <div className="max-w-7xl mx-auto px-6 py-12">
           <div className="flex items-center gap-4 mb-8">
             <div className="p-4 bg-red-600 text-white rounded-xl">
-              <DollarSign className="h-8 w-8" />
+              <DollarSign className="h-6 w-6" />
             </div>
             <div>
-              <h1 className="text-4xl font-bold text-gray-900">Central de Pagamentos</h1>
-              <p className="text-gray-600 text-lg">Acompanhe sua performance financeira</p>
+              <h1 className="text-2xl font-bold text-gray-900">Central de Pagamentos</h1>
+              <p className="text-gray-600 text-sm">Acompanhe sua performance financeira</p>
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-green-50 rounded-lg">
-                  <ArrowUp className="h-6 w-6 text-green-600" />
+                <div className="p-2 bg-gray-50 rounded-lg">
+                  <ArrowUp className="h-4 w-4 text-gray-600" />
                 </div>
                 <div>
                   <p className="text-gray-600 text-sm font-medium">Receita Total</p>
-                  <p className="text-2xl font-bold text-green-700">{formatCurrency(totalReceita)}</p>
+                  <p className="text-lg font-bold text-gray-900">{formatCurrency(totalReceita)}</p>
                 </div>
               </div>
             </div>
             <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-red-50 rounded-lg">
-                  <ArrowDown className="h-6 w-6 text-red-600" />
+                <div className="p-2 bg-gray-50 rounded-lg">
+                  <ArrowDown className="h-4 w-4 text-gray-600" />
                 </div>
                 <div>
                   <p className="text-gray-600 text-sm font-medium">Descontos Total</p>
-                  <p className="text-2xl font-bold text-red-700">{formatCurrency(totalDescontos)}</p>
+                  <p className="text-lg font-bold text-gray-900">{formatCurrency(totalDescontos)}</p>
                 </div>
               </div>
             </div>
             <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
               <div className="flex items-center gap-3">
-                <div className={`p-2 rounded-lg ${saldoLiquido >= 0 ? "bg-green-50" : "bg-red-50"}`}>
-                  <CheckCircle className={`h-6 w-6 ${saldoLiquido >= 0 ? "text-green-600" : "text-red-600"}`} />
+                <div className="p-2 bg-gray-50 rounded-lg">
+                  <CheckCircle className="h-4 w-4 text-gray-600" />
                 </div>
                 <div>
                   <p className="text-gray-600 text-sm font-medium">Saldo Líquido</p>
-                  <p className={`text-2xl font-bold ${saldoLiquido >= 0 ? "text-green-700" : "text-red-700"}`}>
+                  <p className={`text-lg font-bold ${saldoLiquido >= 0 ? "text-gray-900" : "text-red-700"}`}>
                     {formatCurrency(saldoLiquido)}
                   </p>
                 </div>
@@ -482,7 +480,7 @@ const Pagamentos: React.FC = () => {
         <section>
           <SectionHeader
             title="Período de Referência"
-            icon={<Calendar className="h-6 w-6" />}
+            icon={<Calendar className="h-4 w-4" />}
             description="Período atual de cálculo dos pagamentos"
           />
           {loading ? (
@@ -496,26 +494,26 @@ const Pagamentos: React.FC = () => {
                 <CardHeader className="pb-3">
                   <div className="flex items-center gap-3">
                     <div className="p-2 bg-gray-50 text-gray-600 rounded-lg">
-                      <Calendar className="h-5 w-5" />
+                      <Calendar className="h-4 w-4" />
                     </div>
                     <CardTitle className="text-gray-900">Data de Início</CardTitle>
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold text-gray-900">{data?.period_start || "—"}</div>
+                  <div className="text-sm font-bold text-gray-900">{data?.period_start || "—"}</div>
                 </CardContent>
               </Card>
               <Card className="bg-white border border-gray-200 shadow-sm">
                 <CardHeader className="pb-3">
                   <div className="flex items-center gap-3">
                     <div className="p-2 bg-gray-50 text-gray-600 rounded-lg">
-                      <Calendar className="h-5 w-5" />
+                      <Calendar className="h-4 w-4" />
                     </div>
                     <CardTitle className="text-gray-900">Data de Fim</CardTitle>
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold text-gray-900">{data?.period_end || "—"}</div>
+                  <div className="text-sm font-bold text-gray-900">{data?.period_end || "—"}</div>
                 </CardContent>
               </Card>
             </div>
@@ -528,7 +526,7 @@ const Pagamentos: React.FC = () => {
         <section>
           <SectionHeader
             title="Receitas"
-            icon={<TrendingUp className="h-6 w-6" />}
+            icon={<TrendingUp className="h-4 w-4" />}
             description="Todas as fontes de receita do período"
           />
           {loading ? (
@@ -540,7 +538,7 @@ const Pagamentos: React.FC = () => {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {receitaItems.map((item) => (
-                <StatCard key={item.key} title={item.label} value={item.value} icon={item.icon} type="positive" />
+                <StatCard key={item.key} title={item.label} value={item.value} icon={item.icon} type="neutral" />
               ))}
             </div>
           )}
@@ -552,7 +550,7 @@ const Pagamentos: React.FC = () => {
         <section>
           <SectionHeader
             title="Descontos"
-            icon={<ArrowDown className="h-6 w-6" />}
+            icon={<ArrowDown className="h-4 w-4" />}
             description="Todos os descontos aplicados no período"
           />
           {loading ? (
@@ -564,7 +562,7 @@ const Pagamentos: React.FC = () => {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {descontoItems.map((item) => (
-                <StatCard key={item.key} title={item.label} value={item.value} icon={item.icon} type="negative" />
+                <StatCard key={item.key} title={item.label} value={item.value} icon={item.icon} type="neutral" />
               ))}
             </div>
           )}
@@ -574,15 +572,15 @@ const Pagamentos: React.FC = () => {
           <div className="text-center">
             <div className="flex justify-center mb-4">
               <div className="p-4 bg-red-600 text-white rounded-full">
-                <AlertTriangle className="h-8 w-8" />
+                <AlertTriangle className="h-4 w-4" />
               </div>
             </div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-2">Saldo Negativo Total</h3>
+            <h3 className="text-base font-bold text-gray-900 mb-2">Saldo Negativo Total</h3>
             <p className="text-gray-600 mb-6">Valor total dos descontos aplicados</p>
             {loading ? (
               <Skeleton className="h-16 w-64 mx-auto" />
             ) : (
-              <div className="text-4xl font-bold text-red-700">{formatCurrency(data?.saldo_negativo_total ?? 0)}</div>
+              <div className="text-lg font-bold text-red-700">{formatCurrency(data?.saldo_negativo_total ?? 0)}</div>
             )}
           </div>
         </section>
@@ -591,7 +589,7 @@ const Pagamentos: React.FC = () => {
         <section>
           <SectionHeader
             title="Upload de Comprovantes"
-            icon={<CreditCard className="h-6 w-6" />}
+            icon={<CreditCard className="h-4 w-4" />}
             description="Envie seus comprovantes de pagamento"
           />
           <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
@@ -605,7 +603,7 @@ const Pagamentos: React.FC = () => {
         <section>
           <SectionHeader
             title="Histórico de Pagamentos"
-            icon={<Calendar className="h-6 w-6" />}
+            icon={<Calendar className="h-4 w-4" />}
             description="Histórico dos últimos períodos de pagamento"
           />
           {historyLoading ? (
@@ -636,13 +634,13 @@ const Pagamentos: React.FC = () => {
                             </div>
                           </TableCell>
                           <TableCell className="text-right">
-                            <div className="font-semibold text-green-700">{formatCurrency(item.receita_total)}</div>
+                            <div className="font-semibold text-gray-900">{formatCurrency(item.receita_total)}</div>
                           </TableCell>
                           <TableCell className="text-right">
-                            <div className="font-semibold text-red-700">{formatCurrency(item.descontos_total)}</div>
+                            <div className="font-semibold text-gray-900">{formatCurrency(item.descontos_total)}</div>
                           </TableCell>
                           <TableCell className="text-right">
-                            <div className={`font-bold ${item.total_receber >= 0 ? "text-green-700" : "text-red-700"}`}>
+                            <div className={`font-bold ${item.total_receber >= 0 ? "text-gray-900" : "text-red-700"}`}>
                               {formatCurrency(item.total_receber)}
                             </div>
                           </TableCell>
@@ -656,8 +654,8 @@ const Pagamentos: React.FC = () => {
           ) : (
             <Card className="bg-white border border-gray-200 shadow-sm">
               <CardContent className="py-12 text-center">
-                <Calendar className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Nenhum histórico encontrado</h3>
+                <Calendar className="h-8 w-8 text-gray-400 mx-auto mb-4" />
+                <h3 className="text-sm font-semibold text-gray-900 mb-2">Nenhum histórico encontrado</h3>
                 <p className="text-gray-600">Nenhum histórico de pagamento anterior foi encontrado.</p>
               </CardContent>
             </Card>
