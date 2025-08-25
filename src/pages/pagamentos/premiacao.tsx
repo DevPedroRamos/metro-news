@@ -20,7 +20,7 @@ export default function PremiacaoPage() {
   }
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="max-w-[1280px] w-[100%]">
       <Card>
         <CardHeader>
           <CardTitle>Minhas Premiações</CardTitle>
@@ -30,9 +30,6 @@ export default function PremiacaoPage() {
             <TableHeader>
               <TableRow>
                 <TableHead>Descrição</TableHead>
-                <TableHead>Função</TableHead>
-                <TableHead>Gerente</TableHead>
-                <TableHead>Gestor</TableHead>
                 <TableHead>Qtd. Vendas</TableHead>
                 <TableHead>Valor Prêmio</TableHead>
                 <TableHead>Data</TableHead>
@@ -42,9 +39,6 @@ export default function PremiacaoPage() {
               {data.map((p) => (
                 <TableRow key={p.id}>
                   <TableCell>{p.descricao_premio_regra}</TableCell>
-                  <TableCell>{p.funcao}</TableCell>
-                  <TableCell>{p.gerente || "-"}</TableCell>
-                  <TableCell>{p.gestor || "-"}</TableCell>
                   <TableCell>{p.qtd_vendas}</TableCell>
                   <TableCell>R$ {Number(p.valor_premio).toFixed(2)}</TableCell>
                   <TableCell>
