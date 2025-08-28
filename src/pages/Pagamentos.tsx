@@ -325,7 +325,7 @@ const Pagamentos: React.FC = () => {
       },
       {
         key: "pagar",
-        label: "Pagamento Semanal",
+        label: "Valor de ajuda de custo semanal",
         value: data?.receita.pagar ?? 0,
         icon: <Calendar className="h-5 w-5" />,
       },
@@ -384,12 +384,6 @@ const Pagamentos: React.FC = () => {
         icon: <CreditCard className="h-5 w-5" />,
       },
       {
-        key: "saldo_permuta",
-        label: "Saldo Permuta",
-        value: data?.descontos.saldo_permuta ?? 0,
-        icon: <Target className="h-5 w-5" />,
-      },
-      {
         key: "saldo_neg_periodos_anteriores",
         label: "Saldo Neg. Períodos Anteriores",
         value: data?.descontos.saldo_neg_periodos_anteriores ?? 0,
@@ -415,9 +409,9 @@ const Pagamentos: React.FC = () => {
     <div className="min-h-screen bg-gray-50">
       <MetaSEO />
 
-      <div className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-6 py-12">
-          <div className="flex items-center gap-4 mb-8">
+      <div className="bg-white border border-gray-200 shadow-sm rounded-lg">
+        <div className="max-w-7xl mx-auto p-6">
+          <div className="flex items-center gap-4">
             <div className="p-4 bg-red-600 text-white rounded-xl">
               <DollarSign className="h-6 w-6" />
             </div>
@@ -426,48 +420,10 @@ const Pagamentos: React.FC = () => {
               <p className="text-gray-600 text-sm">Acompanhe sua performance financeira</p>
             </div>
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-gray-50 rounded-lg">
-                  <ArrowUp className="h-4 w-4 text-gray-600" />
-                </div>
-                <div>
-                  <p className="text-gray-600 text-sm font-medium">Receita Total</p>
-                  <p className="text-lg font-bold text-gray-900">{formatCurrency(totalReceita)}</p>
-                </div>
-              </div>
-            </div>
-            <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-gray-50 rounded-lg">
-                  <ArrowDown className="h-4 w-4 text-gray-600" />
-                </div>
-                <div>
-                  <p className="text-gray-600 text-sm font-medium">Descontos Total</p>
-                  <p className="text-lg font-bold text-gray-900">{formatCurrency(totalDescontos)}</p>
-                </div>
-              </div>
-            </div>
-            <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-gray-50 rounded-lg">
-                  <CheckCircle className="h-4 w-4 text-gray-600" />
-                </div>
-                <div>
-                  <p className="text-gray-600 text-sm font-medium">Saldo Líquido</p>
-                  <p className={`text-lg font-bold ${saldoLiquido >= 0 ? "text-gray-900" : "text-red-700"}`}>
-                    {formatCurrency(saldoLiquido)}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 py-8 space-y-12">
+      <div className="max-w-7xl mx-auto space-y-6 mt-6">
         {error && (
           <Alert className="border-red-200 bg-red-50">
             <Info className="h-4 w-4 text-red-600" />
@@ -569,21 +525,53 @@ const Pagamentos: React.FC = () => {
         </section>
 
         <section className="bg-white border border-gray-200 rounded-2xl p-8 shadow-sm">
-          <div className="text-center">
-            <div className="flex justify-center mb-4">
-              <div className="p-4 bg-red-600 text-white rounded-full">
-                <AlertTriangle className="h-4 w-4" />
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center gap-4 mb-8">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">Resumo</h1>
+              <p className="text-gray-600 text-sm mt-2">Valor total a receber</p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-gray-50 rounded-lg">
+                  <ArrowUp className="h-4 w-4 text-gray-600" />
+                </div>
+                <div>
+                  <p className="text-gray-600 text-sm font-medium">Receita Total</p>
+                  <p className="text-lg font-bold text-gray-900">{formatCurrency(totalReceita)}</p>
+                </div>
               </div>
             </div>
-            <h3 className="text-base font-bold text-gray-900 mb-2">Saldo Negativo Total</h3>
-            <p className="text-gray-600 mb-6">Valor total dos descontos aplicados</p>
-            {loading ? (
-              <Skeleton className="h-16 w-64 mx-auto" />
-            ) : (
-              <div className="text-lg font-bold text-red-700">{formatCurrency(data?.saldo_negativo_total ?? 0)}</div>
-            )}
+            <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-gray-50 rounded-lg">
+                  <ArrowDown className="h-4 w-4 text-gray-600" />
+                </div>
+                <div>
+                  <p className="text-gray-600 text-sm font-medium">Descontos Total</p>
+                  <p className="text-lg font-bold text-gray-900">{formatCurrency(totalDescontos)}</p>
+                </div>
+              </div>
+            </div>
+            <div className={`bg-white border border-gray-200 rounded-xl p-6 shadow-sm ${saldoLiquido >= 0 ? "bg-green-500" : "bg-red-500"}`}>
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-gray-50 rounded-lg">
+                  <CheckCircle className="h-4 w-4 text-gray-600" />
+                </div>
+                <div>
+                  <p className="text-gray-600 text-sm font-medium text-white">Valor da Nota</p>
+                  <p className={`text-lg font-bold text-white`}>
+                    {formatCurrency(saldoLiquido)}
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
-        </section>
+        </div>
+      </section>
 
         {/* Upload de Comprovantes */}
         <section>
