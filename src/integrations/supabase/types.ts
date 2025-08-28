@@ -7,7 +7,7 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instanciate createClient with right options
+  // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "12.2.3 (519615d)"
@@ -465,39 +465,6 @@ export type Database = {
         }
         Relationships: []
       }
-      payments: {
-        Row: {
-          created_at: string | null
-          id: number
-          observacoes: string | null
-          total_corretor: number
-          total_gerente: number
-          total_super: number
-          unidade: string
-          vendedor: string
-        }
-        Insert: {
-          created_at?: string | null
-          id?: number
-          observacoes?: string | null
-          total_corretor: number
-          total_gerente: number
-          total_super: number
-          unidade: string
-          vendedor: string
-        }
-        Update: {
-          created_at?: string | null
-          id?: number
-          observacoes?: string | null
-          total_corretor?: number
-          total_gerente?: number
-          total_super?: number
-          unidade?: string
-          vendedor?: string
-        }
-        Relationships: []
-      }
       pesquisas_satisfacao: {
         Row: {
           avaliacao_experiencia: string | null
@@ -579,6 +546,84 @@ export type Database = {
           id?: string
           name?: string
           role?: string
+        }
+        Relationships: []
+      }
+      referrals: {
+        Row: {
+          created_at: string
+          id: string
+          indicado_cpf: string
+          indicado_nome: string
+          indicado_telefone: string
+          referrer_agencia: string
+          referrer_apartamento: string | null
+          referrer_banco: string
+          referrer_bloco: string | null
+          referrer_cep: string
+          referrer_conta: string
+          referrer_cpf: string
+          referrer_empreendimento: string | null
+          referrer_nascimento: string
+          referrer_nome: string
+          referrer_numero: string
+          referrer_rg: string
+          referrer_telefone: string
+          referrer_type: string
+          status: string
+          updated_at: string
+          user_agent: string | null
+          user_ip: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          indicado_cpf: string
+          indicado_nome: string
+          indicado_telefone: string
+          referrer_agencia: string
+          referrer_apartamento?: string | null
+          referrer_banco: string
+          referrer_bloco?: string | null
+          referrer_cep: string
+          referrer_conta: string
+          referrer_cpf: string
+          referrer_empreendimento?: string | null
+          referrer_nascimento: string
+          referrer_nome: string
+          referrer_numero: string
+          referrer_rg: string
+          referrer_telefone: string
+          referrer_type: string
+          status?: string
+          updated_at?: string
+          user_agent?: string | null
+          user_ip?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          indicado_cpf?: string
+          indicado_nome?: string
+          indicado_telefone?: string
+          referrer_agencia?: string
+          referrer_apartamento?: string | null
+          referrer_banco?: string
+          referrer_bloco?: string | null
+          referrer_cep?: string
+          referrer_conta?: string
+          referrer_cpf?: string
+          referrer_empreendimento?: string | null
+          referrer_nascimento?: string
+          referrer_nome?: string
+          referrer_numero?: string
+          referrer_rg?: string
+          referrer_telefone?: string
+          referrer_type?: string
+          status?: string
+          updated_at?: string
+          user_agent?: string | null
+          user_ip?: string | null
         }
         Relationships: []
       }
@@ -686,6 +731,39 @@ export type Database = {
           },
         ]
       }
+      useful_links: {
+        Row: {
+          created_at: string
+          description: string
+          display_order: number
+          id: string
+          is_active: boolean
+          title: string
+          updated_at: string
+          url: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          title: string
+          updated_at?: string
+          url: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          title?: string
+          updated_at?: string
+          url?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string
@@ -707,6 +785,7 @@ export type Database = {
       users: {
         Row: {
           apelido: string
+          ban: boolean
           cpf: string
           created_at: string | null
           gerente: string
@@ -717,6 +796,7 @@ export type Database = {
         }
         Insert: {
           apelido: string
+          ban?: boolean
           cpf: string
           created_at?: string | null
           gerente: string
@@ -727,6 +807,7 @@ export type Database = {
         }
         Update: {
           apelido?: string
+          ban?: boolean
           cpf?: string
           created_at?: string | null
           gerente?: string
@@ -842,6 +923,264 @@ export type Database = {
       }
     }
     Views: {
+      base_de_vendas: {
+        Row: {
+          assinatura_cef: string | null
+          bl: string | null
+          c_credito_baixada: number | null
+          c_credito_em_aberto: number | null
+          c_desconto_baixada: number | null
+          c_desconto_em_aberto: number | null
+          cliente: string | null
+          comissao_extra_perc: number | null
+          comissao_integral_extra: number | null
+          comissao_integral_sinal: number | null
+          comissao_integral_vgv_pre_chaves: number | null
+          comissao_sinal_perc: number | null
+          comissao_vgv_pre_chaves_perc: number | null
+          created_at: string | null
+          data_do_contrato: string | null
+          data_pagto: string | null
+          data_sicaq: string | null
+          diretor: string | null
+          empreendimento: string | null
+          entrada: number | null
+          fluxo: number | null
+          gerente: string | null
+          id: number | null
+          origem: string | null
+          perc_desconto: number | null
+          perc_sinal_recebido: number | null
+          receber: number | null
+          recebido: number | null
+          recebido_de_sinal: number | null
+          sinal_comissao_extra_vendedor: number | null
+          superintendente: string | null
+          supervisor_coord_parceiro: string | null
+          tipo_venda: string | null
+          unid: string | null
+          vendedor_parceiro: string | null
+          vlr_contrato: number | null
+          vlr_tabela: number | null
+          vlr_venda: number | null
+        }
+        Insert: {
+          assinatura_cef?: string | null
+          bl?: string | null
+          c_credito_baixada?: number | null
+          c_credito_em_aberto?: number | null
+          c_desconto_baixada?: number | null
+          c_desconto_em_aberto?: number | null
+          cliente?: string | null
+          comissao_extra_perc?: number | null
+          comissao_integral_extra?: number | null
+          comissao_integral_sinal?: number | null
+          comissao_integral_vgv_pre_chaves?: number | null
+          comissao_sinal_perc?: number | null
+          comissao_vgv_pre_chaves_perc?: number | null
+          created_at?: string | null
+          data_do_contrato?: string | null
+          data_pagto?: string | null
+          data_sicaq?: string | null
+          diretor?: string | null
+          empreendimento?: string | null
+          entrada?: number | null
+          fluxo?: number | null
+          gerente?: string | null
+          id?: number | null
+          origem?: string | null
+          perc_desconto?: number | null
+          perc_sinal_recebido?: number | null
+          receber?: number | null
+          recebido?: number | null
+          recebido_de_sinal?: number | null
+          sinal_comissao_extra_vendedor?: number | null
+          superintendente?: string | null
+          supervisor_coord_parceiro?: string | null
+          tipo_venda?: string | null
+          unid?: string | null
+          vendedor_parceiro?: string | null
+          vlr_contrato?: number | null
+          vlr_tabela?: number | null
+          vlr_venda?: number | null
+        }
+        Update: {
+          assinatura_cef?: string | null
+          bl?: string | null
+          c_credito_baixada?: number | null
+          c_credito_em_aberto?: number | null
+          c_desconto_baixada?: number | null
+          c_desconto_em_aberto?: number | null
+          cliente?: string | null
+          comissao_extra_perc?: number | null
+          comissao_integral_extra?: number | null
+          comissao_integral_sinal?: number | null
+          comissao_integral_vgv_pre_chaves?: number | null
+          comissao_sinal_perc?: number | null
+          comissao_vgv_pre_chaves_perc?: number | null
+          created_at?: string | null
+          data_do_contrato?: string | null
+          data_pagto?: string | null
+          data_sicaq?: string | null
+          diretor?: string | null
+          empreendimento?: string | null
+          entrada?: number | null
+          fluxo?: number | null
+          gerente?: string | null
+          id?: number | null
+          origem?: string | null
+          perc_desconto?: number | null
+          perc_sinal_recebido?: number | null
+          receber?: number | null
+          recebido?: number | null
+          recebido_de_sinal?: number | null
+          sinal_comissao_extra_vendedor?: number | null
+          superintendente?: string | null
+          supervisor_coord_parceiro?: string | null
+          tipo_venda?: string | null
+          unid?: string | null
+          vendedor_parceiro?: string | null
+          vlr_contrato?: number | null
+          vlr_tabela?: number | null
+          vlr_venda?: number | null
+        }
+        Relationships: []
+      }
+      distrato: {
+        Row: {
+          apto: string | null
+          cliente: string | null
+          comissao_paga: boolean | null
+          created_at: string | null
+          descontar: boolean | null
+          diretor: string | null
+          dt_distrato: string | null
+          empreendimento: string | null
+          gerente: string | null
+          id: number | null
+          motivo: string | null
+          observacao: string | null
+          superintendente: string | null
+          supervisor: string | null
+          tipo_distrato: string | null
+          valor_gerente: number | null
+          valor_gestor: number | null
+          valor_superintendente: number | null
+          valor_supervisor: number | null
+          valor_total: number | null
+          valor_vendedor: number | null
+          vendedor: string | null
+        }
+        Insert: {
+          apto?: string | null
+          cliente?: string | null
+          comissao_paga?: boolean | null
+          created_at?: string | null
+          descontar?: boolean | null
+          diretor?: string | null
+          dt_distrato?: string | null
+          empreendimento?: string | null
+          gerente?: string | null
+          id?: number | null
+          motivo?: string | null
+          observacao?: string | null
+          superintendente?: string | null
+          supervisor?: string | null
+          tipo_distrato?: string | null
+          valor_gerente?: number | null
+          valor_gestor?: number | null
+          valor_superintendente?: number | null
+          valor_supervisor?: number | null
+          valor_total?: number | null
+          valor_vendedor?: number | null
+          vendedor?: string | null
+        }
+        Update: {
+          apto?: string | null
+          cliente?: string | null
+          comissao_paga?: boolean | null
+          created_at?: string | null
+          descontar?: boolean | null
+          diretor?: string | null
+          dt_distrato?: string | null
+          empreendimento?: string | null
+          gerente?: string | null
+          id?: number | null
+          motivo?: string | null
+          observacao?: string | null
+          superintendente?: string | null
+          supervisor?: string | null
+          tipo_distrato?: string | null
+          valor_gerente?: number | null
+          valor_gestor?: number | null
+          valor_superintendente?: number | null
+          valor_supervisor?: number | null
+          valor_total?: number | null
+          valor_vendedor?: number | null
+          vendedor?: string | null
+        }
+        Relationships: []
+      }
+      outros: {
+        Row: {
+          created_at: string | null
+          descricao: string | null
+          id: number | null
+          nome_completo: string | null
+          valor: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          descricao?: string | null
+          id?: number | null
+          nome_completo?: string | null
+          valor?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          descricao?: string | null
+          id?: number | null
+          nome_completo?: string | null
+          valor?: number | null
+        }
+        Relationships: []
+      }
+      premiacao: {
+        Row: {
+          created_at: string | null
+          descricao_premio_regra: string | null
+          funcao: string | null
+          gerente: string | null
+          gestor: string | null
+          id: number | null
+          premiado: string | null
+          qtd_vendas: number | null
+          valor_premio: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          descricao_premio_regra?: string | null
+          funcao?: string | null
+          gerente?: string | null
+          gestor?: string | null
+          id?: number | null
+          premiado?: string | null
+          qtd_vendas?: number | null
+          valor_premio?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          descricao_premio_regra?: string | null
+          funcao?: string | null
+          gerente?: string | null
+          gestor?: string | null
+          id?: number | null
+          premiado?: string | null
+          qtd_vendas?: number | null
+          valor_premio?: number | null
+        }
+        Relationships: []
+      }
       resume: {
         Row: {
           adiantamento: number | null
@@ -914,82 +1253,105 @@ export type Database = {
           },
         ]
       }
-      base_de_vendas: {
+      saldo_cef: {
         Row: {
-          id: number
-          data_do_contrato: string
-          tipo_venda: string
-          data_sicaq: string | null
-          data_pagto: string | null
-          cliente: string
-          empreendimento: string
           bl: string | null
-          unid: string
-          vlr_tabela: number
-          vlr_venda: number
-          perc_desconto: number | null
-          vlr_contrato: number
-          fluxo: number | null
-          entrada: number | null
-          recebido: number | null
-          receber: number | null
-          c_credito_baixada: number | null
-          c_credito_em_aberto: number | null
-          c_desconto_baixada: number | null
-          c_desconto_em_aberto: number | null
-          recebido_de_sinal: number | null
-          perc_sinal_recebido: number | null
-          assinatura_cef: string | null
-          origem: string | null
-          vendedor_parceiro: string | null
-          supervisor_coord_parceiro: string | null
-          gerente: string | null
-          superintendente: string | null
-          diretor: string | null
-          comissao_sinal_perc: number | null
-          comissao_vgv_pre_chaves_perc: number | null
+          cliente: string | null
           comissao_extra_perc: number | null
-          comissao_integral_sinal: number | null
-          comissao_integral_vgv_pre_chaves: number | null
-          comissao_integral_extra: number | null
-          sinal_comissao_extra_vendedor: number | null
-          created_at: string
-        }
-      }
-      v_comissoes: {
-        Row: {
-          apelido: string | null
-          corretor: string | null
+          comissao_sinal_perc: number | null
+          comissao_sinal_valor: number | null
+          comissao_vgv_perc: number | null
+          comissao_vgv_valor: number | null
+          created_at: string | null
           empreendimento: string | null
           gerente: string | null
+          gestor: string | null
+          id: number | null
+          premio_repasse_fiador_valor: number | null
+          subtotal: number | null
           superintendente: string | null
-          total_corretor: number | null
-          total_gerente: number | null
-          total_super: number | null
-          unidade: string | null
-          venda_data: string | null
+          supervisor_coord_parceiro: string | null
+          total: number | null
+          unid: string | null
+          vendedor_parceiro: string | null
+          vendedor_premio_repasse_fiador_valor: number | null
+          vendedor_vgv_valor: number | null
+        }
+        Insert: {
+          bl?: string | null
+          cliente?: string | null
+          comissao_extra_perc?: number | null
+          comissao_sinal_perc?: number | null
+          comissao_sinal_valor?: number | null
+          comissao_vgv_perc?: number | null
+          comissao_vgv_valor?: number | null
+          created_at?: string | null
+          empreendimento?: string | null
+          gerente?: string | null
+          gestor?: string | null
+          id?: number | null
+          premio_repasse_fiador_valor?: number | null
+          subtotal?: number | null
+          superintendente?: string | null
+          supervisor_coord_parceiro?: string | null
+          total?: number | null
+          unid?: string | null
+          vendedor_parceiro?: string | null
+          vendedor_premio_repasse_fiador_valor?: number | null
+          vendedor_vgv_valor?: number | null
+        }
+        Update: {
+          bl?: string | null
+          cliente?: string | null
+          comissao_extra_perc?: number | null
+          comissao_sinal_perc?: number | null
+          comissao_sinal_valor?: number | null
+          comissao_vgv_perc?: number | null
+          comissao_vgv_valor?: number | null
+          created_at?: string | null
+          empreendimento?: string | null
+          gerente?: string | null
+          gestor?: string | null
+          id?: number | null
+          premio_repasse_fiador_valor?: number | null
+          subtotal?: number | null
+          superintendente?: string | null
+          supervisor_coord_parceiro?: string | null
+          total?: number | null
+          unid?: string | null
+          vendedor_parceiro?: string | null
+          vendedor_premio_repasse_fiador_valor?: number | null
+          vendedor_vgv_valor?: number | null
         }
         Relationships: []
       }
     }
     Functions: {
+      binary_quantize: {
+        Args: { "": string } | { "": unknown }
+        Returns: unknown
+      }
       buscar_cliente_por_cpf: {
         Args: { p_cpf: string }
         Returns: {
-          nome: string
           cpf: string
-          whatsapp: string
-          ultima_visita: string
+          nome: string
           total_visitas: number
+          ultima_visita: string
+          whatsapp: string
         }[]
       }
       check_mesa_disponivel: {
-        Args: { p_loja: string; p_andar: string; p_mesa: number }
+        Args: { p_andar: string; p_loja: string; p_mesa: number }
         Returns: boolean
       }
       check_tempo_espera: {
         Args: { created_time: string }
         Returns: boolean
+      }
+      delete_category_reassign_articles: {
+        Args: { p_category_id: string }
+        Returns: number
       }
       finalizar_visita: {
         Args: { visit_id: string }
@@ -1005,120 +1367,217 @@ export type Database = {
       }
       get_champions_ranking: {
         Args: {
-          ranking_type?: string
           limit_count?: number
           offset_count?: number
+          ranking_type?: string
         }
         Returns: {
-          user_id: string
+          avatar_url: string
+          contracts_count: number
           name: string
           nickname: string
-          sales_count: number
           revenue: number
-          visits_count: number
-          contracts_count: number
-          avatar_url: string
           role: string
+          sales_count: number
           total_count: number
+          user_id: string
+          visits_count: number
         }[]
       }
       get_champions_ranking_optimized: {
         Args: {
-          ranking_type?: string
           limit_count?: number
           offset_count?: number
+          ranking_type?: string
         }
         Returns: {
-          user_id: string
+          avatar_url: string
+          contracts_count: number
           name: string
           nickname: string
-          sales_count: number
           revenue: number
-          visits_count: number
-          contracts_count: number
-          avatar_url: string
           role: string
+          sales_count: number
           total_count: number
+          user_id: string
+          visits_count: number
         }[]
       }
       get_corretor_stats: {
         Args: { corretor_uuid: string }
         Returns: {
+          agendamentos_confirmados: number
+          tempo_medio_minutos: number
           total_visitas: number
           visitas_ativas: number
           visitas_hoje: number
-          tempo_medio_minutos: number
-          agendamentos_confirmados: number
         }[]
       }
       get_dashboard_stats: {
         Args: Record<PropertyKey, never>
         Returns: {
+          mesas_ocupadas: number
           total_visitas_hoje: number
           visitas_ativas: number
           visitas_finalizadas_hoje: number
-          mesas_ocupadas: number
         }[]
       }
       get_dashboard_stats_filtered: {
         Args: {
-          start_date?: string
           end_date?: string
+          start_date?: string
           superintendente?: string
         }
         Returns: {
+          clientes_lista_espera: number
+          mesas_ocupadas: number
           total_visitas_hoje: number
           visitas_ativas: number
           visitas_finalizadas_hoje: number
-          mesas_ocupadas: number
-          clientes_lista_espera: number
         }[]
       }
       get_profile_stats: {
         Args: { user_uuid: string }
         Returns: {
-          user_id: string
-          user_name: string
+          avatar_url: string
+          contratos_count: number
+          cover_url: string
+          ranking_position: number
+          recebimento: number
+          total_users: number
           user_apelido: string
           user_cpf: string
           user_gerente: string
-          user_superintendente: string
+          user_id: string
+          user_name: string
           user_role: string
-          avatar_url: string
-          cover_url: string
+          user_superintendente: string
           vendas_count: number
-          recebimento: number
-          contratos_count: number
           visitas_count: number
-          ranking_position: number
-          total_users: number
         }[]
+      }
+      halfvec_avg: {
+        Args: { "": number[] }
+        Returns: unknown
+      }
+      halfvec_out: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      halfvec_send: {
+        Args: { "": unknown }
+        Returns: string
+      }
+      halfvec_typmod_in: {
+        Args: { "": unknown[] }
+        Returns: number
       }
       has_role: {
         Args: {
-          _user_id: string
           _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
         }
         Returns: boolean
+      }
+      hnsw_bit_support: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      hnsw_halfvec_support: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      hnsw_sparsevec_support: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      hnswhandler: {
+        Args: { "": unknown }
+        Returns: unknown
       }
       increment_article_views: {
         Args: { article_id: string }
         Returns: undefined
       }
+      ivfflat_bit_support: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      ivfflat_halfvec_support: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      ivfflathandler: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      l2_norm: {
+        Args: { "": unknown } | { "": unknown }
+        Returns: number
+      }
+      l2_normalize: {
+        Args: { "": string } | { "": unknown } | { "": unknown }
+        Returns: unknown
+      }
+      match_documents: {
+        Args: { filter?: Json; match_count?: number; query_embedding: string }
+        Returns: {
+          content: string
+          id: number
+          metadata: Json
+          similarity: number
+        }[]
+      }
       search_faq_articles: {
         Args: { search_term: string }
         Returns: {
-          id: string
           category_id: string
           category_name: string
-          title: string
           content: string
+          id: string
           relevance: number
+          title: string
         }[]
+      }
+      sparsevec_out: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      sparsevec_send: {
+        Args: { "": unknown }
+        Returns: string
+      }
+      sparsevec_typmod_in: {
+        Args: { "": unknown[] }
+        Returns: number
       }
       validate_cpf_and_create_profile: {
         Args: { user_cpf: string }
         Returns: boolean
+      }
+      vector_avg: {
+        Args: { "": number[] }
+        Returns: string
+      }
+      vector_dims: {
+        Args: { "": string } | { "": unknown }
+        Returns: number
+      }
+      vector_norm: {
+        Args: { "": string }
+        Returns: number
+      }
+      vector_out: {
+        Args: { "": string }
+        Returns: unknown
+      }
+      vector_send: {
+        Args: { "": string }
+        Returns: string
+      }
+      vector_typmod_in: {
+        Args: { "": unknown[] }
+        Returns: number
       }
     }
     Enums: {
