@@ -407,13 +407,7 @@ export default function VendasPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-4">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="text-center border border-gray-200 p-3 rounded">
-                    <div className="text-gray-600 text-sm mb-1">Cota (%)</div>
-                    <div className="text-lg font-semibold text-gray-900">
-                      {formatPercentage(vendaSelecionada.perc_sinal_recebido)}
-                    </div>
-                  </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="text-center border border-gray-200 p-3 rounded">
                     <div className="text-gray-600 text-sm mb-1">VGV / Pré-Chaves</div>
                     <div className="text-lg font-semibold text-gray-900">
