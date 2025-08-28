@@ -450,7 +450,7 @@ const Pagamentos: React.FC = () => {
                 </div>
               </div>
             </div>
-            <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm ${saldoLiquido >= 0 ? "bg-green-500" : "bg-red-500"}">
+            <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-gray-50 rounded-lg">
                   <CheckCircle className="h-4 w-4 text-gray-600" />
