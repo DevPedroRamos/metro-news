@@ -162,11 +162,7 @@ const Perfil = () => {
       </div>
 
       {/* Seção de Comissões */}
-      <div className="space-y-6">
-        <CommissionsTable />
-        <InvoiceUpload />
-        <PaymentHistory />
-      </div>
+      
     </div>;
 };
 export default Perfil;
