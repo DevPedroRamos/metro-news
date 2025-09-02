@@ -453,7 +453,7 @@ const Pagamentos: React.FC = () => {
                 </div>
                 <div>
                   <p className="text-sm text-lime-950 font-bold">Valor da Nota</p>
-                  <p className={`text-lg font-bold text-white`}>
+                  <p className={`text-lg font-bold text-green-600`}>
                     {formatCurrency(saldoLiquido)}
                   </p>
                 </div>
