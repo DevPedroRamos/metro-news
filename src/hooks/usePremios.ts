@@ -38,6 +38,8 @@ export function usePremios({ periodStart, periodEnd }: UsePremiosProps = {}) {
         .from('premiacao')
         .select('*')
         .ilike('premiado', userData.apelido)
+        .gte('created_at', period.isoStart)
+        .lte('created_at', period.isoEnd)
         .order('created_at', { ascending: false });
 
       if (error) {
