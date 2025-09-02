@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useCurrentPeriod } from "@/hooks/useCurrentPeriod";
+import { useProfileUsers } from "@/hooks/useProfileUsers";
 
 export interface Distrato {
   id: string;
@@ -29,13 +30,14 @@ export interface Distrato {
 
 export const useDistrato = () => {
   const { period, loading: loadingPeriod, error: errorPeriod } = useCurrentPeriod();
+  const { userData, loading: loadingUserData, error: errorUserData } = useProfileUsers();
 
   const [distratos, setDistratos] = useState<Distrato[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (loadingPeriod || !period?.isoStart || !period?.isoEnd) return;
+    if (loadingPeriod || loadingUserData || !period?.isoStart || !period?.isoEnd || !userData?.apelido) return;
 
     const fetchDistratos = async () => {
       try {
@@ -45,6 +47,7 @@ export const useDistrato = () => {
         const { data, error } = await supabase
           .from("distrato")
           .select("*")
+          .ilike('vendedor', userData.apelido)
           .gte("created_at", period.isoStart)
           .lte("created_at", period.isoEnd)
           .order("created_at", { ascending: false });
@@ -64,11 +67,11 @@ export const useDistrato = () => {
     };
 
     fetchDistratos();
-  }, [period?.isoStart, period?.isoEnd, loadingPeriod]);
+  }, [period?.isoStart, period?.isoEnd, loadingPeriod, userData?.apelido, loadingUserData]);
 
   return {
     distratos,
     loading,
-    error: error || errorPeriod,
+    error: error || errorPeriod || errorUserData,
   };
 };
