@@ -28,12 +28,16 @@ export function usePremios({ periodStart, periodEnd }: UsePremiosProps = {}) {
         return [];
       }
 
+      console.log('Filtering premiacao with:', {
+        apelido: userData.apelido,
+        periodStart: period.isoStart,
+        periodEnd: period.isoEnd
+      });
+
       const { data, error } = await supabase
         .from('premiacao')
         .select('*')
-        .eq('premiado', userData.apelido)
-        .gte('created_at', period.isoStart)
-        .lte('created_at', period.isoEnd)
+        .ilike('premiado', userData.apelido)
         .order('created_at', { ascending: false });
 
       if (error) {
