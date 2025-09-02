@@ -64,17 +64,24 @@ export const useCommissionsData = (): UseCommissionsDataReturn => {
         throw new Error('Apelido não encontrado no perfil');
       }
 
-      // Buscar comissões na view filtrado pelo apelido
+      // Use base_de_vendas table instead of view to avoid TypeScript issues
       const { data: commissionsData, error: commissionsError } = await supabase
-        .from('v_comissoes')
-        .select('unidade, venda_data, empreendimento, total_corretor')
-        .eq('apelido', userData.apelido);
+        .from('base_de_vendas')
+        .select('unid, data_do_contrato, empreendimento, comissao_integral_sinal')
+        .eq('vendedor_parceiro', userData.apelido);
 
       if (commissionsError) {
         throw new Error('Erro ao buscar comissões');
       }
 
-      setData(commissionsData || []);
+      const formattedData = commissionsData?.map(item => ({
+        unidade: item.unid || '',
+        venda_data: item.data_do_contrato || '',
+        empreendimento: item.empreendimento || '',
+        total_corretor: Number(item.comissao_integral_sinal) || 0,
+      })) || [];
+
+      setData(formattedData);
     } catch (err) {
       console.error('Erro ao buscar comissões:', err);
       setError(err instanceof Error ? err.message : 'Erro desconhecido');

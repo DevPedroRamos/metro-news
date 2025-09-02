@@ -21,8 +21,8 @@ export interface Distrato {
   valor_superintendente: number;
   valor_gestor: number;
   valor_total: number;
-  comissao_paga: number;
-  descontar: number;
+  comissao_paga: boolean;
+  descontar: boolean;
   observacao: string;
   created_at: string;
 }
@@ -51,7 +51,10 @@ export const useDistrato = () => {
 
         if (error) throw error;
 
-        setDistratos((data as Distrato[]) || []);
+        setDistratos(data?.map(item => ({
+          ...item,
+          id: String(item.id),
+        })) || []);
       } catch (err) {
         console.error("Erro ao buscar distratos:", err);
         setError(err instanceof Error ? err.message : "Erro desconhecido");

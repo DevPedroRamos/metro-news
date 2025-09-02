@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { useProfileUsers } from './useProfileUsers'; // Importando o useProfileUsers
+import { useProfileUsers } from './useProfileUsers';
+import { useCurrentPeriod } from './useCurrentPeriod';
 
 export interface UsePremiosProps {
   periodStart?: string;
@@ -10,79 +11,77 @@ export interface UsePremiosProps {
 export interface Premiacao {
   id: string;
   descricao_premio_regra: string;
-  premiado: string; // Este campo será preenchido com o apelido, se aplicável
+  premiado: string;
   qtd_vendas: number;
   valor_premio: number;
   created_at: string;
 }
 
 export function usePremios({ periodStart, periodEnd }: UsePremiosProps = {}) {
-  const { userData, loading: userLoading, error: userError } = useProfileUsers(); // Obtendo dados do usuário
+  const { userData, loading: userLoading, error: userError } = useProfileUsers();
+  const { period, loading: periodLoading, error: periodError } = useCurrentPeriod();
 
   return useQuery<Premiacao[]>({
-    queryKey: ['premiacao', periodStart, periodEnd, userData?.id], // Incluímos userData.id na queryKey para reatividade
+    queryKey: ['premiacao', period?.isoStart, period?.isoEnd, userData?.apelido],
     queryFn: async () => {
-      let query = supabase
+      if (!userData?.apelido || !period?.isoStart || !period?.isoEnd) {
+        return [];
+      }
+
+      const { data, error } = await supabase
         .from('premiacao')
         .select('*')
+        .eq('premiado', userData.apelido)
+        .gte('created_at', period.isoStart)
+        .lte('created_at', period.isoEnd)
         .order('created_at', { ascending: false });
-
-      if (periodStart) {
-        query = query.gte('created_at', periodStart);
-      }
-
-      if (periodEnd) {
-        query = query.lte('created_at', periodEnd);
-      }
-
-      const { data, error } = await query;
 
       if (error) {
         throw new Error(error.message);
       }
 
-      // Mapeia os dados para substituir o campo premiado pelo apelido, se aplicável
       return data.map((item) => ({
-        ...item,
-        premiado:
-          userData?.id && item.premiado === userData.id && userData.apelido
-            ? userData.apelido
-            : item.premiado, // Substitui pelo apelido se o premiado corresponder ao userData.id
+        id: String(item.id),
+        descricao_premio_regra: item.descricao_premio_regra || '',
+        premiado: item.premiado || '',
+        qtd_vendas: item.qtd_vendas || 0,
+        valor_premio: Number(item.valor_premio) || 0,
+        created_at: item.created_at || '',
       }));
     },
-    enabled: !userLoading && !userError, // Só executa a query quando o usuário não está carregando e não há erro
+    enabled: !userLoading && !userError && !periodLoading && !periodError && !!userData?.apelido,
   });
 }
 
 export function usePremioById(id: string) {
-  const { userData, loading: userLoading, error: userError } = useProfileUsers(); // Obtendo dados do usuário
+  const { userData, loading: userLoading, error: userError } = useProfileUsers();
 
   return useQuery<Premiacao | null>({
-    queryKey: ['premiacao', id, userData?.id], // Incluímos userData.id na queryKey
+    queryKey: ['premiacao', id, userData?.id],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('premiacao')
         .select('*')
-        .eq('id', id)
-        .single();
+        .eq('id', Number(id))
+        .maybeSingle();
 
       if (error) {
-        if (error.code === 'PGRST116') {
-          // No rows returned
-          return null;
-        }
         throw new Error(error.message);
       }
 
-      // Substitui o campo premiado pelo apelido, se aplicável
+      if (!data) {
+        return null;
+      }
+
       return {
-        ...data,
-        premiado:
-          userData?.id && data.premiado === userData.id && userData.apelido
-            ? userData.apelido
-            : data.premiado,
+        id: String(data.id),
+        descricao_premio_regra: data.descricao_premio_regra || '',
+        premiado: data.premiado || '',
+        qtd_vendas: data.qtd_vendas || 0,
+        valor_premio: Number(data.valor_premio) || 0,
+        created_at: data.created_at || '',
       };
     },
-    enabled: !!id && !userLoading && !userError, // Só executa a query se id existe e usuário está carregado sem erros
+    enabled: !!id && !userLoading && !userError,
   });
 }

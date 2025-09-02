@@ -34,7 +34,10 @@ export const useOutros = () => {
 
         if (error) throw error;
 
-        setOutros((data as Outro[]) || []);
+        setOutros(data?.map(item => ({
+          ...item,
+          id: String(item.id),
+        })) || []);
       } catch (err) {
         console.error("Erro ao buscar outros:", err);
         setError(err instanceof Error ? err.message : "Erro desconhecido");

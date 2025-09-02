@@ -79,12 +79,12 @@ export const usePaymentHistory = (): UsePaymentHistoryReturn => {
         throw new Error('Apelido não encontrado no perfil');
       }
 
-      // Buscar comissões na view v_comissoes filtrado pelo apelido
+      // Use base_de_vendas table instead of view to avoid TypeScript issues
       const { data: paymentsData, error: paymentsError } = await supabase
-        .from('v_comissoes')
-        .select('total_corretor, venda_data')
-        .eq('apelido', userData.apelido)
-        .order('venda_data', { ascending: false });
+        .from('base_de_vendas')
+        .select('comissao_integral_sinal, data_do_contrato')
+        .eq('vendedor_parceiro', userData.apelido)
+        .order('data_do_contrato', { ascending: false });
 
       if (paymentsError) {
         throw new Error('Erro ao buscar histórico de pagamentos');
@@ -94,22 +94,24 @@ export const usePaymentHistory = (): UsePaymentHistoryReturn => {
       const weeklyData = new Map<string, { total: number; count: number; weekStart: Date; weekEnd: Date }>();
 
       paymentsData?.forEach(payment => {
-        const paymentDate = new Date(payment.venda_data);
-        const { weekStart, weekEnd } = getWeekBounds(paymentDate);
-        const weekKey = weekStart.toISOString().split('T')[0];
+        if (payment.data_do_contrato) {
+          const paymentDate = new Date(payment.data_do_contrato);
+          const { weekStart, weekEnd } = getWeekBounds(paymentDate);
+          const weekKey = weekStart.toISOString().split('T')[0];
 
-        if (!weeklyData.has(weekKey)) {
-          weeklyData.set(weekKey, {
-            total: 0,
-            count: 0,
-            weekStart,
-            weekEnd
-          });
+          if (!weeklyData.has(weekKey)) {
+            weeklyData.set(weekKey, {
+              total: 0,
+              count: 0,
+              weekStart,
+              weekEnd
+            });
+          }
+
+          const week = weeklyData.get(weekKey)!;
+          week.total += Number(payment.comissao_integral_sinal) || 0;
+          week.count += 1;
         }
-
-        const week = weeklyData.get(weekKey)!;
-        week.total += payment.total_corretor || 0;
-        week.count += 1;
       });
 
       // Converter para array e ordenar por data (mais recente primeiro)
