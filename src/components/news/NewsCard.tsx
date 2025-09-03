@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Calendar, User } from 'lucide-react';
@@ -11,11 +12,20 @@ interface NewsCardProps {
   category: string;
   date: string;
   author: string;
+  slug?: string;
 }
 
-export function NewsCard({ title, description, image, category, date, author }: NewsCardProps) {
+export function NewsCard({ id, title, description, image, category, date, author, slug }: NewsCardProps) {
+  const navigate = useNavigate();
+  
+  const handleClick = () => {
+    if (slug) {
+      navigate(`/noticias/${slug}`);
+    }
+  };
+
   return (
-    <Card className="overflow-hidden group cursor-pointer hover:shadow-lg transition-all duration-300">
+    <Card className="overflow-hidden group cursor-pointer hover:shadow-lg transition-all duration-300" onClick={handleClick}>
       <CardHeader className="p-0">
         <div className="aspect-[16/10] overflow-hidden">
           <img 

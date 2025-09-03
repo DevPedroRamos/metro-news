@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
 import { Calendar, User } from 'lucide-react';
 
@@ -10,11 +11,20 @@ interface NewsListItemProps {
   category: string;
   date: string;
   author: string;
+  slug?: string;
 }
 
-export function NewsListItem({ title, description, image, category, date, author }: NewsListItemProps) {
+export function NewsListItem({ id, title, description, image, category, date, author, slug }: NewsListItemProps) {
+  const navigate = useNavigate();
+  
+  const handleClick = () => {
+    if (slug) {
+      navigate(`/noticias/${slug}`);
+    }
+  };
+
   return (
-    <div className="flex gap-4 p-4 border border-border rounded-lg hover:shadow-md transition-shadow duration-200 cursor-pointer group">
+    <div className="flex gap-4 p-4 border border-border rounded-lg hover:shadow-md transition-shadow duration-200 cursor-pointer group" onClick={handleClick}>
       <div className="w-24 h-24 flex-shrink-0 overflow-hidden rounded-md">
         <img 
           src={image} 

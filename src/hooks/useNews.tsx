@@ -9,6 +9,7 @@ export interface NewsArticle {
   category: string;
   date: string;
   author: string;
+  slug: string;
   is_featured?: boolean;
   view_count?: number;
 }
@@ -27,6 +28,7 @@ export function useNews() {
           .select(`
             id,
             title,
+            slug,
             description,
             featured_image_url,
             author_name,
@@ -46,6 +48,7 @@ export function useNews() {
         const formattedArticles: NewsArticle[] = (data || []).map(article => ({
           id: article.id,
           title: article.title,
+          slug: article.slug,
           description: article.description,
           image: article.featured_image_url || '/src/assets/default-cover.jpg',
           category: (article.news_categories as any)?.name || 'Geral',

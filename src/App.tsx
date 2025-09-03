@@ -10,6 +10,7 @@ import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import Noticias from "./pages/Noticias";
+import NoticiaDetalhes from "./pages/NoticiaDetalhes";
 import Treinamento from "./pages/Treinamento";
 import Processos from "./pages/Processos";
 import LinksUteis from "./pages/LinksUteis";
@@ -49,6 +50,13 @@ const App = () => (
             <ProtectedRoute>
               <DashboardLayout>
                 <Noticias />
+              </DashboardLayout>
+            </ProtectedRoute>
+          } />
+          <Route path="/noticias/:slug" element={
+            <ProtectedRoute>
+              <DashboardLayout>
+                <NoticiaDetalhes />
               </DashboardLayout>
             </ProtectedRoute>
           } />
