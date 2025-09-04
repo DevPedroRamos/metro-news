@@ -140,16 +140,16 @@ const Pagamentos: React.FC = () => {
         if (userError) {
           throw new Error(userError);
         }
-        if (!user?.id) {
-          const errorMsg = "Usuário não autenticado";
+        if (!user?.cpf) {
+          const errorMsg = "Usuário não autenticado ou CPF não encontrado";
           console.error(errorMsg);
           throw new Error(errorMsg);
         }
-        console.log("Buscando pagamentos para o usuário ID:", user.id);
+        console.log("Buscando pagamentos para o usuário CPF:", user.cpf);
         const {
           data: rows,
           error
-        } = await (supabase as any).from("resume").select("*").eq("user_id", user.id).order("created_at", {
+        } = await (supabase as any).from("resume").select("*").eq("cpf", user.cpf).order("created_at", {
           ascending: false
         }).limit(1);
         console.log("Rows:", rows, "Error:", error);
@@ -158,7 +158,7 @@ const Pagamentos: React.FC = () => {
         const {
           data: historyRows,
           error: historyError
-        } = await (supabase as any).from("resume").select("*").eq("user_id", user.id).order("created_at", {
+        } = await (supabase as any).from("resume").select("*").eq("cpf", user.cpf).order("created_at", {
           ascending: false
         }).limit(10);
         if (!historyError && historyRows) {

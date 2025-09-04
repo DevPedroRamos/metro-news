@@ -47,7 +47,7 @@ export const usePayments = () => {
 
   const fetchPaymentData = async () => {
     try {
-      if (userLoading || periodLoading || !user?.id || !period) return;
+      if (userLoading || periodLoading || !user?.cpf || !period) return;
       if (userError) throw new Error(userError);
       if (periodError) throw new Error(periodError);
 
@@ -56,7 +56,7 @@ export const usePayments = () => {
 
       // Buscamos a MESMA linha do resume que originou o período (quando disponível),
       // senão, caímos no fallback do "último registro".
-      let query = supabase.from("resume").select("*").eq("user_id", user.id);
+      let query = supabase.from("resume").select("*").eq("cpf", user.cpf);
 
       if (period.sourceResumeId) {
         query = query.eq("id", period.sourceResumeId).limit(1);
@@ -132,14 +132,14 @@ export const usePayments = () => {
   };
 
   const fetchPaymentHistory = async () => {
-    if (!user?.id) return;
+    if (!user?.cpf) return;
     try {
       setHistoryLoading(true);
 
       const { data: historyData, error: historyError } = await supabase
         .from("resume")
         .select("*")
-        .eq("user_id", user.id)
+        .eq("cpf", user.cpf)
         .order("created_at", { ascending: false });
 
       if (historyError) throw historyError;

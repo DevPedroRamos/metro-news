@@ -56,7 +56,7 @@ export const useCurrentPeriod = () => {
 
   const fetchCurrentPeriod = useCallback(async () => {
     try {
-      if (userLoading || !user?.id) return;
+      if (userLoading || !user?.cpf) return;
       if (userError) throw new Error(userError);
 
       setLoading(true);
@@ -66,7 +66,7 @@ export const useCurrentPeriod = () => {
       const { data: rows, error } = await supabase
         .from("resume")
         .select("id, created_at")
-        .eq("user_id", user.id)
+        .eq("cpf", user.cpf)
         .order("created_at", { ascending: false })
         .limit(1);
 
@@ -106,7 +106,7 @@ export const useCurrentPeriod = () => {
     } finally {
       setLoading(false);
     }
-  }, [user?.id, userLoading, userError]);
+  }, [user?.cpf, userLoading, userError]);
 
   useEffect(() => {
     fetchCurrentPeriod();

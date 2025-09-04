@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/hooks/useAuth';
+import { useProfileUsers } from '@/hooks/useProfileUsers';
 
 interface WeeklyPayment {
   weekStart: string;
@@ -20,7 +20,7 @@ export const usePaymentHistory = (): UsePaymentHistoryReturn => {
   const [data, setData] = useState<WeeklyPayment[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { user } = useAuth();
+  const { userData: user, loading: userLoading, error: userError } = useProfileUsers();
 
   const getWeekBounds = (date: Date) => {
     // Quinta-feira é dia 4 (0=domingo, 1=segunda, ..., 4=quinta)
@@ -39,8 +39,16 @@ export const usePaymentHistory = (): UsePaymentHistoryReturn => {
   };
 
   const fetchPaymentHistory = async () => {
-    if (!user) {
-      setError('Usuário não autenticado');
+    if (userLoading || !user?.cpf) {
+      if (!userLoading && !user?.cpf) {
+        setError('CPF não encontrado no perfil');
+        setLoading(false);
+      }
+      return;
+    }
+
+    if (userError) {
+      setError(userError);
       setLoading(false);
       return;
     }
@@ -49,33 +57,7 @@ export const usePaymentHistory = (): UsePaymentHistoryReturn => {
       setLoading(true);
       setError(null);
 
-      // Primeiro buscar o CPF do usuário na tabela profiles
-      const { data: profileData, error: profileError } = await supabase
-        .from('profiles')
-        .select('cpf')
-        .eq('id', user.id)
-        .single();
-
-      if (profileError) {
-        throw new Error('Erro ao buscar dados do perfil');
-      }
-
-      if (!profileData?.cpf) {
-        throw new Error('CPF não encontrado no perfil');
-      }
-
-      // Buscar apelido na tabela users usando o CPF
-      const { data: userData, error: userError } = await supabase
-        .from('users')
-        .select('apelido')
-        .eq('cpf', profileData.cpf)
-        .single();
-
-      if (userError) {
-        throw new Error('Erro ao buscar dados do usuário');
-      }
-
-      if (!userData?.apelido) {
+      if (!user?.apelido) {
         throw new Error('Apelido não encontrado no perfil');
       }
 
@@ -83,7 +65,7 @@ export const usePaymentHistory = (): UsePaymentHistoryReturn => {
       const { data: paymentsData, error: paymentsError } = await supabase
         .from('base_de_vendas')
         .select('comissao_integral_sinal, data_do_contrato')
-        .eq('vendedor_parceiro', userData.apelido)
+        .eq('vendedor_parceiro', user.apelido)
         .order('data_do_contrato', { ascending: false });
 
       if (paymentsError) {
@@ -136,7 +118,7 @@ export const usePaymentHistory = (): UsePaymentHistoryReturn => {
 
   useEffect(() => {
     fetchPaymentHistory();
-  }, [user]);
+  }, [user, userLoading, userError]);
 
   return {
     data,
