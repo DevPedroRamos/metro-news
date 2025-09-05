@@ -11,7 +11,7 @@ const Campeoes = () => {
   const {
     user
   } = useAuth();
-  const [activeFilter, setActiveFilter] = useState<RankingType>('corretor');
+  const [activeFilter, setActiveFilter] = useState<RankingType>('consultor');
   const {
     data,
     loading,
@@ -49,7 +49,7 @@ const Campeoes = () => {
         </>
       ) : (
         <>
-          <RankingPodium topThree={topThree} />
+          <RankingPodium topThree={topThree} rankingType={activeFilter} />
           <RankingTable 
             data={data} 
             userPosition={userPosition} 
@@ -57,6 +57,7 @@ const Campeoes = () => {
             loadMore={loadMore}
             hasMore={hasMore}
             loadingMore={loadingMore}
+            rankingType={activeFilter}
           />
         </>
       )}

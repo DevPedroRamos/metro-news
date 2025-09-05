@@ -71,10 +71,50 @@ export const useProfileData = () => {
           visitas: Number(stats.visitas_count) || 0
         };
 
-        const ranking = {
+        let ranking = {
           position: Number(stats.ranking_position) || 0,
           total: Number(stats.total_users) || 0
         };
+
+        // Try to update ranking from base_de_vendas if we can get current period
+        try {
+          const { data: periods } = await supabase.rpc("get_current_period" as any);
+          const period = Array.isArray(periods) ? periods[0] : null;
+          
+          if (period?.id && userData.apelido) {
+            const { data: baseVendas } = await supabase
+              .from('base_de_vendas')
+              .select('vendedor_parceiro')
+              .eq('periodo_id', period.id);
+
+            if (baseVendas) {
+              const consultorCounts: Record<string, number> = {};
+              baseVendas.forEach(item => {
+                const consultor = item.vendedor_parceiro;
+                if (consultor) {
+                  consultorCounts[consultor] = (consultorCounts[consultor] || 0) + 1;
+                }
+              });
+
+              const sortedConsultors = Object.entries(consultorCounts)
+                .sort(([,a], [,b]) => b - a)
+                .map(([name]) => name);
+
+              const userPosition = sortedConsultors.findIndex(
+                consultor => consultor.toLowerCase() === userData.apelido.toLowerCase()
+              );
+
+              if (userPosition >= 0) {
+                ranking = {
+                  position: userPosition + 1,
+                  total: sortedConsultors.length
+                };
+              }
+            }
+          }
+        } catch (err) {
+          console.error('Error updating ranking from base_de_vendas:', err);
+        }
 
         setData({
           user: userData,

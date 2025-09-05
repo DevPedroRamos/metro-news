@@ -24,6 +24,7 @@ interface RankingTableProps {
   loadMore: () => void;
   hasMore: boolean;
   loadingMore: boolean;
+  rankingType: 'consultor' | 'gerente' | 'superintendente' | 'diretor';
 }
 export const RankingTable: React.FC<RankingTableProps> = ({
   data,
@@ -31,7 +32,8 @@ export const RankingTable: React.FC<RankingTableProps> = ({
   currentUserId,
   loadMore,
   hasMore,
-  loadingMore
+  loadingMore,
+  rankingType
 }) => {
   // Exibir do 4º colocado em diante
   const tableData = data.slice(3);
@@ -91,7 +93,7 @@ export const RankingTable: React.FC<RankingTableProps> = ({
             <TableHead className="text-center font-semibold text-gray-700">
               <div className="flex items-center justify-center space-x-1">
                 <TrendingUp className="w-4 h-4" />
-                <span>Vendas</span>
+                <span>{rankingType === 'consultor' ? 'Vendas' : 'Menções'}</span>
               </div>
             </TableHead>
             
@@ -144,7 +146,9 @@ export const RankingTable: React.FC<RankingTableProps> = ({
                     <span className={`text-lg font-bold ${isCurrentUser ? "text-red-600" : "text-gray-900"}`}>
                       {person.vendas}
                     </span>
-                    <span className="text-xs text-gray-500 font-medium">vendas</span>
+                    <span className="text-xs text-gray-500 font-medium">
+                      {rankingType === 'consultor' ? 'vendas' : 'menções'}
+                    </span>
                   </div>
                 </TableCell>
 

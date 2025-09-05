@@ -10,10 +10,11 @@ interface FilterTabsProps {
 export const FilterTabs: React.FC<FilterTabsProps> = ({ activeFilter, onFilterChange }) => {
   return (
     <Tabs value={activeFilter} onValueChange={(value) => onFilterChange(value as RankingType)} className="mb-6">
-      <TabsList className="grid w-full max-w-md grid-cols-3">
-        <TabsTrigger value="corretor">Corretor</TabsTrigger>
+      <TabsList className="grid w-full max-w-3xl grid-cols-4">
+        <TabsTrigger value="consultor">Consultor</TabsTrigger>
         <TabsTrigger value="gerente">Gerente</TabsTrigger>
         <TabsTrigger value="superintendente">Superintendente</TabsTrigger>
+        <TabsTrigger value="diretor">Diretor</TabsTrigger>
       </TabsList>
     </Tabs>
   );

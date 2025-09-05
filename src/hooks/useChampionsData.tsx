@@ -1,8 +1,9 @@
 import { useState, useEffect, useMemo } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
+import { useCurrentPeriod } from '@/hooks/useCurrentPeriod';
 
-export type RankingType = 'corretor' | 'gerente' | 'superintendente';
+export type RankingType = 'consultor' | 'gerente' | 'superintendente' | 'diretor';
 
 interface RankingData {
   id: string;
@@ -18,6 +19,7 @@ interface RankingData {
 
 export const useChampionsData = (rankingType: RankingType) => {
   const { user: authUser } = useAuth();
+  const { period, loading: periodLoading } = useCurrentPeriod();
   const [allData, setAllData] = useState<RankingData[]>([]);
   const [displayedData, setDisplayedData] = useState<RankingData[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -34,33 +36,128 @@ export const useChampionsData = (rankingType: RankingType) => {
         setError(null);
         setCurrentPage(1);
 
-        // Usar função otimizada do PostgreSQL
-        const { data: rankingData, error } = await supabase
-          .rpc('get_champions_ranking_optimized', {
-            ranking_type: rankingType,
-            limit_count: 1000, // Buscar todos os dados primeiro
-            offset_count: 0
-          });
-
-        if (error) throw error;
-
-        if (!rankingData) {
+        if (!period?.id || periodLoading) {
           setAllData([]);
           setDisplayedData([]);
           return;
         }
 
-        // Mapear dados da função para o formato esperado
-        const mappedData: RankingData[] = rankingData.map((item: any) => ({
-          id: item.user_id || `${rankingType}-${item.name}`,
-          name: item.name || item.nickname,
-          apelido: item.nickname || item.name,
-          vendas: Number(item.sales_count) || 0,
-          recebimento: Number(item.revenue) || 0,
-          visitas: Number(item.visits_count) || 0,
-          contratos: Number(item.contracts_count) || 0,
-          avatar_url: item.avatar_url
-        }));
+        // Fetch from base_de_vendas filtered by current period
+        const { data: baseVendas, error } = await supabase
+          .from('base_de_vendas')
+          .select('*')
+          .eq('periodo_id', period.id);
+
+        if (error) throw error;
+
+        if (!baseVendas || baseVendas.length === 0) {
+          setAllData([]);
+          setDisplayedData([]);
+          return;
+        }
+
+        let mappedData: RankingData[] = [];
+
+        if (rankingType === 'consultor') {
+          // Group by vendedor_parceiro and count occurrences
+          const consultorCounts = baseVendas.reduce((acc, item) => {
+            const consultor = item.vendedor_parceiro;
+            if (consultor) {
+              acc[consultor] = (acc[consultor] || 0) + 1;
+            }
+            return acc;
+          }, {} as Record<string, number>);
+
+          // Fetch user profiles for consultores
+          const { data: users } = await supabase
+            .from('users')
+            .select('id, apelido, name, cpf')
+            .eq('role', 'corretor');
+
+          const { data: profiles } = await supabase
+            .from('profiles')
+            .select('id, avatar_url');
+
+          mappedData = Object.entries(consultorCounts).map(([consultor, vendas]) => {
+            const user = users?.find(u => u.apelido?.toLowerCase() === consultor.toLowerCase());
+            const profile = profiles?.find(p => p.id === user?.id);
+            
+            return {
+              id: user?.id || `consultor-${consultor}`,
+              name: user?.name || consultor,
+              apelido: consultor,
+              vendas: vendas,
+              recebimento: 0,
+              visitas: 0,
+              contratos: 0,
+              cpf: user?.cpf,
+              avatar_url: profile?.avatar_url
+            };
+          });
+
+        } else if (rankingType === 'gerente') {
+          // Group by gerente and count mentions
+          const gerenteCounts = baseVendas.reduce((acc, item) => {
+            const gerente = item.gerente;
+            if (gerente) {
+              acc[gerente] = (acc[gerente] || 0) + 1;
+            }
+            return acc;
+          }, {} as Record<string, number>);
+
+          mappedData = Object.entries(gerenteCounts).map(([gerente, mentions]) => ({
+            id: `gerente-${gerente}`,
+            name: gerente,
+            apelido: gerente,
+            vendas: mentions,
+            recebimento: 0,
+            visitas: 0,
+            contratos: 0
+          }));
+
+        } else if (rankingType === 'superintendente') {
+          // Group by superintendente and count mentions
+          const superintendenteCounts = baseVendas.reduce((acc, item) => {
+            const superintendente = item.superintendente;
+            if (superintendente) {
+              acc[superintendente] = (acc[superintendente] || 0) + 1;
+            }
+            return acc;
+          }, {} as Record<string, number>);
+
+          mappedData = Object.entries(superintendenteCounts).map(([superintendente, mentions]) => ({
+            id: `superintendente-${superintendente}`,
+            name: superintendente,
+            apelido: superintendente,
+            vendas: mentions,
+            recebimento: 0,
+            visitas: 0,
+            contratos: 0
+          }));
+
+        } else if (rankingType === 'diretor') {
+          // Group by diretor and count mentions
+          const diretorCounts = baseVendas.reduce((acc, item) => {
+            const diretor = item.diretor;
+            if (diretor) {
+              acc[diretor] = (acc[diretor] || 0) + 1;
+            }
+            return acc;
+          }, {} as Record<string, number>);
+
+          mappedData = Object.entries(diretorCounts).map(([diretor, mentions]) => ({
+            id: `diretor-${diretor}`,
+            name: diretor,
+            apelido: diretor,
+            vendas: mentions,
+            recebimento: 0,
+            visitas: 0,
+            contratos: 0
+          }));
+        }
+
+        // Sort by vendas (sales/mentions) in descending order
+        mappedData.sort((a, b) => b.vendas - a.vendas);
 
         setAllData(mappedData);
         setDisplayedData(mappedData.slice(0, ITEMS_PER_PAGE));
@@ -74,7 +171,7 @@ export const useChampionsData = (rankingType: RankingType) => {
     };
 
     fetchChampionsData();
-  }, [rankingType]);
+  }, [rankingType, period?.id, periodLoading]);
 
   // Função para carregar mais dados
   const loadMore = () => {
@@ -99,10 +196,10 @@ export const useChampionsData = (rankingType: RankingType) => {
     if (!authUser?.id || !allData.length) return null;
     
     const position = allData.findIndex(item => {
-      if (rankingType === 'corretor') {
+      if (rankingType === 'consultor') {
         return item.id === authUser.id;
       }
-      // Para gerente/superintendente, precisaríamos buscar pelos dados do usuário
+      // Para gerente/superintendente/diretor, precisaríamos buscar pelos dados do usuário
       return false;
     });
     
