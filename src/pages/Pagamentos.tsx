@@ -134,14 +134,17 @@ const Pagamentos: React.FC = () => {
     receitaItems,
     descontoItems
   } = usePayments();
-  const receitaItemsWithIcons = useMemo(() => [
-    { ...receitaItems[0], icon: <Banknote className="h-5 w-5" /> },
-    { ...receitaItems[1], icon: <Calendar className="h-5 w-5" /> },
-    { ...receitaItems[2], icon: <TrendingUp className="h-5 w-5" /> },
-    { ...receitaItems[3], icon: <Award className="h-5 w-5" /> },
-    { ...receitaItems[4], icon: <Wallet className="h-5 w-5" /> },
-    { ...receitaItems[5], icon: <Gift className="h-5 w-5" /> },
-  ], [receitaItems]);
+  const receitaItemsWithIcons = useMemo(() => {
+    // Filter out the "valor_base" (Fixo) item
+    const filteredItems = receitaItems.filter(item => item.key !== 'valor_base');
+    return [
+      { ...filteredItems[0], icon: <Calendar className="h-5 w-5" /> }, // pagar - Pagamento Semanal
+      { ...filteredItems[1], icon: <TrendingUp className="h-5 w-5" /> }, // comissao
+      { ...filteredItems[2], icon: <Award className="h-5 w-5" /> }, // premio
+      { ...filteredItems[3], icon: <Wallet className="h-5 w-5" /> }, // saldo_cef
+      { ...filteredItems[4], icon: <Gift className="h-5 w-5" /> }, // outras
+    ];
+  }, [receitaItems]);
 
   const descontoItemsWithIcons = useMemo(() => [
     { ...descontoItems[0], icon: <ArrowDown className="h-5 w-5" /> },
@@ -219,11 +222,20 @@ const Pagamentos: React.FC = () => {
         <section>
           <SectionHeader title="Receitas" icon={<TrendingUp className="h-4 w-4" />} description="Todas as fontes de receita do período" />
           {loading ? <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <Skeleton className="h-32 md:col-span-2 lg:col-span-2" />
               {Array.from({
-            length: 6
+            length: 4
           }).map((_, i) => <Skeleton key={i} className="h-32" />)}
             </div> : <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {receitaItemsWithIcons.map(item => <StatCard key={item.key} title={item.label} value={item.value} icon={item.icon} type="neutral" />)}
+              {receitaItemsWithIcons.map((item, index) => 
+                index === 0 ? (
+                  <div key={item.key} className="md:col-span-2 lg:col-span-2">
+                    <StatCard title={item.label} value={item.value} icon={item.icon} type="neutral" />
+                  </div>
+                ) : (
+                  <StatCard key={item.key} title={item.label} value={item.value} icon={item.icon} type="neutral" />
+                )
+              )}
             </div>}
         </section>
 
