@@ -1398,6 +1398,14 @@ export type Database = {
           visitas_hoje: number
         }[]
       }
+      get_current_period: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          end: string
+          id: number
+          start: string
+        }[]
+      }
       get_dashboard_stats: {
         Args: Record<PropertyKey, never>
         Returns: {
