@@ -55,10 +55,11 @@ export const usePayments = () => {
       setError(null);
 
       // Query resume data for the current period and user
-      const { data: rows, error } = await supabase
+      const { data: rows, error } = await (supabase as any)
         .from("resume")
         .select("*")
         .eq("cpf", user.cpf)
+        .eq("periodo_id", period.id)
         .order("created_at", { ascending: false })
         .limit(1);
 
@@ -129,14 +130,15 @@ export const usePayments = () => {
   };
 
   const fetchPaymentHistory = async () => {
-    if (!user?.cpf) return;
+    if (!user?.cpf || !period) return;
     try {
       setHistoryLoading(true);
 
-      const { data: historyData, error: historyError } = await supabase
+      const { data: historyData, error: historyError } = await (supabase as any)
         .from("resume")
         .select("*")
         .eq("cpf", user.cpf)
+        .neq("periodo_id", period.id)
         .order("created_at", { ascending: false });
 
       if (historyError) throw historyError;

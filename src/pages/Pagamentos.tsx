@@ -12,6 +12,7 @@ import { InvoiceUpload } from "@/components/profile/InvoiceUpload";
 import { Table, TableBody, TableHead, TableHeader, TableRow, TableCell } from "@/components/ui/table";
 import { Info, TrendingUp, DollarSign, Calendar, Award, CreditCard, Wallet, Target, Gift, Banknote, AlertTriangle, ArrowDown, ArrowUp, Clock, CheckCircle } from "lucide-react";
 import { useProfileUsers } from "@/hooks/useProfileUsers";
+import { usePayments } from "@/hooks/usePayments";
 interface ApiResponse {
   period_start: string;
   period_end: string;
@@ -121,211 +122,37 @@ const MetaSEO: React.FC = () => {
   return null;
 };
 const Pagamentos: React.FC = () => {
-  const [data, setData] = useState<ApiResponse | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [history, setHistory] = useState<any[]>([]);
-  const [historyLoading, setHistoryLoading] = useState(false);
   const {
-    userData: user,
-    loading: userLoading,
-    error: userError
-  } = useProfileUsers();
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        if (userLoading) return;
-        setLoading(true);
-        setError(null);
-        if (userError) {
-          throw new Error(userError);
-        }
-        if (!user?.cpf) {
-          const errorMsg = "Usuário não autenticado ou CPF não encontrado";
-          console.error(errorMsg);
-          throw new Error(errorMsg);
-        }
-        console.log("Buscando pagamentos para o usuário CPF:", user.cpf);
-        const {
-          data: rows,
-          error
-        } = await (supabase as any).from("resume").select("*").eq("cpf", user.cpf).order("created_at", {
-          ascending: false
-        }).limit(1);
-        console.log("Rows:", rows, "Error:", error);
-        if (error) throw error;
-        setHistoryLoading(true);
-        const {
-          data: historyRows,
-          error: historyError
-        } = await (supabase as any).from("resume").select("*").eq("cpf", user.cpf).order("created_at", {
-          ascending: false
-        }).limit(10);
-        if (!historyError && historyRows) {
-          const formattedHistory = historyRows.map((row: any) => {
-            const createdDate = new Date(row.created_at);
-            const createdDay = createdDate.getDay();
-            const lastThursday = new Date(createdDate);
-            const daysSinceLastThursday = (createdDay + 7 - 4) % 7 || 7;
-            lastThursday.setDate(createdDate.getDate() - daysSinceLastThursday);
-            const nextWednesday = new Date(lastThursday);
-            nextWednesday.setDate(lastThursday.getDate() + 6);
-            const formatDate = (date: Date) => {
-              const day = String(date.getDate()).padStart(2, "0");
-              const month = String(date.getMonth() + 1).padStart(2, "0");
-              const year = date.getFullYear();
-              return `${day}/${month}/${year}`;
-            };
-            const receita_total = Number(row.valor_base || 0) + Number(row.pagar || 0) + Number(row.comissao || 0) + Number(row.premio || 0) + Number(row.saldo_cef || 0) + Number(row.outras || 0);
-            const descontos_total = Number(row.adiantamento || 0) + Number(row.antecipacao || 0) + Number(row.distrato || 0) + Number(row.outros || 0) + Number(row.saldo_permuta || 0) + Number(row.saldo_neg_periodos_anteriores || 0);
-            return {
-              id: row.id,
-              period_start: formatDate(lastThursday),
-              period_end: formatDate(nextWednesday),
-              receita_total,
-              descontos_total,
-              total_receber: receita_total - descontos_total
-            };
-          });
-          setHistory(formattedHistory);
-        }
-        setHistoryLoading(false);
-        const row = rows?.[0];
-        if (row) {
-          const createdDate = new Date(row.created_at);
-          const createdDay = createdDate.getDay();
-          const lastThursday = new Date(createdDate);
-          const daysSinceLastThursday = (createdDay + 7 - 4) % 7 || 7;
-          lastThursday.setDate(createdDate.getDate() - daysSinceLastThursday);
-          const nextWednesday = new Date(lastThursday);
-          nextWednesday.setDate(lastThursday.getDate() + 6);
-          const formatDate = (date: Date) => {
-            const day = String(date.getDate()).padStart(2, "0");
-            const month = String(date.getMonth() + 1).padStart(2, "0");
-            const year = date.getFullYear();
-            return `${day}/${month}/${year}`;
-          };
-          const mapped: ApiResponse = {
-            period_start: formatDate(lastThursday),
-            period_end: formatDate(nextWednesday),
-            receita: {
-              valor_base: Number(row.valor_base || 0),
-              pagar: Number(row.pagar || 0),
-              comissao: Number(row.comissao || 0),
-              premio: Number(row.premio || 0),
-              saldo_cef: Number(row.saldo_cef || 0),
-              outras: Number(row.outras || 0)
-            },
-            descontos: {
-              adiantamento: Number(row.adiantamento || 0),
-              antecipacao: Number(row.antecipacao || 0),
-              distrato: Number(row.distrato || 0),
-              outros: Number(row.outros || 0),
-              saldo_permuta: Number(row.saldo_permuta || 0),
-              saldo_neg_periodos_anteriores: Number(row.saldo_neg_periodos_anteriores || 0)
-            },
-            saldo_negativo_total: Number(row.adiantamento || 0) + Number(row.antecipacao || 0) + Number(row.distrato || 0) + Number(row.outros || 0) + Number(row.saldo_permuta || 0) + Number(row.saldo_neg_periodos_anteriores || 0)
-          };
-          setData(mapped);
-        } else {
-          setData({
-            period_start: "",
-            period_end: "",
-            receita: {
-              valor_base: 0,
-              pagar: 0,
-              comissao: 0,
-              premio: 0,
-              saldo_cef: 0,
-              outras: 0
-            },
-            descontos: {
-              adiantamento: 0,
-              antecipacao: 0,
-              distrato: 0,
-              outros: 0,
-              saldo_permuta: 0,
-              saldo_neg_periodos_anteriores: 0
-            },
-            saldo_negativo_total: 0
-          });
-        }
-      } catch (err) {
-        console.error("Erro ao carregar pagamentos", err);
-        setError("Não foi possível carregar os pagamentos.");
-      } finally {
-        setLoading(false);
-        setHistoryLoading(false);
-      }
-    };
-    fetchData();
-  }, [user, userLoading, userError]);
-  const receitaItems = useMemo(() => [{
-    key: "valor_base",
-    label: "Fixo",
-    value: data?.receita.valor_base ?? 0,
-    icon: <Banknote className="h-5 w-5" />
-  }, {
-    key: "pagar",
-    label: "Valor de ajuda de custo semanal",
-    value: data?.receita.pagar ?? 0,
-    icon: <Calendar className="h-5 w-5" />
-  }, {
-    key: "comissao",
-    label: "Comissão",
-    value: data?.receita.comissao ?? 0,
-    icon: <TrendingUp className="h-5 w-5" />
-  }, {
-    key: "premio",
-    label: "Prêmio",
-    value: data?.receita.premio ?? 0,
-    icon: <Award className="h-5 w-5" />
-  }, {
-    key: "saldo_cef",
-    label: "Saldo CEF",
-    value: data?.receita.saldo_cef ?? 0,
-    icon: <Wallet className="h-5 w-5" />
-  }, {
-    key: "outras",
-    label: "Outras",
-    value: data?.receita.outras ?? 0,
-    icon: <Gift className="h-5 w-5" />
-  }], [data]);
-  const descontoItems = useMemo(() => [{
-    key: "adiantamento",
-    label: "Adiantamento",
-    value: data?.descontos.adiantamento ?? 0,
-    icon: <ArrowDown className="h-5 w-5" />
-  }, {
-    key: "antecipacao",
-    label: "Antecipação",
-    value: data?.descontos.antecipacao ?? 0,
-    icon: <Clock className="h-5 w-5" />
-  }, {
-    key: "distrato",
-    label: "Distrato",
-    value: data?.descontos.distrato ?? 0,
-    icon: <AlertTriangle className="h-5 w-5" />
-  }, {
-    key: "outros",
-    label: "Outros",
-    value: data?.descontos.outros ?? 0,
-    icon: <CreditCard className="h-5 w-5" />
-  }, {
-    key: "saldo_neg_periodos_anteriores",
-    label: "Saldo Neg. Períodos Anteriores",
-    value: data?.descontos.saldo_neg_periodos_anteriores ?? 0,
-    icon: <ArrowDown className="h-5 w-5" />
-  }], [data]);
-  const totalReceita = useMemo(() => {
-    if (!data) return 0;
-    return Object.values(data.receita).reduce((sum, value) => sum + value, 0);
-  }, [data]);
-  const totalDescontos = useMemo(() => {
-    if (!data) return 0;
-    return Object.values(data.descontos).reduce((sum, value) => sum + value, 0);
-  }, [data]);
-  const saldoLiquido = totalReceita - totalDescontos;
+    data,
+    loading,
+    error,
+    history,
+    historyLoading,
+    totalReceita,
+    totalDescontos,
+    totalReceber,
+    receitaItems,
+    descontoItems
+  } = usePayments();
+  const receitaItemsWithIcons = useMemo(() => [
+    { ...receitaItems[0], icon: <Banknote className="h-5 w-5" /> },
+    { ...receitaItems[1], icon: <Calendar className="h-5 w-5" /> },
+    { ...receitaItems[2], icon: <TrendingUp className="h-5 w-5" /> },
+    { ...receitaItems[3], icon: <Award className="h-5 w-5" /> },
+    { ...receitaItems[4], icon: <Wallet className="h-5 w-5" /> },
+    { ...receitaItems[5], icon: <Gift className="h-5 w-5" /> },
+  ], [receitaItems]);
+
+  const descontoItemsWithIcons = useMemo(() => [
+    { ...descontoItems[0], icon: <ArrowDown className="h-5 w-5" /> },
+    { ...descontoItems[1], icon: <Clock className="h-5 w-5" /> },
+    { ...descontoItems[2], icon: <AlertTriangle className="h-5 w-5" /> },
+    { ...descontoItems[3], icon: <CreditCard className="h-5 w-5" /> },
+    { ...descontoItems[4], icon: <ArrowDown className="h-5 w-5" /> },
+    { ...descontoItems[5], icon: <ArrowDown className="h-5 w-5" /> },
+  ], [descontoItems]);
+
+  const saldoLiquido = totalReceber;
   return <div className="min-h-screen bg-gray-50">
       <MetaSEO />
 
@@ -396,7 +223,7 @@ const Pagamentos: React.FC = () => {
             length: 6
           }).map((_, i) => <Skeleton key={i} className="h-32" />)}
             </div> : <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {receitaItems.map(item => <StatCard key={item.key} title={item.label} value={item.value} icon={item.icon} type="neutral" />)}
+              {receitaItemsWithIcons.map(item => <StatCard key={item.key} title={item.label} value={item.value} icon={item.icon} type="neutral" />)}
             </div>}
         </section>
 
@@ -410,7 +237,7 @@ const Pagamentos: React.FC = () => {
             length: 6
           }).map((_, i) => <Skeleton key={i} className="h-32" />)}
             </div> : <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {descontoItems.map(item => <StatCard key={item.key} title={item.label} value={item.value} icon={item.icon} type="neutral" />)}
+              {descontoItemsWithIcons.map(item => <StatCard key={item.key} title={item.label} value={item.value} icon={item.icon} type="neutral" />)}
             </div>}
         </section>
 

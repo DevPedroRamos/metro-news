@@ -27,15 +27,29 @@ export const useCurrentPeriod = () => {
       setLoading(true);
       setError(null);
 
-      // For now, return a mock period since the table structure is not yet in TypeScript types
-      // This will be updated once the database types are regenerated
-      setPeriod({
-        id: 1,
-        start: "01/01/2024",
-        end: "07/01/2024",
-        isoStart: "2024-01-01",
-        isoEnd: "2024-01-07",
-      });
+      // Fetch the latest period from payments.periodo
+      const { data: periods, error } = await supabase.rpc("get_current_period" as any);
+
+      if (error) throw error;
+
+      if (periods) {
+        setPeriod({
+          id: periods.id,
+          start: formatBR(periods.start),
+          end: formatBR(periods.end),
+          isoStart: periods.start,
+          isoEnd: periods.end,
+        });
+      } else {
+        // No period found - set empty period
+        setPeriod({
+          id: 0,
+          start: "",
+          end: "",
+          isoStart: "",
+          isoEnd: "",
+        });
+      }
     } catch (err) {
       console.error("Erro ao buscar período atual", err);
       setError("Não foi possível buscar o período atual.");
