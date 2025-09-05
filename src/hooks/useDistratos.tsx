@@ -37,19 +37,18 @@ export const useDistrato = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (loadingPeriod || loadingUserData || !period?.isoStart || !period?.isoEnd || !userData?.apelido) return;
+    if (loadingPeriod || loadingUserData || !period?.id || period.id <= 0 || !userData?.apelido) return;
 
     const fetchDistratos = async () => {
       try {
         setLoading(true);
         setError(null);
 
-        const { data, error } = await supabase
+        const { data, error } = await (supabase as any)
           .from("distrato")
           .select("*")
           .ilike('vendedor', userData.apelido)
-          .gte("created_at", period.isoStart)
-          .lte("created_at", period.isoEnd)
+          .eq("periodo_id", period.id)
           .order("created_at", { ascending: false });
 
         if (error) throw error;
@@ -67,7 +66,7 @@ export const useDistrato = () => {
     };
 
     fetchDistratos();
-  }, [period?.isoStart, period?.isoEnd, loadingPeriod, userData?.apelido, loadingUserData]);
+  }, [period?.id, loadingPeriod, userData?.apelido, loadingUserData]);
 
   return {
     distratos,

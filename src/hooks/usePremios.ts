@@ -22,24 +22,22 @@ export function usePremios({ periodStart, periodEnd }: UsePremiosProps = {}) {
   const { period, loading: periodLoading, error: periodError } = useCurrentPeriod();
 
   return useQuery<Premiacao[]>({
-    queryKey: ['premiacao', period?.isoStart, period?.isoEnd, userData?.apelido],
+    queryKey: ['premiacao', period?.id, userData?.apelido],
     queryFn: async () => {
-      if (!userData?.apelido || !period?.isoStart || !period?.isoEnd) {
+      if (!userData?.apelido || !period?.id || period.id <= 0) {
         return [];
       }
 
       console.log('Filtering premiacao with:', {
         apelido: userData.apelido,
-        periodStart: period.isoStart,
-        periodEnd: period.isoEnd
+        periodId: period.id
       });
 
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from('premiacao')
         .select('*')
         .ilike('premiado', userData.apelido)
-        .gte('created_at', period.isoStart)
-        .lte('created_at', period.isoEnd)
+        .eq('periodo_id', period.id)
         .order('created_at', { ascending: false });
 
       if (error) {
@@ -55,7 +53,7 @@ export function usePremios({ periodStart, periodEnd }: UsePremiosProps = {}) {
         created_at: item.created_at || '',
       }));
     },
-    enabled: !userLoading && !userError && !periodLoading && !periodError && !!userData?.apelido,
+    enabled: !userLoading && !userError && !periodLoading && !periodError && !!userData?.apelido && !!period?.id && period.id > 0,
   });
 }
 

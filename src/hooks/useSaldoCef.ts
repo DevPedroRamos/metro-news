@@ -37,7 +37,7 @@ export const useSaldoCef = () => {
 
   const fetchSaldoCef = useCallback(async () => {
     try {
-      if (periodLoading || !period?.isoStart || !period?.isoEnd) return;
+      if (periodLoading || !period?.id || period.id <= 0) return;
       if (userLoading || !user?.apelido) return;
       if (periodError) throw new Error(periodError);
       if (userError) throw new Error(userError);
@@ -45,12 +45,11 @@ export const useSaldoCef = () => {
       setLoading(true);
       setError(null);
 
-      const { data: rows, error } = await supabase
+      const { data: rows, error } = await (supabase as any)
         .from("saldo_cef")
         .select("*")
         .eq("vendedor_parceiro", user.apelido)
-        .gte("created_at", period.isoStart)
-        .lte("created_at", period.isoEnd)
+        .eq("periodo_id", period.id)
         .order("created_at", { ascending: false });
 
       if (error) throw error;
@@ -64,8 +63,7 @@ export const useSaldoCef = () => {
       setLoading(false);
     }
   }, [
-    period?.isoStart,
-    period?.isoEnd,
+    period?.id,
     periodLoading,
     periodError,
     user?.apelido,

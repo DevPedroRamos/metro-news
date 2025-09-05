@@ -84,7 +84,7 @@ export const useVendas = () => {
 
   const fetchVendas = async () => {
     try {
-      if (userLoading || periodLoading || !user?.id || !period) return;
+      if (userLoading || periodLoading || !user?.id || !period || !period.id || period.id <= 0) return;
       if (userError) throw new Error(userError);
       if (periodError) throw new Error(periodError);
 
@@ -104,26 +104,12 @@ export const useVendas = () => {
 
       const apelido: string = userRow.apelido;
 
-      // Converter período BR -> limites ISO para created_at
-      const startYMD = brToISODate(period.start);
-      const endYMD = brToISODate(period.end);
-
-      if (!startYMD || !endYMD) {
-        // período inválido => retorna vazio sem erro
-        setVendas([]);
-        return;
-      }
-
-      const startAt = dayStartISO(startYMD);
-      const endExclusive = nextDayStartISO(endYMD);
-
-      // Filtra por vendedor + created_at dentro do período (inclusivo no início, exclusivo no fim)
-      const { data, error } = await supabase
+      // Filtra por vendedor + periodo_id
+      const { data, error } = await (supabase as any)
         .from("base_de_vendas")
         .select("*")
         .eq("vendedor_parceiro", apelido)
-        .gte("created_at", startAt)
-        .lt("created_at", endExclusive)
+        .eq("periodo_id", period.id)
         .order("created_at", { ascending: false });
 
       if (error) throw error;
@@ -155,7 +141,7 @@ export const useVendas = () => {
 
   useEffect(() => {
     fetchVendas();
-  }, [user, userLoading, userError, period, periodLoading, periodError]);
+  }, [user, userLoading, userError, period?.id, periodLoading, periodError]);
 
   const data: VendasData = useMemo(
     () => ({

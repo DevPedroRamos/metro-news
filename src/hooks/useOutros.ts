@@ -18,18 +18,17 @@ export const useOutros = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (loadingPeriod || !period?.isoStart || !period?.isoEnd) return;
+    if (loadingPeriod || !period?.id || period.id <= 0) return;
 
     const fetchOutros = async () => {
       try {
         setLoading(true);
         setError(null);
 
-        const { data, error } = await supabase
+        const { data, error } = await (supabase as any)
           .from("outros")
           .select("*")
-          .gte("created_at", period.isoStart)
-          .lte("created_at", period.isoEnd)
+          .eq("periodo_id", period.id)
           .order("created_at", { ascending: false });
 
         if (error) throw error;
@@ -47,7 +46,7 @@ export const useOutros = () => {
     };
 
     fetchOutros();
-  }, [period?.isoStart, period?.isoEnd, loadingPeriod]);
+  }, [period?.id, loadingPeriod]);
 
   return {
     outros,
