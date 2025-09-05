@@ -54,17 +54,14 @@ export const usePayments = () => {
       setLoading(true);
       setError(null);
 
-      // Buscamos a MESMA linha do resume que originou o período (quando disponível),
-      // senão, caímos no fallback do "último registro".
-      let query = supabase.from("resume").select("*").eq("cpf", user.cpf);
+      // Query resume data for the current period and user
+      const { data: rows, error } = await supabase
+        .from("resume")
+        .select("*")
+        .eq("cpf", user.cpf)
+        .order("created_at", { ascending: false })
+        .limit(1);
 
-      if (period.sourceResumeId) {
-        query = query.eq("id", period.sourceResumeId).limit(1);
-      } else {
-        query = query.order("created_at", { ascending: false }).limit(1);
-      }
-
-      const { data: rows, error } = await query;
       if (error) throw error;
 
       const row = rows?.[0];

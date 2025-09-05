@@ -1236,22 +1236,7 @@ export type Database = {
           user_id?: string | null
           valor_base?: number | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "fk_resume_user"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "resume_cpf_fk"
-            columns: ["cpf"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["cpf"]
-          },
-        ]
+        Relationships: []
       }
       saldo_cef: {
         Row: {
@@ -1581,7 +1566,7 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: "admin" | "user"
+      app_role: "admin" | "user" | "editor"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1709,7 +1694,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "user"],
+      app_role: ["admin", "user", "editor"],
     },
   },
 } as const
