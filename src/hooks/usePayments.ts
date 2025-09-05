@@ -47,7 +47,7 @@ export const usePayments = () => {
 
   const fetchPaymentData = async () => {
     try {
-      if (userLoading || periodLoading || !user?.cpf || !period) return;
+      if (userLoading || periodLoading || !user?.cpf || !period || !period.id || period.id <= 0) return;
       if (userError) throw new Error(userError);
       if (periodError) throw new Error(periodError);
 
@@ -130,7 +130,7 @@ export const usePayments = () => {
   };
 
   const fetchPaymentHistory = async () => {
-    if (!user?.cpf || !period) return;
+    if (!user?.cpf || !period || !period.id || period.id <= 0) return;
     try {
       setHistoryLoading(true);
 
@@ -144,7 +144,7 @@ export const usePayments = () => {
       if (historyError) throw historyError;
 
       if (historyData && historyData.length > 0) {
-        const historicalItems = historyData.slice(1).map((row: any) => {
+        const historicalItems = historyData.map((row: any) => {
           const receitaTotal =
             Number(row.pagar || 0) +
             Number(row.comissao || 0) +
@@ -230,7 +230,7 @@ export const usePayments = () => {
 
   useEffect(() => {
     fetchPaymentHistory();
-  }, [user]);
+  }, [user, period]);
 
   return {
     data,

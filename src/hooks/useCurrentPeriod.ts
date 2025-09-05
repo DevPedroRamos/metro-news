@@ -32,34 +32,26 @@ export const useCurrentPeriod = () => {
 
       if (error) throw error;
 
-      if (periods) {
+      // Handle array response from RPC
+      const row = Array.isArray(periods) ? periods[0] : null;
+
+      if (row) {
         setPeriod({
-          id: periods.id,
-          start: formatBR(periods.start),
-          end: formatBR(periods.end),
-          isoStart: periods.start,
-          isoEnd: periods.end,
+          id: row.id,
+          start: formatBR(row.start),
+          end: formatBR(row.end),
+          isoStart: row.start,
+          isoEnd: row.end,
         });
       } else {
-        // No period found - set empty period
-        setPeriod({
-          id: 0,
-          start: "",
-          end: "",
-          isoStart: "",
-          isoEnd: "",
-        });
+        // No period found - set to null instead of id: 0
+        setPeriod(null);
+        setError("Nenhum período encontrado.");
       }
     } catch (err) {
       console.error("Erro ao buscar período atual", err);
       setError("Não foi possível buscar o período atual.");
-      setPeriod({
-        id: 0,
-        start: "",
-        end: "",
-        isoStart: "",
-        isoEnd: "",
-      });
+      setPeriod(null);
     } finally {
       setLoading(false);
     }
