@@ -91,26 +91,34 @@ export const useVendas = () => {
       setLoading(true);
       setError(null);
 
-      // Buscar apelido (igual seus outros hooks)
+      // Buscar apelido e role do usuário
       const { data: userRow, error: userErr } = await supabase
         .from("users")
-        .select("apelido")
+        .select("apelido, role")
         .eq("id", user.id)
         .single();
 
       if (userErr || !userRow?.apelido) {
-        throw new Error("Não foi possível carregar o apelido do usuário.");
+        throw new Error("Não foi possível carregar os dados do usuário.");
       }
 
       const apelido: string = userRow.apelido;
+      const role: string = userRow.role;
 
-      // Filtra por vendedor + periodo_id
-      const { data, error } = await (supabase as any)
+      let query = supabase
         .from("base_de_vendas")
         .select("*")
-        .eq("vendedor_parceiro", apelido)
-        .eq("periodo_id", period.id)
-        .order("created_at", { ascending: false });
+        .eq("periodo_id", period.id);
+
+      // Se for gerente, busca vendas onde ele é o gerente
+      // Caso contrário, busca vendas onde ele é o vendedor
+      if (role === "gerente") {
+        query = query.eq("gerente", apelido);
+      } else {
+        query = query.eq("vendedor_parceiro", apelido);
+      }
+
+      const { data, error } = await query.order("created_at", { ascending: false });
 
       if (error) throw error;
 
