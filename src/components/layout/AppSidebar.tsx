@@ -29,7 +29,7 @@ const menuItems = [
   { title: 'Campeões', url: '/campeoes', icon: Trophy },
   // { title: 'Treinamento', url: '/treinamento', icon: GraduationCap },
   // { title: 'Processos', url: '/processos', icon: Settings },
-  { title: 'Links Úteis', url: '/links-uteis', icon: Link },
+  { title: 'Links', url: '/links-uteis', icon: Link },
   // { title: 'Superintendência', url: '/superintendencia', icon: Users },
   { 
     title: 'Pagamentos', 

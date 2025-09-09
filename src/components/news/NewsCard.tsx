@@ -1,61 +1,86 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { Calendar, User } from 'lucide-react';
+import { Card, CardContent, CardHeader } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Clock, User } from "lucide-react"
+import { useNavigate } from "react-router-dom"
 
 interface NewsCardProps {
-  id: string;
-  title: string;
-  description: string;
-  image: string;
-  category: string;
-  date: string;
-  author: string;
-  slug?: string;
+  id: string
+  title: string
+  excerpt: string
+  imageUrl?: string
+  category: string
+  author: string
+  publishedAt: string
+  readTime?: string
+  slug?: string
+  onViewArticle?: (id: string) => void
 }
 
-export function NewsCard({ id, title, description, image, category, date, author, slug }: NewsCardProps) {
-  const navigate = useNavigate();
-  
+export function NewsCard({
+  id,
+  title,
+  excerpt,
+  imageUrl,
+  category,
+  author,
+  publishedAt,
+  readTime = "3 min",
+  slug,
+  onViewArticle
+}: NewsCardProps) {
+  const navigate = useNavigate()
+
   const handleClick = () => {
     if (slug) {
-      navigate(`/noticias/${slug}`);
+      if (onViewArticle) {
+        onViewArticle(id);
+      }
+      navigate(`/noticias/${slug}`)
     }
-  };
+  }
 
   return (
-    <Card className="overflow-hidden group cursor-pointer hover:shadow-lg transition-all duration-300" onClick={handleClick}>
-      <CardHeader className="p-0">
-        <div className="aspect-[16/10] overflow-hidden">
-          <img 
-            src={image} 
+    <Card className="overflow-hidden hover:shadow-md transition-shadow cursor-pointer group" onClick={handleClick}>
+      <div className="aspect-video bg-muted flex items-center justify-center overflow-hidden">
+        {imageUrl ? (
+          <img
+            src={imageUrl || "/placeholder.svg"}
             alt={title}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           />
-        </div>
-      </CardHeader>
-      <CardContent className="p-4">
-        <Badge variant="outline" className="mb-2 border-metro-blue text-metro-blue">
+        ) : (
+          <div className="text-muted-foreground">
+            <svg className="w-12 h-12" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                fillRule="evenodd"
+                d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </div>
+        )}
+      </div>
+      <CardHeader className="pb-2">
+        <Badge variant="secondary" className="w-fit">
           {category}
         </Badge>
-        <h3 className="text-lg font-semibold mb-2 line-clamp-2 group-hover:text-metro-blue transition-colors">
+      </CardHeader>
+      <CardContent className="pt-0">
+        <h3 className="font-bold mb-2 text-balance leading-tight group-hover:text-primary transition-colors">
           {title}
         </h3>
-        <p className="text-muted-foreground text-sm mb-3 line-clamp-2">
-          {description}
-        </p>
+        <p className="text-sm text-muted-foreground mb-3 text-pretty line-clamp-2">{excerpt}</p>
         <div className="flex items-center gap-3 text-xs text-muted-foreground">
-          <div className="flex items-center gap-1">
-            <Calendar className="w-3 h-3" />
-            <span>{date}</span>
-          </div>
           <div className="flex items-center gap-1">
             <User className="w-3 h-3" />
             <span>{author}</span>
           </div>
+          <div className="flex items-center gap-1">
+            <Clock className="w-3 h-3" />
+            <span>{publishedAt}</span>
+          </div>
         </div>
       </CardContent>
     </Card>
-  );
+  )
 }

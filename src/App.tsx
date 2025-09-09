@@ -6,7 +6,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { DashboardLayout } from "./components/layout/DashboardLayout";
 import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 import Index from "./pages/Index";
-import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import Noticias from "./pages/Noticias";
@@ -42,7 +41,7 @@ const App = () => (
           <Route path="/dashboard" element={
             <ProtectedRoute>
               <DashboardLayout>
-                <Dashboard />
+                <Index />
               </DashboardLayout>
             </ProtectedRoute>
           } />
