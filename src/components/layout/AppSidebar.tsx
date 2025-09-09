@@ -27,10 +27,10 @@ import {
 const menuItems = [
   { title: 'Notícias', url: '/noticias', icon: Newspaper },
   { title: 'Campeões', url: '/campeoes', icon: Trophy },
-  { title: 'Treinamento', url: '/treinamento', icon: GraduationCap },
-  { title: 'Processos', url: '/processos', icon: Settings },
+  // { title: 'Treinamento', url: '/treinamento', icon: GraduationCap },
+  // { title: 'Processos', url: '/processos', icon: Settings },
   { title: 'Links Úteis', url: '/links-uteis', icon: Link },
-  { title: 'Superintendência', url: '/superintendencia', icon: Users },
+  // { title: 'Superintendência', url: '/superintendencia', icon: Users },
   { 
     title: 'Pagamentos', 
     url: '/pagamentos', 
