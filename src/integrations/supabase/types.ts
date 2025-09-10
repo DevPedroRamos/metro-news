@@ -355,6 +355,45 @@ export type Database = {
         }
         Relationships: []
       }
+      metas: {
+        Row: {
+          created_at: string
+          display_order: number
+          id: string
+          image_url: string | null
+          is_active: boolean
+          is_featured: boolean
+          quantidade: number
+          role: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          display_order?: number
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          is_featured?: boolean
+          quantidade?: number
+          role: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          display_order?: number
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          is_featured?: boolean
+          quantidade?: number
+          role?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       news_articles: {
         Row: {
           author_id: string
@@ -951,6 +990,7 @@ export type Database = {
           origem: string | null
           perc_desconto: number | null
           perc_sinal_recebido: number | null
+          periodo_id: number | null
           receber: number | null
           recebido: number | null
           recebido_de_sinal: number | null
@@ -991,6 +1031,7 @@ export type Database = {
           origem?: string | null
           perc_desconto?: number | null
           perc_sinal_recebido?: number | null
+          periodo_id?: number | null
           receber?: number | null
           recebido?: number | null
           recebido_de_sinal?: number | null
@@ -1031,6 +1072,7 @@ export type Database = {
           origem?: string | null
           perc_desconto?: number | null
           perc_sinal_recebido?: number | null
+          periodo_id?: number | null
           receber?: number | null
           recebido?: number | null
           recebido_de_sinal?: number | null
@@ -1060,6 +1102,7 @@ export type Database = {
           id: number | null
           motivo: string | null
           observacao: string | null
+          periodo_id: number | null
           superintendente: string | null
           supervisor: string | null
           tipo_distrato: string | null
@@ -1084,6 +1127,7 @@ export type Database = {
           id?: number | null
           motivo?: string | null
           observacao?: string | null
+          periodo_id?: number | null
           superintendente?: string | null
           supervisor?: string | null
           tipo_distrato?: string | null
@@ -1108,6 +1152,7 @@ export type Database = {
           id?: number | null
           motivo?: string | null
           observacao?: string | null
+          periodo_id?: number | null
           superintendente?: string | null
           supervisor?: string | null
           tipo_distrato?: string | null
@@ -1127,6 +1172,7 @@ export type Database = {
           descricao: string | null
           id: number | null
           nome_completo: string | null
+          periodo_id: number | null
           valor: number | null
         }
         Insert: {
@@ -1134,6 +1180,7 @@ export type Database = {
           descricao?: string | null
           id?: number | null
           nome_completo?: string | null
+          periodo_id?: number | null
           valor?: number | null
         }
         Update: {
@@ -1141,6 +1188,7 @@ export type Database = {
           descricao?: string | null
           id?: number | null
           nome_completo?: string | null
+          periodo_id?: number | null
           valor?: number | null
         }
         Relationships: []
@@ -1153,6 +1201,7 @@ export type Database = {
           gerente: string | null
           gestor: string | null
           id: number | null
+          periodo_id: number | null
           premiado: string | null
           qtd_vendas: number | null
           valor_premio: number | null
@@ -1164,6 +1213,7 @@ export type Database = {
           gerente?: string | null
           gestor?: string | null
           id?: number | null
+          periodo_id?: number | null
           premiado?: string | null
           qtd_vendas?: number | null
           valor_premio?: number | null
@@ -1175,6 +1225,7 @@ export type Database = {
           gerente?: string | null
           gestor?: string | null
           id?: number | null
+          periodo_id?: number | null
           premiado?: string | null
           qtd_vendas?: number | null
           valor_premio?: number | null
@@ -1193,6 +1244,7 @@ export type Database = {
           outras: number | null
           outros: number | null
           pagar: number | null
+          periodo_id: number | null
           premio: number | null
           saldo_cef: number | null
           saldo_neg_periodos_anteriores: number | null
@@ -1211,6 +1263,7 @@ export type Database = {
           outras?: number | null
           outros?: number | null
           pagar?: number | null
+          periodo_id?: number | null
           premio?: number | null
           saldo_cef?: number | null
           saldo_neg_periodos_anteriores?: number | null
@@ -1229,6 +1282,7 @@ export type Database = {
           outras?: number | null
           outros?: number | null
           pagar?: number | null
+          periodo_id?: number | null
           premio?: number | null
           saldo_cef?: number | null
           saldo_neg_periodos_anteriores?: number | null
@@ -1252,6 +1306,7 @@ export type Database = {
           gerente: string | null
           gestor: string | null
           id: number | null
+          periodo_id: number | null
           premio_repasse_fiador_valor: number | null
           subtotal: number | null
           superintendente: string | null
@@ -1275,6 +1330,7 @@ export type Database = {
           gerente?: string | null
           gestor?: string | null
           id?: number | null
+          periodo_id?: number | null
           premio_repasse_fiador_valor?: number | null
           subtotal?: number | null
           superintendente?: string | null
@@ -1298,6 +1354,7 @@ export type Database = {
           gerente?: string | null
           gestor?: string | null
           id?: number | null
+          periodo_id?: number | null
           premio_repasse_fiador_valor?: number | null
           subtotal?: number | null
           superintendente?: string | null

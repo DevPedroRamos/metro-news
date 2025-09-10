@@ -13,6 +13,7 @@ import NoticiaDetalhes from "./pages/NoticiaDetalhes";
 import Treinamento from "./pages/Treinamento";
 import Processos from "./pages/Processos";
 import LinksUteis from "./pages/LinksUteis";
+import Metas from "./pages/Metas";
 import Campeoes from "./pages/Campeoes";
 import Superintendencia from "./pages/Superintendencia";
 import Perfil from "./pages/Perfil";
@@ -77,6 +78,13 @@ const App = () => (
             <ProtectedRoute>
               <DashboardLayout>
                 <LinksUteis />
+              </DashboardLayout>
+            </ProtectedRoute>
+          } />
+          <Route path="/metas" element={
+            <ProtectedRoute>
+              <DashboardLayout>
+                <Metas />
               </DashboardLayout>
             </ProtectedRoute>
           } />

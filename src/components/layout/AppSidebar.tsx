@@ -10,7 +10,8 @@ import {
   User,
   CreditCard,
   ChevronDown,
-  ChevronRight
+  ChevronRight,
+  Target
 } from 'lucide-react';
 import {
   Sidebar,
@@ -30,6 +31,7 @@ const menuItems = [
   // { title: 'Treinamento', url: '/treinamento', icon: GraduationCap },
   // { title: 'Processos', url: '/processos', icon: Settings },
   { title: 'Links', url: '/links-uteis', icon: Link },
+  { title: 'Metas', url: '/metas', icon: Target },
   // { title: 'Superintendência', url: '/superintendencia', icon: Users },
   { 
     title: 'Pagamentos', 
