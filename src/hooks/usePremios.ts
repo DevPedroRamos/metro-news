@@ -2,7 +2,6 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useProfileUsers } from './useProfileUsers';
 import { useCurrentPeriod } from './useCurrentPeriod';
-import { useState, useEffect } from 'react';
 
 export interface UsePremiosProps {
   periodStart?: string;
@@ -21,60 +20,25 @@ export interface Premiacao {
 export function usePremios({ periodStart, periodEnd }: UsePremiosProps = {}) {
   const { userData, loading: userLoading, error: userError } = useProfileUsers();
   const { period, loading: periodLoading, error: periodError } = useCurrentPeriod();
-  const [userRole, setUserRole] = useState<string | null>(null);
-  const [roleLoading, setRoleLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchUserRole = async () => {
-      if (!userData?.apelido) return;
-      
-      try {
-        setRoleLoading(true);
-        const { data, error } = await supabase
-          .from('users')
-          .select('role')
-          .eq('apelido', userData.apelido)
-          .maybeSingle();
-
-        if (error) throw error;
-        setUserRole(data?.role || null);
-      } catch (err) {
-        console.error('Erro ao buscar role do usuário:', err);
-        setUserRole(null);
-      } finally {
-        setRoleLoading(false);
-      }
-    };
-
-    fetchUserRole();
-  }, [userData?.apelido]);
 
   return useQuery<Premiacao[]>({
-    queryKey: ['premiacao', period?.id, userData?.apelido, userRole],
+    queryKey: ['premiacao', period?.id, userData?.apelido],
     queryFn: async () => {
-      if (!userData?.apelido || !period?.id || period.id <= 0 || roleLoading) {
+      if (!userData?.apelido || !period?.id || period.id <= 0) {
         return [];
       }
 
       console.log('Filtering premiacao with:', {
         apelido: userData.apelido,
-        periodId: period.id,
-        role: userRole
+        periodId: period.id
       });
 
-      let query = supabase
+      const { data, error } = await supabase
         .from('premiacao')
         .select('*')
-        .eq('periodo_id', period.id);
-
-      // Apply role-based filtering
-      if (userRole === 'gerente') {
-        query = query.ilike('gerente', userData.apelido);
-      } else {
-        query = query.ilike('premiado', userData.apelido);
-      }
-
-      const { data, error } = await query.order('created_at', { ascending: false });
+        .eq('periodo_id', period.id)
+        .ilike('premiado', userData.apelido)
+        .order('created_at', { ascending: false });
 
       if (error) {
         throw new Error(error.message);
@@ -89,7 +53,7 @@ export function usePremios({ periodStart, periodEnd }: UsePremiosProps = {}) {
         created_at: item.created_at || '',
       }));
     },
-    enabled: !userLoading && !userError && !periodLoading && !periodError && !roleLoading && !!userData?.apelido && !!period?.id && period.id > 0,
+    enabled: !userLoading && !userError && !periodLoading && !periodError && !!userData?.apelido && !!period?.id && period.id > 0,
   });
 }
 
