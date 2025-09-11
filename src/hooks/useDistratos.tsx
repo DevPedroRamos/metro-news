@@ -35,21 +35,55 @@ export const useDistrato = () => {
   const [distratos, setDistratos] = useState<Distrato[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [userRole, setUserRole] = useState<string | null>(null);
+  const [roleLoading, setRoleLoading] = useState(true);
 
   useEffect(() => {
-    if (loadingPeriod || loadingUserData || !period?.id || period.id <= 0 || !userData?.apelido) return;
+    const fetchUserRole = async () => {
+      if (!userData?.apelido) return;
+      
+      try {
+        setRoleLoading(true);
+        const { data, error } = await supabase
+          .from('users')
+          .select('role')
+          .eq('apelido', userData.apelido)
+          .maybeSingle();
+
+        if (error) throw error;
+        setUserRole(data?.role || null);
+      } catch (err) {
+        console.error('Erro ao buscar role do usuário:', err);
+        setUserRole(null);
+      } finally {
+        setRoleLoading(false);
+      }
+    };
+
+    fetchUserRole();
+  }, [userData?.apelido]);
+
+  useEffect(() => {
+    if (loadingPeriod || loadingUserData || roleLoading || !period?.id || period.id <= 0 || !userData?.apelido) return;
 
     const fetchDistratos = async () => {
       try {
         setLoading(true);
         setError(null);
 
-        const { data, error } = await (supabase as any)
+        let query = supabase
           .from("distrato")
           .select("*")
-          .ilike('vendedor', userData.apelido)
-          .eq("periodo_id", period.id)
-          .order("created_at", { ascending: false });
+          .eq("periodo_id", period.id);
+
+        // Apply role-based filtering
+        if (userRole === 'gerente') {
+          query = query.ilike('gerente', userData.apelido);
+        } else {
+          query = query.ilike('vendedor', userData.apelido);
+        }
+
+        const { data, error } = await query.order("created_at", { ascending: false });
 
         if (error) throw error;
 
@@ -66,7 +100,7 @@ export const useDistrato = () => {
     };
 
     fetchDistratos();
-  }, [period?.id, loadingPeriod, userData?.apelido, loadingUserData]);
+  }, [period?.id, loadingPeriod, userData?.apelido, loadingUserData, userRole, roleLoading]);
 
   return {
     distratos,

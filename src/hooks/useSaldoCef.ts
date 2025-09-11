@@ -34,23 +34,33 @@ export const useSaldoCef = () => {
   const [data, setData] = useState<SaldoCef[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [userRole, setUserRole] = useState<string | null>(null);
+  const [roleLoading, setRoleLoading] = useState(true);
 
   const fetchSaldoCef = useCallback(async () => {
     try {
       if (periodLoading || !period?.id || period.id <= 0) return;
       if (userLoading || !user?.apelido) return;
+      if (roleLoading) return;
       if (periodError) throw new Error(periodError);
       if (userError) throw new Error(userError);
 
       setLoading(true);
       setError(null);
 
-      const { data: rows, error } = await (supabase as any)
+      let query = supabase
         .from("saldo_cef")
         .select("*")
-        .eq("vendedor_parceiro", user.apelido)
-        .eq("periodo_id", period.id)
-        .order("created_at", { ascending: false });
+        .eq("periodo_id", period.id);
+
+      // Apply role-based filtering
+      if (userRole === 'gerente') {
+        query = query.eq("gerente", user.apelido);
+      } else {
+        query = query.eq("vendedor_parceiro", user.apelido);
+      }
+
+      const { data: rows, error } = await query.order("created_at", { ascending: false });
 
       if (error) throw error;
 
@@ -69,7 +79,34 @@ export const useSaldoCef = () => {
     user?.apelido,
     userLoading,
     userError,
+    userRole,
+    roleLoading,
   ]);
+
+  useEffect(() => {
+    const fetchUserRole = async () => {
+      if (!user?.apelido) return;
+      
+      try {
+        setRoleLoading(true);
+        const { data, error } = await supabase
+          .from('users')
+          .select('role')
+          .eq('apelido', user.apelido)
+          .maybeSingle();
+
+        if (error) throw error;
+        setUserRole(data?.role || null);
+      } catch (err) {
+        console.error('Erro ao buscar role do usuário:', err);
+        setUserRole(null);
+      } finally {
+        setRoleLoading(false);
+      }
+    };
+
+    fetchUserRole();
+  }, [user?.apelido]);
 
   useEffect(() => {
     fetchSaldoCef();
