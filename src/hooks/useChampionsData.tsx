@@ -26,6 +26,7 @@ export const useChampionsData = (rankingType: RankingType) => {
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [userPosition, setUserPosition] = useState<number | null>(null);
   
   const ITEMS_PER_PAGE = 10;
 
@@ -162,6 +163,9 @@ export const useChampionsData = (rankingType: RankingType) => {
         setAllData(mappedData);
         setDisplayedData(mappedData.slice(0, ITEMS_PER_PAGE));
 
+        // Calcular posição do usuário logado
+        await calculateUserPosition(mappedData);
+
       } catch (err) {
         console.error('Error fetching champions data:', err);
         setError(err instanceof Error ? err.message : 'Erro ao carregar dados');
@@ -172,6 +176,61 @@ export const useChampionsData = (rankingType: RankingType) => {
 
     fetchChampionsData();
   }, [rankingType, period?.id, periodLoading]);
+
+  // Função para calcular posição do usuário
+  const calculateUserPosition = async (data: RankingData[]) => {
+    if (!authUser?.id || !data.length) {
+      setUserPosition(null);
+      return;
+    }
+    
+    try {
+      // Para consultor, buscar por ID
+      if (rankingType === 'consultor') {
+        const position = data.findIndex(item => item.id === authUser.id);
+        setUserPosition(position >= 0 ? position + 1 : null);
+        return;
+      }
+      
+      // Para gerente/superintendente/diretor, buscar pelos dados do usuário logado
+      const { data: profileData } = await supabase
+        .from('profiles')
+        .select('cpf')
+        .eq('id', authUser.id)
+        .single();
+
+      if (!profileData) {
+        setUserPosition(null);
+        return;
+      }
+
+      const { data: userData } = await supabase
+        .from('users')
+        .select('gerente, superintendente, name')
+        .eq('cpf', profileData.cpf)
+        .single();
+
+      if (!userData) {
+        setUserPosition(null);
+        return;
+      }
+
+      let searchField = '';
+      if (rankingType === 'gerente') {
+        searchField = userData.gerente;
+      } else if (rankingType === 'superintendente') {
+        searchField = userData.superintendente;
+      } else if (rankingType === 'diretor') {
+        searchField = userData.name; // ou o campo correto para diretor
+      }
+
+      const position = data.findIndex(item => item.name === searchField);
+      setUserPosition(position >= 0 ? position + 1 : null);
+    } catch (error) {
+      console.error('Error finding user position:', error);
+      setUserPosition(null);
+    }
+  };
 
   // Função para carregar mais dados
   const loadMore = () => {
@@ -191,20 +250,6 @@ export const useChampionsData = (rankingType: RankingType) => {
   // Verificar se há mais dados para carregar
   const hasMore = displayedData.length < allData.length;
 
-  // Encontrar posição do usuário logado
-  const userPosition = useMemo(() => {
-    if (!authUser?.id || !allData.length) return null;
-    
-    const position = allData.findIndex(item => {
-      if (rankingType === 'consultor') {
-        return item.id === authUser.id;
-      }
-      // Para gerente/superintendente/diretor, precisaríamos buscar pelos dados do usuário
-      return false;
-    });
-    
-    return position >= 0 ? position + 1 : null;
-  }, [allData, authUser?.id, rankingType]);
 
   return {
     data: displayedData,

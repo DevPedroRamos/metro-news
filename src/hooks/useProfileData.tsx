@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
+import { useCurrentPeriod } from '@/hooks/useCurrentPeriod';
 
 interface ProfileData {
   user: {
@@ -28,60 +29,150 @@ interface ProfileData {
 
 export const useProfileData = () => {
   const { user: authUser } = useAuth();
+  const { period, loading: periodLoading } = useCurrentPeriod();
   const [data, setData] = useState<ProfileData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!authUser?.id) return;
+    if (!authUser?.id || !period?.id || periodLoading) return;
 
     const fetchProfileData = async () => {
       try {
         setLoading(true);
         setError(null);
 
-        // Usar função otimizada do PostgreSQL
-        const { data: profileStats, error } = await supabase
-          .rpc('get_profile_stats', { user_uuid: authUser.id });
+        // Buscar dados básicos do usuário
+        const { data: profileData, error: profileError } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', authUser.id)
+          .single();
 
-        if (error) throw error;
+        if (profileError) throw profileError;
 
-        if (!profileStats || profileStats.length === 0) {
-          throw new Error('Dados do perfil não encontrados');
+        const { data: userData, error: userError } = await supabase
+          .from('users')
+          .select('*')
+          .eq('cpf', profileData.cpf)
+          .single();
+
+        if (userError) throw userError;
+
+        // Buscar vendas do período atual usando a mesma lógica do champions
+        const { data: baseVendas, error: vendasError } = await supabase
+          .from('base_de_vendas')
+          .select('*')
+          .eq('periodo_id', period.id)
+          .eq('vendedor_parceiro', userData.name);
+
+        if (vendasError) throw vendasError;
+
+        // Buscar visitas do período atual
+        const periodStart = new Date(period.isoStart);
+        const periodEnd = new Date(period.isoEnd);
+        
+        const { data: visitsData, error: visitsError } = await supabase
+          .from('visits')
+          .select('*')
+          .eq('corretor_id', authUser.id)
+          .gte('horario_entrada', periodStart.toISOString())
+          .lte('horario_entrada', periodEnd.toISOString());
+
+        if (visitsError) throw visitsError;
+
+        // Calcular métricas
+        const vendas = baseVendas?.length || 0;
+        const recebimento = baseVendas?.reduce((sum, item) => sum + (Number(item.recebido) || 0), 0) || 0;
+        const contratos = baseVendas?.filter(item => item.tipo_venda?.toLowerCase().includes('contrato')).length || 0;
+        const visitas = visitsData?.length || 0;
+
+        // Calcular ranking baseado na mesma lógica do champions para consultores
+        let rankingPosition = 1;
+        let totalUsers = 1;
+
+        if (userData.role === 'corretor') {
+          // Buscar todas as vendas do período para calcular ranking
+          const { data: allVendas } = await supabase
+            .from('base_de_vendas')
+            .select('vendedor_parceiro')
+            .eq('periodo_id', period.id);
+
+          if (allVendas) {
+            // Contar vendas por vendedor
+            const vendedorCounts = allVendas.reduce((acc, item) => {
+              if (item.vendedor_parceiro) {
+                acc[item.vendedor_parceiro] = (acc[item.vendedor_parceiro] || 0) + 1;
+              }
+              return acc;
+            }, {} as Record<string, number>);
+
+            // Buscar apenas vendedores que são corretores
+            const { data: allUsers } = await supabase
+              .from('users')
+              .select('name')
+              .eq('role', 'corretor');
+
+            if (allUsers) {
+              // Filtrar apenas vendedores que são corretores
+              const corretorVendas = Object.entries(vendedorCounts)
+                .filter(([vendedor]) => allUsers.some(user => user.name === vendedor))
+                .map(([vendedor, vendas]) => ({ vendedor, vendas }))
+                .sort((a, b) => b.vendas - a.vendas);
+
+              totalUsers = corretorVendas.length;
+              const userPosition = corretorVendas.findIndex(item => item.vendedor === userData.name);
+              rankingPosition = userPosition >= 0 ? userPosition + 1 : totalUsers;
+            }
+          }
+        } else if (userData.role === 'gerente') {
+          // Para gerente, usar campo 'gerente' da base_de_vendas
+          const { data: allVendas } = await supabase
+            .from('base_de_vendas')
+            .select('gerente')
+            .eq('periodo_id', period.id);
+
+          if (allVendas) {
+            // Contar menções por gerente
+            const gerenteCounts = allVendas.reduce((acc, item) => {
+              if (item.gerente) {
+                acc[item.gerente] = (acc[item.gerente] || 0) + 1;
+              }
+              return acc;
+            }, {} as Record<string, number>);
+
+            const gerenteVendas = Object.entries(gerenteCounts)
+              .map(([gerente, vendas]) => ({ gerente, vendas }))
+              .sort((a, b) => b.vendas - a.vendas);
+
+            totalUsers = gerenteVendas.length;
+            const userPosition = gerenteVendas.findIndex(item => item.gerente === userData.gerente);
+            rankingPosition = userPosition >= 0 ? userPosition + 1 : totalUsers;
+          }
         }
 
-        const stats = profileStats[0];
-
-        const userData = {
-          id: stats.user_id,
-          name: stats.user_name,
-          apelido: stats.user_apelido,
-          cpf: stats.user_cpf,
-          gerente: stats.user_gerente,
-          superintendente: stats.user_superintendente,
-          role: stats.user_role,
-          avatar_url: stats.avatar_url,
-          cover_url: stats.cover_url
-        };
-
-        const metrics = {
-          vendas: Number(stats.vendas_count) || 0,
-          recebimento: Number(stats.recebimento) || 0,
-          contratos: Number(stats.contratos_count) || 0,
-          visitas: Number(stats.visitas_count) || 0
-        };
-
-        let ranking = {
-          position: Number(stats.ranking_position) || 0,
-          total: Number(stats.total_users) || 0
-        };
-
-        // Use ranking from get_profile_stats function
-
         setData({
-          user: userData,
-          metrics,
-          ranking
+          user: {
+            id: userData.id,
+            name: userData.name,
+            apelido: userData.apelido,
+            cpf: userData.cpf,
+            gerente: userData.gerente,
+            superintendente: userData.superintendente,
+            role: userData.role,
+            avatar_url: profileData.avatar_url,
+            cover_url: profileData.cover_url
+          },
+          metrics: {
+            vendas,
+            recebimento,
+            contratos,
+            visitas
+          },
+          ranking: {
+            position: rankingPosition,
+            total: totalUsers
+          }
         });
 
       } catch (err) {
@@ -93,7 +184,7 @@ export const useProfileData = () => {
     };
 
     fetchProfileData();
-  }, [authUser?.id]);
+  }, [authUser?.id, period?.id, periodLoading]);
 
   const updateProfileImages = async (field: 'avatar_url' | 'cover_url', url: string) => {
     if (!authUser?.id) return;
