@@ -666,36 +666,6 @@ export type Database = {
         }
         Relationships: []
       }
-      sales: {
-        Row: {
-          corretor_cpf: string | null
-          id: number
-          idobra: number
-          sinal: number | null
-          status: string
-          unidade: string | null
-          venda_data: string
-        }
-        Insert: {
-          corretor_cpf?: string | null
-          id?: number
-          idobra: number
-          sinal?: number | null
-          status: string
-          unidade?: string | null
-          venda_data: string
-        }
-        Update: {
-          corretor_cpf?: string | null
-          id?: number
-          idobra?: number
-          sinal?: number | null
-          status?: string
-          unidade?: string | null
-          venda_data?: string
-        }
-        Relationships: []
-      }
       search_logs: {
         Row: {
           created_at: string
