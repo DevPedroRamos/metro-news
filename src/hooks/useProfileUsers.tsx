@@ -8,6 +8,7 @@ export const useProfileUsers = () => {
     id: string;
     cpf?: string;
     apelido?: string;
+    name?: string;
   } | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -25,10 +26,10 @@ export const useProfileUsers = () => {
           throw new Error('CPF não encontrado nos metadados do usuário');
         }
 
-        // Busca também o apelido
+        // Busca também o apelido e nome completo
         const { data: profileData, error: profileError } = await supabase
           .from('users')
-          .select('id, cpf, apelido')
+          .select('id, cpf, apelido, name')
           .eq('cpf', cpf)
           .maybeSingle();
 
@@ -42,6 +43,7 @@ export const useProfileUsers = () => {
           id: profileData.id,
           cpf: profileData.cpf || undefined,
           apelido: profileData.apelido || undefined,
+          name: profileData.name || undefined,
         });
       } catch (err) {
         console.error('Erro ao buscar dados do usuário:', err);
