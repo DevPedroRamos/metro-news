@@ -59,12 +59,29 @@ export const useProfileData = () => {
 
         if (userError) throw userError;
 
-        // Buscar vendas do período atual usando a mesma lógica do champions
-        const { data: baseVendas, error: vendasError } = await supabase
-          .from('base_de_vendas')
-          .select('*')
-          .eq('periodo_id', period.id)
-          .eq('vendedor_parceiro', userData.name);
+        // Buscar vendas do período atual baseado no role do usuário
+        let baseVendas;
+        let vendasError;
+        
+        if (userData.role === 'gerente') {
+          // Para gerente, buscar vendas onde o apelido dele aparece como gerente
+          const result = await supabase
+            .from('base_de_vendas')
+            .select('*')
+            .eq('periodo_id', period.id)
+            .eq('gerente', userData.apelido);
+          baseVendas = result.data;
+          vendasError = result.error;
+        } else {
+          // Para outros usuários, buscar vendas onde ele é o vendedor
+          const result = await supabase
+            .from('base_de_vendas')
+            .select('*')
+            .eq('periodo_id', period.id)
+            .eq('vendedor_parceiro', userData.name);
+          baseVendas = result.data;
+          vendasError = result.error;
+        }
 
         if (vendasError) throw vendasError;
 
