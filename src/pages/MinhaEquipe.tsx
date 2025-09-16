@@ -126,7 +126,7 @@ export default function MinhaEquipe() {
                     <TableHead>Membro</TableHead>
                     <TableHead>Função</TableHead>
                     <TableHead className="text-center">Vendas</TableHead>
-                    <TableHead className="text-center">Valor Recebido</TableHead>
+                    
                     <TableHead className="text-center">Valor a Receber</TableHead>
                     <TableHead className="text-center">Comissão</TableHead>
                     <TableHead className="text-center">Prêmio</TableHead>
@@ -158,11 +158,7 @@ export default function MinhaEquipe() {
                       <TableCell className="text-center">
                         <div className="font-medium">{member.vendas}</div>
                       </TableCell>
-                      <TableCell className="text-center">
-                        <div className="font-medium">
-                          {formatCurrency(member.valorRecebido)}
-                        </div>
-                      </TableCell>
+                      
                       <TableCell className="text-center">
                         <div className="font-medium">
                           {formatCurrency(member.valorAReceber)}
