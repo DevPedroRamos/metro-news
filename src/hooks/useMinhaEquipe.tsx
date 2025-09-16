@@ -34,14 +34,7 @@ export const useMinhaEquipe = () => {
         // Buscar membros da equipe do gerente
         const { data: teamMembers, error: teamError } = await supabase
           .from('users')
-          .select(`
-            id,
-            name,
-            apelido,
-            cpf,
-            role,
-            profiles!inner(avatar_url)
-          `)
+          .select('id, name, apelido, cpf, role')
           .eq('gerente', userData.apelido);
 
         if (teamError) throw teamError;
@@ -51,9 +44,15 @@ export const useMinhaEquipe = () => {
           return;
         }
 
-        // Para cada membro da equipe, buscar suas métricas
+        // Para cada membro da equipe, buscar suas métricas e avatar
         const teamWithMetrics = await Promise.all(
           teamMembers.map(async (member: any) => {
+            // Buscar avatar do perfil
+            const { data: profileData } = await supabase
+              .from('profiles')
+              .select('avatar_url')
+              .eq('id', member.id)
+              .maybeSingle();
             // Buscar vendas do período
             const { data: vendas, error: vendasError } = await supabase
               .from('base_de_vendas')
@@ -91,7 +90,7 @@ export const useMinhaEquipe = () => {
               apelido: member.apelido,
               cpf: member.cpf,
               role: member.role,
-              avatar_url: member.profiles?.avatar_url,
+              avatar_url: profileData?.avatar_url,
               vendas: totalVendas,
               valorRecebido,
               visitas: totalVisitas,
