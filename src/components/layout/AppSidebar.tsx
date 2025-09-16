@@ -11,8 +11,10 @@ import {
   CreditCard,
   ChevronDown,
   ChevronRight,
-  Target
+  Target,
+  UserCheck
 } from 'lucide-react';
+import { useProfileUsers } from '@/hooks/useProfileUsers';
 import {
   Sidebar,
   SidebarContent,
@@ -54,6 +56,7 @@ export function AppSidebar() {
   const location = useLocation();
   const isCollapsed = state === 'collapsed';
   const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
+  const { userData } = useProfileUsers();
 
   const isActive = (path: string, exact = true) => 
     exact ? location.pathname === path : location.pathname.startsWith(path);
@@ -143,6 +146,27 @@ export function AppSidebar() {
                   )}
                 </SidebarMenuItem>
               ))}
+              
+              {/* Menu específico para gerentes */}
+              {userData?.role === 'gerente' && (
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild>
+                    <NavLink
+                      to="/minha-equipe"
+                      className={({ isActive: isActiveLink }) =>
+                        `flex items-center space-x-3 px-3 py-5 rounded-lg text-sm font-medium ${
+                          isActiveLink
+                            ? 'text-metro-red'
+                            : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+                        }`
+                      }
+                    >
+                      <UserCheck className="h-5 w-5 flex-shrink-0" />
+                      {!isCollapsed && <span>Minha Equipe</span>}
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              )}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

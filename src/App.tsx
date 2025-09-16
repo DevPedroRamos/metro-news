@@ -23,6 +23,7 @@ import Premiacao from "./pages/pagamentos/premiacao";
 import SaldoCef from "./pages/pagamentos/saldo-cef";
 import Distratos from "./pages/pagamentos/distratos"; 
 import Outros from "./pages/pagamentos/outros";
+import MinhaEquipe from "./pages/MinhaEquipe";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -106,6 +107,13 @@ const App = () => (
             <ProtectedRoute>
               <DashboardLayout>
                 <Perfil />
+              </DashboardLayout>
+            </ProtectedRoute>
+          } />
+          <Route path="/minha-equipe" element={
+            <ProtectedRoute>
+              <DashboardLayout>
+                <MinhaEquipe />
               </DashboardLayout>
             </ProtectedRoute>
           } />
