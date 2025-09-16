@@ -14,6 +14,9 @@ export interface TeamMember {
   valorRecebido: number;
   visitas: number;
   contratos: number;
+  valorAReceber: number;
+  comissao: number;
+  premio: number;
 }
 
 export const useMinhaEquipe = () => {
@@ -53,7 +56,7 @@ export const useMinhaEquipe = () => {
               .select('avatar_url')
               .eq('id', member.id)
               .maybeSingle();
-            // Buscar vendas do período
+            // Buscar vendas do período atual na tabela base_de_vendas
             const { data: vendas, error: vendasError } = await supabase
               .from('base_de_vendas')
               .select('recebido, tipo_venda')
@@ -64,7 +67,19 @@ export const useMinhaEquipe = () => {
               console.error('Erro ao buscar vendas:', vendasError);
             }
 
-            // Buscar visitas do período
+            // Buscar resumo de pagamentos da tabela resume
+            const { data: resumeData, error: resumeError } = await supabase
+              .from('resume')
+              .select('*')
+              .eq('periodo_id', period.id)
+              .eq('cpf', member.cpf)
+              .maybeSingle();
+
+            if (resumeError) {
+              console.error('Erro ao buscar resumo:', resumeError);
+            }
+
+            // Buscar visitas do período atual
             const { data: visitas, error: visitasError } = await supabase
               .from('visits')
               .select('id')
@@ -84,6 +99,11 @@ export const useMinhaEquipe = () => {
               venda.tipo_venda && venda.tipo_venda.toLowerCase().includes('contrato')
             ).length || 0;
 
+            // Valores do resumo (a receber)
+            const valorAReceber = resumeData?.pagar || 0;
+            const comissao = resumeData?.comissao || 0;
+            const premio = resumeData?.premio || 0;
+
             return {
               id: member.id,
               name: member.name,
@@ -95,6 +115,9 @@ export const useMinhaEquipe = () => {
               valorRecebido,
               visitas: totalVisitas,
               contratos,
+              valorAReceber,
+              comissao,
+              premio,
             };
           })
         );
