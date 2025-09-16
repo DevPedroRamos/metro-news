@@ -6,70 +6,55 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { AlertCircle, Users, TrendingUp, Eye, FileText } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-
 export default function MinhaEquipe() {
-  const { teamData, teamStats, loading, error, isManager } = useMinhaEquipe();
-
+  const {
+    teamData,
+    teamStats,
+    loading,
+    error,
+    isManager
+  } = useMinhaEquipe();
   if (!isManager) {
-    return (
-      <div className="container mx-auto p-6">
+    return <div className="container mx-auto p-6">
         <Alert>
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
             Esta página é restrita para usuários com perfil de gerente.
           </AlertDescription>
         </Alert>
-      </div>
-    );
+      </div>;
   }
-
   if (loading) {
-    return (
-      <div className="container mx-auto p-6">
+    return <div className="container mx-auto p-6">
         <div className="animate-pulse space-y-6">
           <div className="h-8 bg-gray-200 rounded w-1/4"></div>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            {[...Array(4)].map((_, i) => (
-              <div key={i} className="h-24 bg-gray-200 rounded"></div>
-            ))}
+            {[...Array(4)].map((_, i) => <div key={i} className="h-24 bg-gray-200 rounded"></div>)}
           </div>
           <div className="h-64 bg-gray-200 rounded"></div>
         </div>
-      </div>
-    );
+      </div>;
   }
-
   if (error) {
-    return (
-      <div className="container mx-auto p-6">
+    return <div className="container mx-auto p-6">
         <Alert variant="destructive">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
             Erro ao carregar dados da equipe: {error}
           </AlertDescription>
         </Alert>
-      </div>
-    );
+      </div>;
   }
-
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
-      currency: 'BRL',
+      currency: 'BRL'
     }).format(value);
   };
-
   const getUserInitials = (name: string) => {
-    return name
-      .split(' ')
-      .map(word => word.charAt(0))
-      .join('')
-      .substring(0, 2)
-      .toUpperCase();
+    return name.split(' ').map(word => word.charAt(0)).join('').substring(0, 2).toUpperCase();
   };
-
-  return (
-    <div className="container mx-auto p-6 space-y-6">
+  return <div className="container mx-auto p-6 space-y-6">
       <div>
         <h1 className="text-3xl font-bold text-gray-900">Minha Equipe</h1>
         <p className="text-gray-600 mt-2">
@@ -131,13 +116,10 @@ export default function MinhaEquipe() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {teamData.length === 0 ? (
-            <div className="text-center py-8">
+          {teamData.length === 0 ? <div className="text-center py-8">
               <Users className="h-12 w-12 text-gray-400 mx-auto mb-4" />
               <p className="text-gray-500">Nenhum membro encontrado na sua equipe.</p>
-            </div>
-          ) : (
-            <div className="overflow-x-auto">
+            </div> : <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -149,12 +131,11 @@ export default function MinhaEquipe() {
                     <TableHead className="text-center">Comissão</TableHead>
                     <TableHead className="text-center">Prêmio</TableHead>
                     <TableHead className="text-center">Visitas</TableHead>
-                    <TableHead className="text-center">Contratos</TableHead>
+                    
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {teamData.map((member) => (
-                    <TableRow key={member.id}>
+                  {teamData.map(member => <TableRow key={member.id}>
                       <TableCell>
                         <div className="flex items-center space-x-3">
                           <Avatar className="h-10 w-10">
@@ -200,17 +181,12 @@ export default function MinhaEquipe() {
                       <TableCell className="text-center">
                         <div className="font-medium">{member.visitas}</div>
                       </TableCell>
-                      <TableCell className="text-center">
-                        <div className="font-medium">{member.contratos}</div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                      
+                    </TableRow>)}
                 </TableBody>
               </Table>
-            </div>
-          )}
+            </div>}
         </CardContent>
       </Card>
-    </div>
-  );
+    </div>;
 }
