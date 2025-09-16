@@ -124,7 +124,7 @@ export default function MinhaEquipe() {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Membro</TableHead>
-                    <TableHead>Função</TableHead>
+                    
                     <TableHead className="text-center">Vendas</TableHead>
                     
                     <TableHead className="text-center">Valor a Receber</TableHead>
@@ -150,11 +150,7 @@ export default function MinhaEquipe() {
                           </div>
                         </div>
                       </TableCell>
-                      <TableCell>
-                        <Badge variant="secondary">
-                          {member.role}
-                        </Badge>
-                      </TableCell>
+                      
                       <TableCell className="text-center">
                         <div className="font-medium">{member.vendas}</div>
                       </TableCell>
