@@ -17,6 +17,9 @@ export interface TeamMember {
   valorAReceber: number;
   comissao: number;
   premio: number;
+  saldoCef: number;
+  distrato: number;
+  valorNota: number;
 }
 
 export const useMinhaEquipe = () => {
@@ -61,7 +64,7 @@ export const useMinhaEquipe = () => {
               .from('base_de_vendas')
               .select('recebido, tipo_venda')
               .eq('periodo_id', period.id)
-              .eq('vendedor_parceiro', member.name);
+              .eq('vendedor_parceiro', member.apelido);
 
             if (vendasError) {
               console.error('Erro ao buscar vendas:', vendasError);
@@ -70,7 +73,7 @@ export const useMinhaEquipe = () => {
             // Buscar resumo de pagamentos da tabela resume
             const { data: resumeData, error: resumeError } = await supabase
               .from('resume')
-              .select('*')
+              .select('pagar, comissao, saldo_cef, distrato')
               .eq('periodo_id', period.id)
               .eq('cpf', member.cpf)
               .maybeSingle();
@@ -99,10 +102,13 @@ export const useMinhaEquipe = () => {
               venda.tipo_venda && venda.tipo_venda.toLowerCase().includes('contrato')
             ).length || 0;
 
-            // Valores do resumo (a receber)
+            // Valores do resumo
             const valorAReceber = resumeData?.pagar || 0;
             const comissao = resumeData?.comissao || 0;
-            const premio = resumeData?.premio || 0;
+            const saldoCef = resumeData?.saldo_cef || 0;
+            const distrato = resumeData?.distrato || 0;
+            const valorNota = valorAReceber + comissao + saldoCef + (distrato || 0);
+            const premio = 0;
 
             return {
               id: member.id,
@@ -118,6 +124,9 @@ export const useMinhaEquipe = () => {
               valorAReceber,
               comissao,
               premio,
+              saldoCef,
+              distrato,
+              valorNota,
             };
           })
         );
@@ -137,7 +146,6 @@ export const useMinhaEquipe = () => {
   const teamStats = {
     totalMembros: teamData.length,
     totalVendas: teamData.reduce((sum, member) => sum + member.vendas, 0),
-    totalValorRecebido: teamData.reduce((sum, member) => sum + member.valorRecebido, 0),
     totalVisitas: teamData.reduce((sum, member) => sum + member.visitas, 0),
     totalContratos: teamData.reduce((sum, member) => sum + member.contratos, 0),
   };
