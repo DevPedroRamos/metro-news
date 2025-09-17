@@ -8,8 +8,10 @@ import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { CalendarDays, Building2, DollarSign, TrendingUp, Users, Calculator } from "lucide-react"
 import { useVendas } from "@/hooks/useVendas"
+import { useProfileUsers } from "@/hooks/useProfileUsers"
 
 // Função para formatar valores em BRL
 const formatCurrency = (value: number | null | undefined): string => {
@@ -43,6 +45,7 @@ const formatDate = (dateStr: string | null): string => {
 
 export default function VendasPage() {
   const { data, loading, error } = useVendas()
+  const { userData } = useProfileUsers()
   const [selectedVendaId, setSelectedVendaId] = useState<number | null>(null)
 
   // Selecionar a venda mais recente por padrão
@@ -311,54 +314,136 @@ export default function VendasPage() {
                     </TooltipProvider>
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="p-4 space-y-3">
-                  <div className="flex justify-between items-center py-1">
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <span className="text-gray-600 text-sm cursor-help">Sinal</span>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>Comissão sobre o valor do sinal</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                    <span className="font-medium text-gray-900 text-sm">
-                      {formatPercentage(vendaSelecionada.comissao_sinal_perc)}
-                    </span>
-                  </div>
-                  <Separator className="bg-gray-200" />
-                  <div className="flex justify-between items-center py-1">
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <span className="text-gray-600 text-sm cursor-help">VGV / Pré-Chaves</span>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>Comissão sobre o Valor Geral de Vendas até a entrega das chaves</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                    <span className="font-medium text-gray-900 text-sm">
-                      {formatPercentage(vendaSelecionada.comissao_vgv_pre_chaves_perc)}
-                    </span>
-                  </div>
-                  <Separator className="bg-gray-200" />
-                  <div className="flex justify-between items-center py-1">
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <span className="text-gray-600 text-sm cursor-help">Extra Comissão</span>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>Comissão extra por performance ou metas</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                    <span className="font-medium text-gray-900 text-sm">
-                      {formatPercentage(vendaSelecionada.comissao_extra_perc)}
-                    </span>
-                  </div>
+                <CardContent className="p-4">
+                  {userData?.role === "gerente" ? (
+                    <Tabs defaultValue="corretor" className="w-full">
+                      <TabsList className="grid w-full grid-cols-2">
+                        <TabsTrigger value="corretor">Corretor</TabsTrigger>
+                        <TabsTrigger value="gerente">Gerente</TabsTrigger>
+                      </TabsList>
+                      <TabsContent value="corretor" className="space-y-3 mt-4">
+                        <div className="flex justify-between items-center py-1">
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <span className="text-gray-600 text-sm cursor-help">Sinal</span>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Comissão sobre o valor do sinal</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                          <span className="font-medium text-gray-900 text-sm">
+                            {formatPercentage(vendaSelecionada.comissao_sinal_perc)}
+                          </span>
+                        </div>
+                        <Separator className="bg-gray-200" />
+                        <div className="flex justify-between items-center py-1">
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <span className="text-gray-600 text-sm cursor-help">VGV / Pré-Chaves</span>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Comissão sobre o Valor Geral de Vendas até a entrega das chaves</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                          <span className="font-medium text-gray-900 text-sm">
+                            {formatPercentage(vendaSelecionada.comissao_vgv_pre_chaves_perc)}
+                          </span>
+                        </div>
+                        <Separator className="bg-gray-200" />
+                        <div className="flex justify-between items-center py-1">
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <span className="text-gray-600 text-sm cursor-help">Extra Comissão</span>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Comissão extra por performance ou metas</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                          <span className="font-medium text-gray-900 text-sm">
+                            {formatPercentage(vendaSelecionada.comissao_extra_perc)}
+                          </span>
+                        </div>
+                      </TabsContent>
+                      <TabsContent value="gerente" className="space-y-3 mt-4">
+                        <div className="flex justify-between items-center py-1">
+                          <span className="text-gray-600 text-sm">Sinal</span>
+                          <span className="font-medium text-gray-900 text-sm">
+                            {formatPercentage(vendaSelecionada.comissao_sinal_perc_gerente)}
+                          </span>
+                        </div>
+                        <Separator className="bg-gray-200" />
+                        <div className="flex justify-between items-center py-1">
+                          <span className="text-gray-600 text-sm">VGV / Pré-Chaves</span>
+                          <span className="font-medium text-gray-900 text-sm">
+                            {formatPercentage(vendaSelecionada.comissao_vgv_pre_chaves_perc_gerente)}
+                          </span>
+                        </div>
+                        <Separator className="bg-gray-200" />
+                        <div className="flex justify-between items-center py-1">
+                          <span className="text-gray-600 text-sm">Extra Comissão</span>
+                          <span className="font-medium text-gray-900 text-sm">
+                            {formatPercentage(vendaSelecionada.comissao_extra_perc_gerente)}
+                          </span>
+                        </div>
+                      </TabsContent>
+                    </Tabs>
+                  ) : (
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center py-1">
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <span className="text-gray-600 text-sm cursor-help">Sinal</span>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Comissão sobre o valor do sinal</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                        <span className="font-medium text-gray-900 text-sm">
+                          {formatPercentage(vendaSelecionada.comissao_sinal_perc)}
+                        </span>
+                      </div>
+                      <Separator className="bg-gray-200" />
+                      <div className="flex justify-between items-center py-1">
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <span className="text-gray-600 text-sm cursor-help">VGV / Pré-Chaves</span>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Comissão sobre o Valor Geral de Vendas até a entrega das chaves</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                        <span className="font-medium text-gray-900 text-sm">
+                          {formatPercentage(vendaSelecionada.comissao_vgv_pre_chaves_perc)}
+                        </span>
+                      </div>
+                      <Separator className="bg-gray-200" />
+                      <div className="flex justify-between items-center py-1">
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <span className="text-gray-600 text-sm cursor-help">Extra Comissão</span>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Comissão extra por performance ou metas</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                        <span className="font-medium text-gray-900 text-sm">
+                          {formatPercentage(vendaSelecionada.comissao_extra_perc)}
+                        </span>
+                      </div>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
 
@@ -369,195 +454,179 @@ export default function VendasPage() {
                     Valores da Comissão Integral
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="p-4 space-y-3">
-                  <div className="flex justify-between items-center py-1">
-                    <span className="text-gray-600 text-sm">Sinal</span>
-                    <span className="font-medium text-gray-900 text-sm">
-                      {formatCurrency(vendaSelecionada.comissao_integral_sinal)}
-                    </span>
-                  </div>
-                  <Separator className="bg-gray-200" />
-                  <div className="flex justify-between items-center py-1">
-                    <span className="text-gray-600 text-sm">VGV / Pré-Chaves</span>
-                    <span className="font-medium text-gray-900 text-sm">
-                      {formatCurrency(vendaSelecionada.comissao_integral_vgv_pre_chaves)}
-                    </span>
-                  </div>
-                  <Separator className="bg-gray-200" />
-                  <div className="flex justify-between items-center py-1">
-                    <span className="text-gray-600 text-sm">Extra Comissão</span>
-                    <span className="font-medium text-gray-900 text-sm">
-                      {formatCurrency(vendaSelecionada.comissao_integral_extra)}
-                    </span>
-                  </div>
-                  <Separator className="bg-gray-200" />
-                  <div className="flex justify-between items-center py-2 bg-gray-50 px-3 rounded border">
-                    <span className="font-medium text-gray-900 text-sm">Total</span>
-                    <span className="font-semibold text-red-600">{formatCurrency(totalComissaoIntegral)}</span>
-                  </div>
+                <CardContent className="p-4">
+                  {userData?.role === "gerente" ? (
+                    <Tabs defaultValue="corretor" className="w-full">
+                      <TabsList className="grid w-full grid-cols-2">
+                        <TabsTrigger value="corretor">Corretor</TabsTrigger>
+                        <TabsTrigger value="gerente">Gerente</TabsTrigger>
+                      </TabsList>
+                      <TabsContent value="corretor" className="space-y-3 mt-4">
+                        <div className="flex justify-between items-center py-1">
+                          <span className="text-gray-600 text-sm">Sinal</span>
+                          <span className="font-medium text-gray-900 text-sm">
+                            {formatCurrency(vendaSelecionada.comissao_integral_sinal)}
+                          </span>
+                        </div>
+                        <Separator className="bg-gray-200" />
+                        <div className="flex justify-between items-center py-1">
+                          <span className="text-gray-600 text-sm">VGV / Pré-Chaves</span>
+                          <span className="font-medium text-gray-900 text-sm">
+                            {formatCurrency(vendaSelecionada.comissao_integral_vgv_pre_chaves)}
+                          </span>
+                        </div>
+                        <Separator className="bg-gray-200" />
+                        <div className="flex justify-between items-center py-1">
+                          <span className="text-gray-600 text-sm">Extra</span>
+                          <span className="font-medium text-gray-900 text-sm">
+                            {formatCurrency(vendaSelecionada.comissao_integral_extra)}
+                          </span>
+                        </div>
+                        <Separator className="bg-gray-200" />
+                        <div className="flex justify-between items-center py-1 pt-2 border-t border-gray-200">
+                          <span className="text-gray-600 text-sm font-medium">Total Comissões</span>
+                          <span className="font-semibold text-red-600">{formatCurrency(totalComissaoIntegral)}</span>
+                        </div>
+                      </TabsContent>
+                      <TabsContent value="gerente" className="space-y-3 mt-4">
+                        <div className="flex justify-between items-center py-1">
+                          <span className="text-gray-600 text-sm">Sinal</span>
+                          <span className="font-medium text-gray-900 text-sm">
+                            {formatCurrency(vendaSelecionada.comissao_integral_sinal_gerente)}
+                          </span>
+                        </div>
+                        <Separator className="bg-gray-200" />
+                        <div className="flex justify-between items-center py-1">
+                          <span className="text-gray-600 text-sm">VGV / Pré-Chaves</span>
+                          <span className="font-medium text-gray-900 text-sm">
+                            {formatCurrency(vendaSelecionada.comissao_integral_vgv_pre_chaves_gerente)}
+                          </span>
+                        </div>
+                        <Separator className="bg-gray-200" />
+                        <div className="flex justify-between items-center py-1">
+                          <span className="text-gray-600 text-sm">Extra</span>
+                          <span className="font-medium text-gray-900 text-sm">
+                            {formatCurrency(vendaSelecionada.comissao_integral_extra_gerente)}
+                          </span>
+                        </div>
+                        <Separator className="bg-gray-200" />
+                        <div className="flex justify-between items-center py-1 pt-2 border-t border-gray-200">
+                          <span className="text-gray-600 text-sm font-medium">Total Comissões</span>
+                          <span className="font-semibold text-red-600">
+                            {formatCurrency(
+                              (vendaSelecionada.comissao_integral_sinal_gerente || 0) +
+                              (vendaSelecionada.comissao_integral_vgv_pre_chaves_gerente || 0) +
+                              (vendaSelecionada.comissao_integral_extra_gerente || 0)
+                            )}
+                          </span>
+                        </div>
+                      </TabsContent>
+                    </Tabs>
+                  ) : (
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center py-1">
+                        <span className="text-gray-600 text-sm">Sinal</span>
+                        <span className="font-medium text-gray-900 text-sm">
+                          {formatCurrency(vendaSelecionada.comissao_integral_sinal)}
+                        </span>
+                      </div>
+                      <Separator className="bg-gray-200" />
+                      <div className="flex justify-between items-center py-1">
+                        <span className="text-gray-600 text-sm">VGV / Pré-Chaves</span>
+                        <span className="font-medium text-gray-900 text-sm">
+                          {formatCurrency(vendaSelecionada.comissao_integral_vgv_pre_chaves)}
+                        </span>
+                      </div>
+                      <Separator className="bg-gray-200" />
+                      <div className="flex justify-between items-center py-1">
+                        <span className="text-gray-600 text-sm">Extra</span>
+                        <span className="font-medium text-gray-900 text-sm">
+                          {formatCurrency(vendaSelecionada.comissao_integral_extra)}
+                        </span>
+                      </div>
+                      <Separator className="bg-gray-200" />
+                      <div className="flex justify-between items-center py-1 pt-2 border-t border-gray-200">
+                        <span className="text-gray-600 text-sm font-medium">Total Comissões</span>
+                        <span className="font-semibold text-red-600">{formatCurrency(totalComissaoIntegral)}</span>
+                      </div>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </div>
 
             <Card className="border border-gray-200">
               <CardHeader className="border-b border-gray-100 pb-3">
-                <CardTitle className="text-gray-900 text-base flex items-center gap-2">
-                  <Calculator className="h-4 w-4 text-gray-600" />
-                  Adiantamento Comissão
+                <CardTitle className="flex items-center gap-2 text-gray-900 text-base">
+                  <DollarSign className="h-4 w-4 text-gray-600" />
+                  Comissão Antecipada
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="text-center border border-gray-200 p-3 rounded">
-                    <div className="text-gray-600 text-sm mb-1">VGV / Pré-Chaves</div>
-                    <div className="text-lg font-semibold text-gray-900">
-                      {formatPercentage(vendaSelecionada.comissao_vgv_pre_chaves_perc)}
-                    </div>
+                <div className="text-center border border-gray-200 p-4 rounded">
+                  <div className="text-gray-600 text-sm mb-1">Sinal Comissão Extra Vendedor</div>
+                  <div className="text-xl font-semibold text-gray-900">
+                    {formatCurrency(vendaSelecionada.sinal_comissao_extra_vendedor)}
                   </div>
-                  <div className="text-center border border-red-200 bg-red-50 p-3 rounded">
-                    <div className="text-red-700 text-sm mb-1">Sinal + Comissão + Extra</div>
-                    <div className="text-lg font-semibold text-red-600">
-                      {formatCurrency(vendaSelecionada.sinal_comissao_extra_vendedor)}
-                    </div>
-                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border border-gray-200">
+              <CardHeader className="border-b border-gray-100 pb-3">
+                <CardTitle className="flex items-center gap-2 text-gray-900 text-lg">
+                  <Table className="h-5 w-5 text-gray-600" />
+                  Detalhamento Completo das Vendas
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-0">
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow className="bg-gray-50">
+                        <TableHead className="text-gray-700 font-medium text-xs">ID</TableHead>
+                        <TableHead className="text-gray-700 font-medium text-xs">Data Contrato</TableHead>
+                        <TableHead className="text-gray-700 font-medium text-xs">Cliente</TableHead>
+                        <TableHead className="text-gray-700 font-medium text-xs">Empreendimento</TableHead>
+                        <TableHead className="text-gray-700 font-medium text-xs">Valor Venda</TableHead>
+                        <TableHead className="text-gray-700 font-medium text-xs">Valor Contrato</TableHead>
+                        <TableHead className="text-gray-700 font-medium text-xs">% Sinal</TableHead>
+                        <TableHead className="text-gray-700 font-medium text-xs">% VGV</TableHead>
+                        <TableHead className="text-gray-700 font-medium text-xs">% Extra</TableHead>
+                        <TableHead className="text-gray-700 font-medium text-xs">Comissão Sinal</TableHead>
+                        <TableHead className="text-gray-700 font-medium text-xs">Comissão VGV</TableHead>
+                        <TableHead className="text-gray-700 font-medium text-xs">Comissão Extra</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {data?.vendas.map((venda) => (
+                        <TableRow
+                          key={venda.id}
+                          className={`hover:bg-gray-50 ${
+                            venda.id === vendaSelecionada?.id ? "bg-red-50 border-l-4 border-red-500" : ""
+                          }`}
+                        >
+                          <TableCell className="text-gray-900 text-xs font-medium">{venda.id}</TableCell>
+                          <TableCell className="text-gray-700 text-xs">{formatDate(venda.data_do_contrato)}</TableCell>
+                          <TableCell className="text-gray-700 text-xs max-w-[120px] truncate">{venda.cliente}</TableCell>
+                          <TableCell className="text-gray-700 text-xs max-w-[120px] truncate">{venda.empreendimento}</TableCell>
+                          <TableCell className="text-gray-700 text-xs">{formatCurrency(venda.vlr_venda)}</TableCell>
+                          <TableCell className="text-gray-700 text-xs">{formatCurrency(venda.vlr_contrato)}</TableCell>
+                          <TableCell className="text-gray-700 text-xs">{formatPercentage(venda.comissao_sinal_perc)}</TableCell>
+                          <TableCell className="text-gray-700 text-xs">{formatPercentage(venda.comissao_vgv_pre_chaves_perc)}</TableCell>
+                          <TableCell className="text-gray-700 text-xs">{formatPercentage(venda.comissao_extra_perc)}</TableCell>
+                          <TableCell className="text-gray-700 text-xs">{formatCurrency(venda.comissao_integral_sinal)}</TableCell>
+                          <TableCell className="text-gray-700 text-xs">{formatCurrency(venda.comissao_integral_vgv_pre_chaves)}</TableCell>
+                          <TableCell className="text-gray-700 text-xs">{formatCurrency(venda.comissao_integral_extra)}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
                 </div>
               </CardContent>
             </Card>
           </>
         )}
-
-        <Card className="border border-gray-200">
-          <CardHeader className="border-b border-gray-100 pb-3">
-            <CardTitle className="text-gray-900 text-base flex items-center gap-2">
-              <TrendingUp className="h-4 w-4 text-gray-600" />
-              Base de Vendas Completa
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-0">
-            <div className="overflow-x-auto">
-              <Table className="min-w-[2000px]">
-                <TableHeader>
-                  <TableRow className="border-b border-gray-200">
-                    <TableHead className="min-w-[60px] font-semibold text-gray-700">ID</TableHead>
-                    <TableHead className="min-w-[120px] font-semibold text-gray-700">Data Contrato</TableHead>
-                    <TableHead className="min-w-[150px] font-semibold text-gray-700">Cliente</TableHead>
-                    <TableHead className="min-w-[140px] font-semibold text-gray-700">Empreendimento</TableHead>
-                    <TableHead className="min-w-[60px] font-semibold text-gray-700">BL</TableHead>
-                    <TableHead className="min-w-[60px] font-semibold text-gray-700">UNID</TableHead>
-                    <TableHead className="min-w-[100px] font-semibold text-gray-700">Tipo Venda</TableHead>
-                    <TableHead className="min-w-[120px] font-semibold text-gray-700">VLR Tabela</TableHead>
-                    <TableHead className="min-w-[120px] font-semibold text-gray-700">VLR Venda</TableHead>
-                    <TableHead className="min-w-[80px] font-semibold text-gray-700">% Desc</TableHead>
-                    <TableHead className="min-w-[120px] font-semibold text-gray-700">VLR Contrato</TableHead>
-                    <TableHead className="min-w-[80px] font-semibold text-gray-700">Fluxo</TableHead>
-                    <TableHead className="min-w-[120px] font-semibold text-gray-700">Entrada</TableHead>
-                    <TableHead className="min-w-[120px] font-semibold text-gray-700">Recebido</TableHead>
-                    <TableHead className="min-w-[120px] font-semibold text-gray-700">A Receber</TableHead>
-                    <TableHead className="min-w-[120px] font-semibold text-gray-700">Data SICAQ</TableHead>
-                    <TableHead className="min-w-[120px] font-semibold text-gray-700">Data Pagto</TableHead>
-                    <TableHead className="min-w-[120px] font-semibold text-gray-700">% Comissão Sinal</TableHead>
-                    <TableHead className="min-w-[120px] font-semibold text-gray-700">% Comissão VGV</TableHead>
-                    <TableHead className="min-w-[120px] font-semibold text-gray-700">% Comissão Extra</TableHead>
-                    <TableHead className="min-w-[140px] font-semibold text-gray-700">Comissão Integral Sinal</TableHead>
-                    <TableHead className="min-w-[140px] font-semibold text-gray-700">Comissão Integral VGV</TableHead>
-                    <TableHead className="min-w-[140px] font-semibold text-gray-700">Comissão Integral Extra</TableHead>
-                    <TableHead className="min-w-[120px] font-semibold text-gray-700">% Sinal Recebido</TableHead>
-                    <TableHead className="min-w-[160px] font-semibold text-gray-700">
-                      Sinal + Comissão + Extra
-                    </TableHead>
-                    <TableHead className="min-w-[120px] font-semibold text-gray-700">Comissão Total</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {data?.vendas.map((venda) => {
-                    const comissaoTotal =
-                      (venda.comissao_integral_sinal || 0) +
-                      (venda.comissao_integral_vgv_pre_chaves || 0) +
-                      (venda.comissao_integral_extra || 0)
-
-                    return (
-                      <TableRow
-                        key={venda.id}
-                        className={`hover:bg-gray-50 transition-colors ${
-                          venda.id === vendaSelecionada?.id ? "bg-red-50 border-l-2 border-l-red-500" : ""
-                        }`}
-                      >
-                        <TableCell className="font-mono text-xs text-gray-600">{venda.id}</TableCell>
-                        <TableCell className="whitespace-nowrap text-gray-900">
-                          {formatDate(venda.data_do_contrato)}
-                        </TableCell>
-                        <TableCell className="font-medium text-gray-900">{venda.cliente}</TableCell>
-                        <TableCell className="text-gray-900">{venda.empreendimento}</TableCell>
-                        <TableCell className="text-gray-900">{venda.bl || "-"}</TableCell>
-                        <TableCell className="text-gray-900">{venda.unid}</TableCell>
-                        <TableCell>
-                          <Badge variant="outline" className="whitespace-nowrap border-gray-300 text-gray-700">
-                            {venda.tipo_venda}
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="text-right whitespace-nowrap text-gray-900">
-                          {formatCurrency(venda.vlr_tabela)}
-                        </TableCell>
-                        <TableCell className="text-right whitespace-nowrap text-gray-900">
-                          {formatCurrency(venda.vlr_venda)}
-                        </TableCell>
-                        <TableCell className="text-right text-gray-900">
-                          {formatPercentage(venda.perc_desconto)}
-                        </TableCell>
-                        <TableCell className="text-right whitespace-nowrap font-semibold text-gray-900">
-                          {formatCurrency(venda.vlr_contrato)}
-                        </TableCell>
-                        <TableCell className="text-gray-900">{venda.fluxo || "-"}</TableCell>
-                        <TableCell className="text-right whitespace-nowrap text-gray-900">
-                          {formatCurrency(venda.entrada)}
-                        </TableCell>
-                        <TableCell className="text-right whitespace-nowrap text-green-600 font-medium">
-                          {formatCurrency(venda.recebido)}
-                        </TableCell>
-                        <TableCell className="text-right whitespace-nowrap text-orange-600 font-medium">
-                          {formatCurrency(venda.receber)}
-                        </TableCell>
-                        <TableCell className="whitespace-nowrap text-gray-900">
-                          {formatDate(venda.data_sicaq)}
-                        </TableCell>
-                        <TableCell className="whitespace-nowrap text-gray-900">
-                          {formatDate(venda.data_pagto)}
-                        </TableCell>
-                        <TableCell className="text-right text-gray-900">
-                          {formatPercentage(venda.comissao_sinal_perc)}
-                        </TableCell>
-                        <TableCell className="text-right text-gray-900">
-                          {formatPercentage(venda.comissao_vgv_pre_chaves_perc)}
-                        </TableCell>
-                        <TableCell className="text-right text-gray-900">
-                          {formatPercentage(venda.comissao_extra_perc)}
-                        </TableCell>
-                        <TableCell className="text-right whitespace-nowrap text-gray-900">
-                          {formatCurrency(venda.comissao_integral_sinal)}
-                        </TableCell>
-                        <TableCell className="text-right whitespace-nowrap text-gray-900">
-                          {formatCurrency(venda.comissao_integral_vgv_pre_chaves)}
-                        </TableCell>
-                        <TableCell className="text-right whitespace-nowrap text-gray-900">
-                          {formatCurrency(venda.comissao_integral_extra)}
-                        </TableCell>
-                        <TableCell className="text-right text-gray-900">
-                          {formatPercentage(venda.perc_sinal_recebido)}
-                        </TableCell>
-                        <TableCell className="text-right whitespace-nowrap text-gray-900">
-                          {formatCurrency(venda.sinal_comissao_extra_vendedor)}
-                        </TableCell>
-                        <TableCell className="text-right whitespace-nowrap font-semibold text-red-600">
-                          {formatCurrency(comissaoTotal)}
-                        </TableCell>
-                      </TableRow>
-                    )
-                  })}
-                </TableBody>
-              </Table>
-            </div>
-          </CardContent>
-        </Card>
       </div>
     </div>
   )
