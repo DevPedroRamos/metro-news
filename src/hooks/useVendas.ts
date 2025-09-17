@@ -138,28 +138,8 @@ export const useVendas = () => {
 
       if (error) throw error;
 
-      // Simular dados de gerente e superintendente já que não temos os campos na view
-      const vendasWithExtraFields = (data || []).map((venda: any) => ({
-        ...venda,
-        // Simular percentuais de gerente (exemplo: 50% dos percentuais do corretor)
-        comissao_sinal_perc_gerente: venda.comissao_sinal_perc ? venda.comissao_sinal_perc * 0.5 : null,
-        comissao_vgv_pre_chaves_perc_gerente: venda.comissao_vgv_pre_chaves_perc ? venda.comissao_vgv_pre_chaves_perc * 0.5 : null,
-        comissao_extra_perc_gerente: venda.comissao_extra_perc ? venda.comissao_extra_perc * 0.5 : null,
-        comissao_integral_sinal_gerente: venda.comissao_integral_sinal ? venda.comissao_integral_sinal * 0.5 : null,
-        comissao_integral_vgv_pre_chaves_gerente: venda.comissao_integral_vgv_pre_chaves ? venda.comissao_integral_vgv_pre_chaves * 0.5 : null,
-        comissao_integral_extra_gerente: venda.comissao_integral_extra ? venda.comissao_integral_extra * 0.5 : null,
-        sinal_comissao_extra_vendedor_gerente: venda.sinal_comissao_extra_vendedor ? venda.sinal_comissao_extra_vendedor * 0.5 : null,
-        // Simular percentuais de superintendente (exemplo: 30% dos percentuais do corretor)
-        comissao_sinal_perc_superintendente: venda.comissao_sinal_perc ? venda.comissao_sinal_perc * 0.3 : null,
-        comissao_vgv_pre_chaves_perc_superintendente: venda.comissao_vgv_pre_chaves_perc ? venda.comissao_vgv_pre_chaves_perc * 0.3 : null,
-        comissao_extra_perc_superintendente: venda.comissao_extra_perc ? venda.comissao_extra_perc * 0.3 : null,
-        comissao_integral_sinal_superintendente: venda.comissao_integral_sinal ? venda.comissao_integral_sinal * 0.3 : null,
-        comissao_integral_vgv_pre_chaves_superintendente: venda.comissao_integral_vgv_pre_chaves ? venda.comissao_integral_vgv_pre_chaves * 0.3 : null,
-        comissao_integral_extra_superintendente: venda.comissao_integral_extra ? venda.comissao_integral_extra * 0.3 : null,
-        sinal_comissao_extra_vendedor_superintendente: venda.sinal_comissao_extra_vendedor ? venda.sinal_comissao_extra_vendedor * 0.3 : null,
-      }));
-      
-      setVendas(vendasWithExtraFields as Venda[]);
+      // Usar dados reais da view base_de_vendas que agora inclui as novas colunas
+      setVendas((data || []) as Venda[]);
     } catch (err) {
       console.error("Erro ao carregar vendas:", err);
       setError("Não foi possível carregar as vendas.");

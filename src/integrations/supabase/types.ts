@@ -942,11 +942,23 @@ export type Database = {
           c_desconto_em_aberto: number | null
           cliente: string | null
           comissao_extra_perc: number | null
+          comissao_extra_perc_gerente: number | null
+          comissao_extra_perc_superintendente: number | null
           comissao_integral_extra: number | null
+          comissao_integral_extra_gerente: number | null
+          comissao_integral_extra_superintendente: number | null
           comissao_integral_sinal: number | null
+          comissao_integral_sinal_gerente: number | null
+          comissao_integral_sinal_superintendente: number | null
           comissao_integral_vgv_pre_chaves: number | null
+          comissao_integral_vgv_pre_chaves_gerente: number | null
+          comissao_integral_vgv_pre_chaves_superintendente: number | null
           comissao_sinal_perc: number | null
+          comissao_sinal_perc_gerente: number | null
+          comissao_sinal_perc_superintendente: number | null
           comissao_vgv_pre_chaves_perc: number | null
+          comissao_vgv_pre_chaves_perc_gerente: number | null
+          comissao_vgv_pre_chaves_perc_superintendente: number | null
           created_at: string | null
           data_do_contrato: string | null
           data_pagto: string | null
@@ -965,6 +977,8 @@ export type Database = {
           recebido: number | null
           recebido_de_sinal: number | null
           sinal_comissao_extra_vendedor: number | null
+          sinal_comissao_extra_vendedor_gerente: number | null
+          sinal_comissao_extra_vendedor_superintendente: number | null
           superintendente: string | null
           supervisor_coord_parceiro: string | null
           tipo_venda: string | null
@@ -983,11 +997,23 @@ export type Database = {
           c_desconto_em_aberto?: number | null
           cliente?: string | null
           comissao_extra_perc?: number | null
+          comissao_extra_perc_gerente?: number | null
+          comissao_extra_perc_superintendente?: number | null
           comissao_integral_extra?: number | null
+          comissao_integral_extra_gerente?: number | null
+          comissao_integral_extra_superintendente?: number | null
           comissao_integral_sinal?: number | null
+          comissao_integral_sinal_gerente?: number | null
+          comissao_integral_sinal_superintendente?: number | null
           comissao_integral_vgv_pre_chaves?: number | null
+          comissao_integral_vgv_pre_chaves_gerente?: number | null
+          comissao_integral_vgv_pre_chaves_superintendente?: number | null
           comissao_sinal_perc?: number | null
+          comissao_sinal_perc_gerente?: number | null
+          comissao_sinal_perc_superintendente?: number | null
           comissao_vgv_pre_chaves_perc?: number | null
+          comissao_vgv_pre_chaves_perc_gerente?: number | null
+          comissao_vgv_pre_chaves_perc_superintendente?: number | null
           created_at?: string | null
           data_do_contrato?: string | null
           data_pagto?: string | null
@@ -1006,6 +1032,8 @@ export type Database = {
           recebido?: number | null
           recebido_de_sinal?: number | null
           sinal_comissao_extra_vendedor?: number | null
+          sinal_comissao_extra_vendedor_gerente?: number | null
+          sinal_comissao_extra_vendedor_superintendente?: number | null
           superintendente?: string | null
           supervisor_coord_parceiro?: string | null
           tipo_venda?: string | null
@@ -1024,11 +1052,23 @@ export type Database = {
           c_desconto_em_aberto?: number | null
           cliente?: string | null
           comissao_extra_perc?: number | null
+          comissao_extra_perc_gerente?: number | null
+          comissao_extra_perc_superintendente?: number | null
           comissao_integral_extra?: number | null
+          comissao_integral_extra_gerente?: number | null
+          comissao_integral_extra_superintendente?: number | null
           comissao_integral_sinal?: number | null
+          comissao_integral_sinal_gerente?: number | null
+          comissao_integral_sinal_superintendente?: number | null
           comissao_integral_vgv_pre_chaves?: number | null
+          comissao_integral_vgv_pre_chaves_gerente?: number | null
+          comissao_integral_vgv_pre_chaves_superintendente?: number | null
           comissao_sinal_perc?: number | null
+          comissao_sinal_perc_gerente?: number | null
+          comissao_sinal_perc_superintendente?: number | null
           comissao_vgv_pre_chaves_perc?: number | null
+          comissao_vgv_pre_chaves_perc_gerente?: number | null
+          comissao_vgv_pre_chaves_perc_superintendente?: number | null
           created_at?: string | null
           data_do_contrato?: string | null
           data_pagto?: string | null
@@ -1047,6 +1087,8 @@ export type Database = {
           recebido?: number | null
           recebido_de_sinal?: number | null
           sinal_comissao_extra_vendedor?: number | null
+          sinal_comissao_extra_vendedor_gerente?: number | null
+          sinal_comissao_extra_vendedor_superintendente?: number | null
           superintendente?: string | null
           supervisor_coord_parceiro?: string | null
           tipo_venda?: string | null
