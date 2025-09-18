@@ -134,12 +134,12 @@ export const usePayments = () => {
     try {
       setHistoryLoading(true);
 
+      // Query para buscar histórico com JOIN para obter as datas dos períodos
       const { data: historyData, error: historyError } = await (supabase as any)
-        .from("resume")
-        .select("*")
-        .eq("cpf", user.cpf)
-        .neq("periodo_id", period.id)
-        .order("created_at", { ascending: false });
+        .rpc('get_payment_history', { 
+          user_cpf: user.cpf, 
+          current_period_id: period.id 
+        });
 
       if (historyError) throw historyError;
 
@@ -159,10 +159,17 @@ export const usePayments = () => {
             Number(row.saldo_permuta || 0) +
             Number(row.saldo_neg_periodos_anteriores || 0);
 
+          // Formatando as datas do período para o formato brasileiro
+          const formatDate = (dateStr: string) => {
+            if (!dateStr) return "";
+            const [year, month, day] = dateStr.split('-');
+            return `${day}/${month}/${year}`;
+          };
+
           return {
             id: row.id,
-            period_start: row.period_start || "",
-            period_end: row.period_end || "",
+            period_start: formatDate(row.period_start),
+            period_end: formatDate(row.period_end),
             receita_total: receitaTotal,
             descontos_total: descontosTotal,
             total_receber: receitaTotal - descontosTotal,
