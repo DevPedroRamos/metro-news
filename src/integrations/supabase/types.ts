@@ -1498,6 +1498,28 @@ export type Database = {
           visitas_finalizadas_hoje: number
         }[]
       }
+      get_payment_history: {
+        Args: { current_period_id: number; user_cpf: string }
+        Returns: {
+          adiantamento: number
+          antecipacao: number
+          comissao: number
+          created_at: string
+          distrato: number
+          id: string
+          outras: number
+          outros: number
+          pagar: number
+          period_end: string
+          period_start: string
+          periodo_id: number
+          premio: number
+          saldo_cef: number
+          saldo_neg_periodos_anteriores: number
+          saldo_permuta: number
+          valor_base: number
+        }[]
+      }
       get_profile_stats: {
         Args: { user_uuid: string }
         Returns: {
