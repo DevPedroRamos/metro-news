@@ -126,9 +126,12 @@ export const useVendas = () => {
         .select("*")
         .eq("periodo_id", period.id);
 
+      // Se for superintendente, busca vendas onde ele é o superintendente
       // Se for gerente, busca vendas onde ele é o gerente
       // Caso contrário, busca vendas onde ele é o vendedor
-      if (role === "gerente") {
+      if (role === "superintendente") {
+        query = query.eq("superintendente", apelido);
+      } else if (role === "gerente") {
         query = query.eq("gerente", apelido);
       } else {
         query = query.eq("vendedor_parceiro", apelido);

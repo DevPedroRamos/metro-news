@@ -315,7 +315,108 @@ export default function VendasPage() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="p-4">
-                  {userData?.role === "gerente" ? (
+                  {userData?.role === "superintendente" ? (
+                    <Tabs defaultValue="corretor" className="w-full">
+                      <TabsList className="grid w-full grid-cols-3">
+                        <TabsTrigger value="corretor">Corretor</TabsTrigger>
+                        <TabsTrigger value="gerente">Gerente</TabsTrigger>
+                        <TabsTrigger value="superintendente">Superintendente</TabsTrigger>
+                      </TabsList>
+                      <TabsContent value="corretor" className="space-y-3 mt-4">
+                        <div className="flex justify-between items-center py-1">
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <span className="text-gray-600 text-sm cursor-help">Sinal</span>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Comissão sobre o valor do sinal</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                          <span className="font-medium text-gray-900 text-sm">
+                            {formatPercentage(vendaSelecionada.comissao_sinal_perc)}
+                          </span>
+                        </div>
+                        <Separator className="bg-gray-200" />
+                        <div className="flex justify-between items-center py-1">
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <span className="text-gray-600 text-sm cursor-help">VGV / Pré-Chaves</span>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Comissão sobre o Valor Geral de Vendas até a entrega das chaves</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                          <span className="font-medium text-gray-900 text-sm">
+                            {formatPercentage(vendaSelecionada.comissao_vgv_pre_chaves_perc)}
+                          </span>
+                        </div>
+                        <Separator className="bg-gray-200" />
+                        <div className="flex justify-between items-center py-1">
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <span className="text-gray-600 text-sm cursor-help">Extra Comissão</span>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Comissão extra por performance ou metas</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                          <span className="font-medium text-gray-900 text-sm">
+                            {formatPercentage(vendaSelecionada.comissao_extra_perc)}
+                          </span>
+                        </div>
+                      </TabsContent>
+                      <TabsContent value="gerente" className="space-y-3 mt-4">
+                        <div className="flex justify-between items-center py-1">
+                          <span className="text-gray-600 text-sm">Sinal</span>
+                          <span className="font-medium text-gray-900 text-sm">
+                            {formatPercentage(vendaSelecionada.comissao_sinal_perc_gerente)}
+                          </span>
+                        </div>
+                        <Separator className="bg-gray-200" />
+                        <div className="flex justify-between items-center py-1">
+                          <span className="text-gray-600 text-sm">VGV / Pré-Chaves</span>
+                          <span className="font-medium text-gray-900 text-sm">
+                            {formatPercentage(vendaSelecionada.comissao_vgv_pre_chaves_perc_gerente)}
+                          </span>
+                        </div>
+                        <Separator className="bg-gray-200" />
+                        <div className="flex justify-between items-center py-1">
+                          <span className="text-gray-600 text-sm">Extra Comissão</span>
+                          <span className="font-medium text-gray-900 text-sm">
+                            {formatPercentage(vendaSelecionada.comissao_extra_perc_gerente)}
+                          </span>
+                        </div>
+                      </TabsContent>
+                      <TabsContent value="superintendente" className="space-y-3 mt-4">
+                        <div className="flex justify-between items-center py-1">
+                          <span className="text-gray-600 text-sm">Sinal</span>
+                          <span className="font-medium text-gray-900 text-sm">
+                            {formatPercentage(vendaSelecionada.comissao_sinal_perc_superintendente)}
+                          </span>
+                        </div>
+                        <Separator className="bg-gray-200" />
+                        <div className="flex justify-between items-center py-1">
+                          <span className="text-gray-600 text-sm">VGV / Pré-Chaves</span>
+                          <span className="font-medium text-gray-900 text-sm">
+                            {formatPercentage(vendaSelecionada.comissao_vgv_pre_chaves_perc_superintendente)}
+                          </span>
+                        </div>
+                        <Separator className="bg-gray-200" />
+                        <div className="flex justify-between items-center py-1">
+                          <span className="text-gray-600 text-sm">Extra Comissão</span>
+                          <span className="font-medium text-gray-900 text-sm">
+                            {formatPercentage(vendaSelecionada.comissao_extra_perc_superintendente)}
+                          </span>
+                        </div>
+                      </TabsContent>
+                    </Tabs>
+                  ) : userData?.role === "gerente" ? (
                     <Tabs defaultValue="corretor" className="w-full">
                       <TabsList className="grid w-full grid-cols-2">
                         <TabsTrigger value="corretor">Corretor</TabsTrigger>
@@ -455,7 +556,108 @@ export default function VendasPage() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="p-4">
-                  {userData?.role === "gerente" ? (
+                  {userData?.role === "superintendente" ? (
+                    <Tabs defaultValue="corretor" className="w-full">
+                      <TabsList className="grid w-full grid-cols-3">
+                        <TabsTrigger value="corretor">Corretor</TabsTrigger>
+                        <TabsTrigger value="gerente">Gerente</TabsTrigger>
+                        <TabsTrigger value="superintendente">Superintendente</TabsTrigger>
+                      </TabsList>
+                      <TabsContent value="corretor" className="space-y-3 mt-4">
+                        <div className="flex justify-between items-center py-1">
+                          <span className="text-gray-600 text-sm">Sinal</span>
+                          <span className="font-medium text-gray-900 text-sm">
+                            {formatCurrency(vendaSelecionada.comissao_integral_sinal)}
+                          </span>
+                        </div>
+                        <Separator className="bg-gray-200" />
+                        <div className="flex justify-between items-center py-1">
+                          <span className="text-gray-600 text-sm">VGV / Pré-Chaves</span>
+                          <span className="font-medium text-gray-900 text-sm">
+                            {formatCurrency(vendaSelecionada.comissao_integral_vgv_pre_chaves)}
+                          </span>
+                        </div>
+                        <Separator className="bg-gray-200" />
+                        <div className="flex justify-between items-center py-1">
+                          <span className="text-gray-600 text-sm">Extra</span>
+                          <span className="font-medium text-gray-900 text-sm">
+                            {formatCurrency(vendaSelecionada.comissao_integral_extra)}
+                          </span>
+                        </div>
+                        <Separator className="bg-gray-200" />
+                        <div className="flex justify-between items-center py-1 pt-2 border-t border-gray-200">
+                          <span className="text-gray-600 text-sm font-medium">Total Comissões</span>
+                          <span className="font-semibold text-red-600">{formatCurrency(totalComissaoIntegral)}</span>
+                        </div>
+                      </TabsContent>
+                      <TabsContent value="gerente" className="space-y-3 mt-4">
+                        <div className="flex justify-between items-center py-1">
+                          <span className="text-gray-600 text-sm">Sinal</span>
+                          <span className="font-medium text-gray-900 text-sm">
+                            {formatCurrency(vendaSelecionada.comissao_integral_sinal_gerente)}
+                          </span>
+                        </div>
+                        <Separator className="bg-gray-200" />
+                        <div className="flex justify-between items-center py-1">
+                          <span className="text-gray-600 text-sm">VGV / Pré-Chaves</span>
+                          <span className="font-medium text-gray-900 text-sm">
+                            {formatCurrency(vendaSelecionada.comissao_integral_vgv_pre_chaves_gerente)}
+                          </span>
+                        </div>
+                        <Separator className="bg-gray-200" />
+                        <div className="flex justify-between items-center py-1">
+                          <span className="text-gray-600 text-sm">Extra</span>
+                          <span className="font-medium text-gray-900 text-sm">
+                            {formatCurrency(vendaSelecionada.comissao_integral_extra_gerente)}
+                          </span>
+                        </div>
+                        <Separator className="bg-gray-200" />
+                        <div className="flex justify-between items-center py-1 pt-2 border-t border-gray-200">
+                          <span className="text-gray-600 text-sm font-medium">Total Comissões</span>
+                          <span className="font-semibold text-red-600">
+                            {formatCurrency(
+                              (vendaSelecionada.comissao_integral_sinal_gerente || 0) +
+                              (vendaSelecionada.comissao_integral_vgv_pre_chaves_gerente || 0) +
+                              (vendaSelecionada.comissao_integral_extra_gerente || 0)
+                            )}
+                          </span>
+                        </div>
+                      </TabsContent>
+                      <TabsContent value="superintendente" className="space-y-3 mt-4">
+                        <div className="flex justify-between items-center py-1">
+                          <span className="text-gray-600 text-sm">Sinal</span>
+                          <span className="font-medium text-gray-900 text-sm">
+                            {formatCurrency(vendaSelecionada.comissao_integral_sinal_superintendente)}
+                          </span>
+                        </div>
+                        <Separator className="bg-gray-200" />
+                        <div className="flex justify-between items-center py-1">
+                          <span className="text-gray-600 text-sm">VGV / Pré-Chaves</span>
+                          <span className="font-medium text-gray-900 text-sm">
+                            {formatCurrency(vendaSelecionada.comissao_integral_vgv_pre_chaves_superintendente)}
+                          </span>
+                        </div>
+                        <Separator className="bg-gray-200" />
+                        <div className="flex justify-between items-center py-1">
+                          <span className="text-gray-600 text-sm">Extra</span>
+                          <span className="font-medium text-gray-900 text-sm">
+                            {formatCurrency(vendaSelecionada.comissao_integral_extra_superintendente)}
+                          </span>
+                        </div>
+                        <Separator className="bg-gray-200" />
+                        <div className="flex justify-between items-center py-1 pt-2 border-t border-gray-200">
+                          <span className="text-gray-600 text-sm font-medium">Total Comissões</span>
+                          <span className="font-semibold text-red-600">
+                            {formatCurrency(
+                              (vendaSelecionada.comissao_integral_sinal_superintendente || 0) +
+                              (vendaSelecionada.comissao_integral_vgv_pre_chaves_superintendente || 0) +
+                              (vendaSelecionada.comissao_integral_extra_superintendente || 0)
+                            )}
+                          </span>
+                        </div>
+                      </TabsContent>
+                    </Tabs>
+                  ) : userData?.role === "gerente" ? (
                     <Tabs defaultValue="corretor" className="w-full">
                       <TabsList className="grid w-full grid-cols-2">
                         <TabsTrigger value="corretor">Corretor</TabsTrigger>
@@ -521,6 +723,39 @@ export default function VendasPage() {
                           </span>
                         </div>
                       </TabsContent>
+                      <TabsContent value="superintendente" className="space-y-3 mt-4">
+                        <div className="flex justify-between items-center py-1">
+                          <span className="text-gray-600 text-sm">Sinal</span>
+                          <span className="font-medium text-gray-900 text-sm">
+                            {formatCurrency(vendaSelecionada.comissao_integral_sinal_superintendente)}
+                          </span>
+                        </div>
+                        <Separator className="bg-gray-200" />
+                        <div className="flex justify-between items-center py-1">
+                          <span className="text-gray-600 text-sm">VGV / Pré-Chaves</span>
+                          <span className="font-medium text-gray-900 text-sm">
+                            {formatCurrency(vendaSelecionada.comissao_integral_vgv_pre_chaves_superintendente)}
+                          </span>
+                        </div>
+                        <Separator className="bg-gray-200" />
+                        <div className="flex justify-between items-center py-1">
+                          <span className="text-gray-600 text-sm">Extra</span>
+                          <span className="font-medium text-gray-900 text-sm">
+                            {formatCurrency(vendaSelecionada.comissao_integral_extra_superintendente)}
+                          </span>
+                        </div>
+                        <Separator className="bg-gray-200" />
+                        <div className="flex justify-between items-center py-1 pt-2 border-t border-gray-200">
+                          <span className="text-gray-600 text-sm font-medium">Total Comissões</span>
+                          <span className="font-semibold text-red-600">
+                            {formatCurrency(
+                              (vendaSelecionada.comissao_integral_sinal_superintendente || 0) +
+                              (vendaSelecionada.comissao_integral_vgv_pre_chaves_superintendente || 0) +
+                              (vendaSelecionada.comissao_integral_extra_superintendente || 0)
+                            )}
+                          </span>
+                        </div>
+                      </TabsContent>
                     </Tabs>
                   ) : (
                     <div className="space-y-3">
@@ -563,12 +798,69 @@ export default function VendasPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-4">
-                <div className="text-center border border-gray-200 p-4 rounded">
-                  <div className="text-gray-600 text-sm mb-1">Sinal Comissão Extra Vendedor</div>
-                  <div className="text-xl font-semibold text-gray-900">
-                    {formatCurrency(vendaSelecionada.sinal_comissao_extra_vendedor)}
+                {userData?.role === "superintendente" ? (
+                  <Tabs defaultValue="corretor" className="w-full">
+                    <TabsList className="grid w-full grid-cols-3">
+                      <TabsTrigger value="corretor">Corretor</TabsTrigger>
+                      <TabsTrigger value="gerente">Gerente</TabsTrigger>
+                      <TabsTrigger value="superintendente">Superintendente</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="corretor" className="mt-4">
+                      <div className="text-center border border-gray-200 p-4 rounded">
+                        <div className="text-gray-600 text-sm mb-1">Sinal Comissão Extra Vendedor</div>
+                        <div className="text-xl font-semibold text-gray-900">
+                          {formatCurrency(vendaSelecionada.sinal_comissao_extra_vendedor)}
+                        </div>
+                      </div>
+                    </TabsContent>
+                    <TabsContent value="gerente" className="mt-4">
+                      <div className="text-center border border-gray-200 p-4 rounded">
+                        <div className="text-gray-600 text-sm mb-1">Sinal Comissão Extra Vendedor</div>
+                        <div className="text-xl font-semibold text-gray-900">
+                          {formatCurrency(vendaSelecionada.sinal_comissao_extra_vendedor_gerente)}
+                        </div>
+                      </div>
+                    </TabsContent>
+                    <TabsContent value="superintendente" className="mt-4">
+                      <div className="text-center border border-gray-200 p-4 rounded">
+                        <div className="text-gray-600 text-sm mb-1">Sinal Comissão Extra Vendedor</div>
+                        <div className="text-xl font-semibold text-gray-900">
+                          {formatCurrency(vendaSelecionada.sinal_comissao_extra_vendedor_superintendente)}
+                        </div>
+                      </div>
+                    </TabsContent>
+                  </Tabs>
+                ) : userData?.role === "gerente" ? (
+                  <Tabs defaultValue="corretor" className="w-full">
+                    <TabsList className="grid w-full grid-cols-2">
+                      <TabsTrigger value="corretor">Corretor</TabsTrigger>
+                      <TabsTrigger value="gerente">Gerente</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="corretor" className="mt-4">
+                      <div className="text-center border border-gray-200 p-4 rounded">
+                        <div className="text-gray-600 text-sm mb-1">Sinal Comissão Extra Vendedor</div>
+                        <div className="text-xl font-semibold text-gray-900">
+                          {formatCurrency(vendaSelecionada.sinal_comissao_extra_vendedor)}
+                        </div>
+                      </div>
+                    </TabsContent>
+                    <TabsContent value="gerente" className="mt-4">
+                      <div className="text-center border border-gray-200 p-4 rounded">
+                        <div className="text-gray-600 text-sm mb-1">Sinal Comissão Extra Vendedor</div>
+                        <div className="text-xl font-semibold text-gray-900">
+                          {formatCurrency(vendaSelecionada.sinal_comissao_extra_vendedor_gerente)}
+                        </div>
+                      </div>
+                    </TabsContent>
+                  </Tabs>
+                ) : (
+                  <div className="text-center border border-gray-200 p-4 rounded">
+                    <div className="text-gray-600 text-sm mb-1">Sinal Comissão Extra Vendedor</div>
+                    <div className="text-xl font-semibold text-gray-900">
+                      {formatCurrency(vendaSelecionada.sinal_comissao_extra_vendedor)}
+                    </div>
                   </div>
-                </div>
+                )}
               </CardContent>
             </Card>
 
