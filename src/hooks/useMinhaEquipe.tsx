@@ -30,18 +30,33 @@ export const useMinhaEquipe = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!userData?.apelido || userData.role !== 'gerente' || !period) return;
+    if (!userData?.apelido || (userData.role !== 'gerente' && userData.role !== 'superintendente') || !period) return;
 
     const fetchTeamData = async () => {
       try {
         setLoading(true);
         setError(null);
 
-        // Buscar membros da equipe do gerente
-        const { data: teamMembers, error: teamError } = await supabase
-          .from('users')
-          .select('id, name, apelido, cpf, role')
-          .eq('gerente', userData.apelido);
+        let teamMembers;
+        let teamError;
+
+        if (userData.role === 'gerente') {
+          // Buscar membros da equipe do gerente
+          const result = await supabase
+            .from('users')
+            .select('id, name, apelido, cpf, role')
+            .eq('gerente', userData.apelido);
+          teamMembers = result.data;
+          teamError = result.error;
+        } else if (userData.role === 'superintendente') {
+          // Buscar todos os membros da superintendência (gerentes e corretores)
+          const result = await supabase
+            .from('users')
+            .select('id, name, apelido, cpf, role')
+            .eq('superintendente', userData.apelido);
+          teamMembers = result.data;
+          teamError = result.error;
+        }
 
         if (teamError) throw teamError;
 
@@ -156,5 +171,6 @@ export const useMinhaEquipe = () => {
     loading,
     error,
     isManager: userData?.role === 'gerente',
+    isSuperintendente: userData?.role === 'superintendente',
   };
 };

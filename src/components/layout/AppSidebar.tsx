@@ -147,8 +147,8 @@ export function AppSidebar() {
                 </SidebarMenuItem>
               ))}
               
-              {/* Menu específico para gerentes */}
-              {userData?.role === 'gerente' && (
+              {/* Menu específico para gerentes e superintendentes */}
+              {(userData?.role === 'gerente' || userData?.role === 'superintendente') && (
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild>
                     <NavLink

@@ -13,16 +13,17 @@ export default function MinhaEquipe() {
     teamStats,
     loading,
     error,
-    isManager
+    isManager,
+    isSuperintendente
   } = useMinhaEquipe();
 
-  if (!isManager) {
+  if (!isManager && !isSuperintendente) {
     return (
       <div className="container mx-auto p-6">
         <Alert>
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
-            Esta página é restrita para usuários com perfil de gerente.
+            Esta página é restrita para usuários com perfil de gerente ou superintendente.
           </AlertDescription>
         </Alert>
       </div>
@@ -74,7 +75,10 @@ export default function MinhaEquipe() {
       <div>
         <h1 className="text-3xl font-bold text-gray-900">Minha Equipe</h1>
         <p className="text-gray-600 mt-2">
-          Visão geral da performance da sua equipe
+          {isSuperintendente 
+            ? "Visão geral da performance da sua superintendência" 
+            : "Visão geral da performance da sua equipe"
+          }
         </p>
       </div>
 
@@ -82,7 +86,9 @@ export default function MinhaEquipe() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total de consultores</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              {isSuperintendente ? "Total de Membros" : "Total de consultores"}
+            </CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -128,39 +134,48 @@ export default function MinhaEquipe() {
           ) : (
             <div className="overflow-x-auto">
               <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Membro</TableHead>
-                    <TableHead className="text-center">Vendas</TableHead>
-                    <TableHead className="text-center">Visitas</TableHead>
-                    <TableHead className="text-center">Valor a Receber</TableHead>
-                    <TableHead className="text-center">Comissão</TableHead>
-                    <TableHead className="text-center">Saldo CEF</TableHead>
-                    <TableHead className="text-center">Distrato</TableHead>
-                    <TableHead className="text-center font-medium">Valor da Nota</TableHead>
-                  </TableRow>
-                </TableHeader>
+                 <TableHeader>
+                   <TableRow>
+                     <TableHead>Membro</TableHead>
+                     {isSuperintendente && <TableHead className="text-center">Função</TableHead>}
+                     <TableHead className="text-center">Vendas</TableHead>
+                     <TableHead className="text-center">Visitas</TableHead>
+                     <TableHead className="text-center">Valor a Receber</TableHead>
+                     <TableHead className="text-center">Comissão</TableHead>
+                     <TableHead className="text-center">Saldo CEF</TableHead>
+                     <TableHead className="text-center">Distrato</TableHead>
+                     <TableHead className="text-center font-medium">Valor da Nota</TableHead>
+                   </TableRow>
+                 </TableHeader>
                 <TableBody>
                   {teamData.map(member => (
                     <TableRow key={member.id}>
-                      <TableCell>
-                        <div className="flex items-center space-x-3">
-                          <Avatar className="h-10 w-10">
-                            <AvatarImage src={member.avatar_url} alt={member.name} />
-                            <AvatarFallback>
-                              {getUserInitials(member.name)}
-                            </AvatarFallback>
-                          </Avatar>
-                          <div>
-                            <div className="font-medium">{member.name}</div>
-                            <div className="text-sm text-gray-500">{member.apelido}</div>
-                          </div>
-                        </div>
-                      </TableCell>
+                       <TableCell>
+                         <div className="flex items-center space-x-3">
+                           <Avatar className="h-10 w-10">
+                             <AvatarImage src={member.avatar_url} alt={member.name} />
+                             <AvatarFallback>
+                               {getUserInitials(member.name)}
+                             </AvatarFallback>
+                           </Avatar>
+                           <div>
+                             <div className="font-medium">{member.name}</div>
+                             <div className="text-sm text-gray-500">{member.apelido}</div>
+                           </div>
+                         </div>
+                       </TableCell>
 
-                      <TableCell className="text-center">
-                        <div className="font-medium">{member.vendas}</div>
-                      </TableCell>
+                       {isSuperintendente && (
+                         <TableCell className="text-center">
+                           <Badge variant={member.role === 'gerente' ? 'default' : 'secondary'}>
+                             {member.role === 'gerente' ? 'Gerente' : 'Corretor'}
+                           </Badge>
+                         </TableCell>
+                       )}
+
+                       <TableCell className="text-center">
+                         <div className="font-medium">{member.vendas}</div>
+                       </TableCell>
 
                       <TableCell className="text-center">
                         <div className="font-medium">{member.visitas}</div>
