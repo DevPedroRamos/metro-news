@@ -72,6 +72,15 @@ export const useProfileData = () => {
             .eq('gerente', userData.apelido);
           baseVendas = result.data;
           vendasError = result.error;
+        } else if (userData.role === 'superintendente') {
+          // Para superintendente, buscar vendas onde o apelido dele aparece como superintendente
+          const result = await supabase
+            .from('base_de_vendas')
+            .select('*')
+            .eq('periodo_id', period.id)
+            .eq('superintendente', userData.apelido);
+          baseVendas = result.data;
+          vendasError = result.error;
         } else {
           // Para outros usuários, buscar vendas onde ele é o vendedor
           const result = await supabase
@@ -89,12 +98,41 @@ export const useProfileData = () => {
         const periodStart = new Date(period.isoStart);
         const periodEnd = new Date(period.isoEnd);
         
-        const { data: visitsData, error: visitsError } = await supabase
-          .from('visits')
-          .select('*')
-          .eq('corretor_id', authUser.id)
-          .gte('horario_entrada', periodStart.toISOString())
-          .lte('horario_entrada', periodEnd.toISOString());
+        let visitsData;
+        let visitsError;
+        
+        if (userData.role === 'superintendente') {
+          // Para superintendente, buscar visitas de toda a equipe da superintendência
+          const { data: teamUsers, error: teamError } = await supabase
+            .from('users')
+            .select('id')
+            .eq('superintendente', userData.apelido);
+          
+          if (teamError) throw teamError;
+          
+          const teamIds = teamUsers?.map(user => user.id) || [];
+          
+          const result = await supabase
+            .from('visits')
+            .select('*')
+            .in('corretor_id', teamIds)
+            .gte('horario_entrada', periodStart.toISOString())
+            .lte('horario_entrada', periodEnd.toISOString());
+          
+          visitsData = result.data;
+          visitsError = result.error;
+        } else {
+          // Para outros usuários, buscar apenas suas próprias visitas
+          const result = await supabase
+            .from('visits')
+            .select('*')
+            .eq('corretor_id', authUser.id)
+            .gte('horario_entrada', periodStart.toISOString())
+            .lte('horario_entrada', periodEnd.toISOString());
+          
+          visitsData = result.data;
+          visitsError = result.error;
+        }
 
         if (visitsError) throw visitsError;
 
@@ -163,7 +201,31 @@ export const useProfileData = () => {
               .sort((a, b) => b.vendas - a.vendas);
 
             totalUsers = gerenteVendas.length;
-            const userPosition = gerenteVendas.findIndex(item => item.gerente === userData.gerente);
+            const userPosition = gerenteVendas.findIndex(item => item.gerente === userData.apelido);
+            rankingPosition = userPosition >= 0 ? userPosition + 1 : totalUsers;
+          }
+        } else if (userData.role === 'superintendente') {
+          // Para superintendente, usar campo 'superintendente' da base_de_vendas
+          const { data: allVendas } = await supabase
+            .from('base_de_vendas')
+            .select('superintendente')
+            .eq('periodo_id', period.id);
+
+          if (allVendas) {
+            // Contar menções por superintendente
+            const superintendenteCounts = allVendas.reduce((acc, item) => {
+              if (item.superintendente) {
+                acc[item.superintendente] = (acc[item.superintendente] || 0) + 1;
+              }
+              return acc;
+            }, {} as Record<string, number>);
+
+            const superintendenteVendas = Object.entries(superintendenteCounts)
+              .map(([superintendente, vendas]) => ({ superintendente, vendas }))
+              .sort((a, b) => b.vendas - a.vendas);
+
+            totalUsers = superintendenteVendas.length;
+            const userPosition = superintendenteVendas.findIndex(item => item.superintendente === userData.apelido);
             rankingPosition = userPosition >= 0 ? userPosition + 1 : totalUsers;
           }
         }
