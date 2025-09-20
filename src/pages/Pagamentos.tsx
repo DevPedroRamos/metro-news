@@ -303,12 +303,12 @@ const Pagamentos: React.FC = () => {
       </section>
 
         {/* Upload de Comprovantes */}
-        {/* <section>
+         <section>
           <SectionHeader title="Upload de Comprovantes" icon={<CreditCard className="h-4 w-4" />} description="Envie seus comprovantes de pagamento" />
           <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
             <InvoiceUpload />
           </div>
-        </section> */}
+        </section> 
 
         <Separator className="my-12" />
 
