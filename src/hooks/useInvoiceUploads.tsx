@@ -160,18 +160,39 @@ export const useInvoiceUploads = (): UseInvoiceUploadsReturn => {
 
   const downloadInvoice = async (invoice: InvoiceUpload): Promise<void> => {
     try {
-      const response = await fetch(invoice.file_url);
-      if (!response.ok) throw new Error('Erro ao baixar arquivo');
+      // Extrair o path do arquivo da URL para usar com storage.download
+      const url = new URL(invoice.file_url);
+      const pathParts = url.pathname.split('/');
+      const bucketIndex = pathParts.findIndex(part => part === 'invoices');
+      
+      if (bucketIndex === -1) {
+        throw new Error('Caminho do arquivo inválido');
+      }
+      
+      const filePath = pathParts.slice(bucketIndex + 1).join('/');
+      
+      // Usar API do Supabase Storage para download seguro
+      const { data, error } = await supabase.storage
+        .from('invoices')
+        .download(filePath);
 
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
+      if (error) {
+        throw error;
+      }
+
+      if (!data) {
+        throw new Error('Arquivo não encontrado');
+      }
+
+      // Criar URL para download
+      const downloadUrl = window.URL.createObjectURL(data);
       const link = document.createElement('a');
-      link.href = url;
+      link.href = downloadUrl;
       link.download = invoice.file_name;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
+      window.URL.revokeObjectURL(downloadUrl);
     } catch (err) {
       console.error('Erro ao baixar arquivo:', err);
       setError('Erro ao baixar arquivo');

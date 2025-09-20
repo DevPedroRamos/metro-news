@@ -145,24 +145,49 @@ export default function ComprovantesEquipe() {
 
   const handleDownload = async (invoice: TeamInvoice) => {
     try {
-      // Usar URL pública diretamente para evitar bloqueios do RLS
+      // Extrair o path do arquivo da URL para usar com storage.download
+      const url = new URL(invoice.file_url);
+      const pathParts = url.pathname.split('/');
+      const bucketIndex = pathParts.findIndex(part => part === 'invoices');
+      
+      if (bucketIndex === -1) {
+        throw new Error('Caminho do arquivo inválido');
+      }
+      
+      const filePath = pathParts.slice(bucketIndex + 1).join('/');
+      
+      // Usar API do Supabase Storage para download seguro
+      const { data, error } = await supabase.storage
+        .from('invoices')
+        .download(filePath);
+
+      if (error) {
+        throw error;
+      }
+
+      if (!data) {
+        throw new Error('Arquivo não encontrado');
+      }
+
+      // Criar URL para download e forçar download
+      const downloadUrl = window.URL.createObjectURL(data);
       const link = document.createElement('a');
-      link.href = invoice.file_url;
+      link.href = downloadUrl;
       link.download = `${invoice.user_apelido}_${invoice.file_name}`;
-      link.target = '_blank'; // Fallback para navegadores que bloqueiam download direto
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+      window.URL.revokeObjectURL(downloadUrl);
       
       toast({
-        title: "Download iniciado",
-        description: `Baixando ${invoice.file_name}...`,
+        title: "Download concluído",
+        description: `Arquivo ${invoice.file_name} baixado com sucesso.`,
       });
     } catch (error) {
       console.error('Erro no download:', error);
       toast({
         title: "Erro no download",
-        description: "Não foi possível baixar o arquivo.",
+        description: "Não foi possível baixar o arquivo. Verifique suas permissões.",
         variant: "destructive",
       });
     }
