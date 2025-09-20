@@ -145,22 +145,50 @@ export default function ComprovantesEquipe() {
 
   const handleDownload = async (invoice: TeamInvoice) => {
     try {
-      const response = await fetch(invoice.file_url);
-      if (!response.ok) throw new Error('Erro ao baixar arquivo');
+      // Extrair o path do arquivo da URL do Supabase Storage
+      const url = new URL(invoice.file_url);
+      const pathParts = url.pathname.split('/');
+      // O path normalmente é: /storage/v1/object/public/bucket/path/to/file
+      // ou /storage/v1/object/sign/bucket/path/to/file
+      const bucketIndex = pathParts.findIndex(part => part === 'invoices');
+      if (bucketIndex === -1) {
+        throw new Error('Path do arquivo inválido');
+      }
+      
+      const filePath = pathParts.slice(bucketIndex + 1).join('/');
+      
+      // Usar a API do Supabase Storage para download
+      const { data, error } = await supabase.storage
+        .from('invoices')
+        .download(filePath);
 
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
+      if (error) {
+        throw error;
+      }
+
+      if (!data) {
+        throw new Error('Arquivo não encontrado');
+      }
+
+      // Criar URL para download
+      const downloadUrl = window.URL.createObjectURL(data);
       const link = document.createElement('a');
-      link.href = url;
+      link.href = downloadUrl;
       link.download = `${invoice.user_apelido}_${invoice.file_name}`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
+      window.URL.revokeObjectURL(downloadUrl);
+      
+      toast({
+        title: "Download concluído",
+        description: `Arquivo ${invoice.file_name} baixado com sucesso.`,
+      });
     } catch (error) {
+      console.error('Erro no download:', error);
       toast({
         title: "Erro no download",
-        description: "Não foi possível baixar o arquivo.",
+        description: "Não foi possível baixar o arquivo. Verifique suas permissões.",
         variant: "destructive",
       });
     }
