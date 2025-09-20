@@ -12,7 +12,8 @@ import {
   ChevronDown,
   ChevronRight,
   Target,
-  UserCheck
+  UserCheck,
+  FileText
 } from 'lucide-react';
 import { useProfileUsers } from '@/hooks/useProfileUsers';
 import {
@@ -149,23 +150,42 @@ export function AppSidebar() {
               
               {/* Menu específico para gerentes e superintendentes */}
               {(userData?.role === 'gerente' || userData?.role === 'superintendente') && (
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
-                    <NavLink
-                      to="/minha-equipe"
-                      className={({ isActive: isActiveLink }) =>
-                        `flex items-center space-x-3 px-3 py-5 rounded-lg text-sm font-medium ${
-                          isActiveLink
-                            ? 'text-metro-red'
-                            : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
-                        }`
-                      }
-                    >
-                      <UserCheck className="h-5 w-5 flex-shrink-0" />
-                      {!isCollapsed && <span>Minha Equipe</span>}
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
+                <>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild>
+                      <NavLink
+                        to="/minha-equipe"
+                        className={({ isActive: isActiveLink }) =>
+                          `flex items-center space-x-3 px-3 py-5 rounded-lg text-sm font-medium ${
+                            isActiveLink
+                              ? 'text-metro-red'
+                              : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+                          }`
+                        }
+                      >
+                        <UserCheck className="h-5 w-5 flex-shrink-0" />
+                        {!isCollapsed && <span>Minha Equipe</span>}
+                      </NavLink>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild>
+                      <NavLink
+                        to="/comprovantes-equipe"
+                        className={({ isActive: isActiveLink }) =>
+                          `flex items-center space-x-3 px-3 py-5 rounded-lg text-sm font-medium ${
+                            isActiveLink
+                              ? 'text-metro-red'
+                              : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+                          }`
+                        }
+                      >
+                        <FileText className="h-5 w-5 flex-shrink-0" />
+                        {!isCollapsed && <span>Comprovantes</span>}
+                      </NavLink>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                </>
               )}
             </SidebarMenu>
           </SidebarGroupContent>
