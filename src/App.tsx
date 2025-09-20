@@ -24,6 +24,7 @@ import SaldoCef from "./pages/pagamentos/saldo-cef";
 import Distratos from "./pages/pagamentos/distratos"; 
 import Outros from "./pages/pagamentos/outros";
 import MinhaEquipe from "./pages/MinhaEquipe";
+import ComprovantesEquipe from "./pages/ComprovantesEquipe";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -114,6 +115,13 @@ const App = () => (
             <ProtectedRoute>
               <DashboardLayout>
                 <MinhaEquipe />
+              </DashboardLayout>
+            </ProtectedRoute>
+          } />
+          <Route path="/comprovantes-equipe" element={
+            <ProtectedRoute>
+              <DashboardLayout>
+                <ComprovantesEquipe />
               </DashboardLayout>
             </ProtectedRoute>
           } />
