@@ -70,9 +70,32 @@ export default function ComprovantesEquipe() {
 
       setTeamMembers(teamData || []);
 
-      // Buscar comprovantes da equipe
-      const userIds = teamData?.map(member => member.id) || [];
-      if (userIds.length === 0) return;
+      if (!teamData || teamData.length === 0) {
+        setTeamInvoices([]);
+        return;
+      }
+
+      // Buscar os profiles correspondentes usando CPF
+      const teamCpfs = teamData.map(member => member.cpf);
+      const { data: profilesData, error: profilesError } = await supabase
+        .from('profiles')
+        .select('id, cpf, name')
+        .in('cpf', teamCpfs);
+
+      if (profilesError) throw profilesError;
+
+      // Criar mapeamento CPF -> Profile ID
+      const cpfToProfileId = new Map();
+      profilesData?.forEach(profile => {
+        cpfToProfileId.set(profile.cpf, profile.id);
+      });
+
+      // Buscar comprovantes usando os profile IDs
+      const profileIds = profilesData?.map(profile => profile.id) || [];
+      if (profileIds.length === 0) {
+        setTeamInvoices([]);
+        return;
+      }
 
       let invoiceQuery = supabase
         .from('invoice_uploads')
@@ -84,7 +107,7 @@ export default function ComprovantesEquipe() {
           file_url,
           created_at
         `)
-        .in('user_id', userIds);
+        .in('user_id', profileIds);
 
       if (selectedPeriod === "current" && period?.id) {
         invoiceQuery = invoiceQuery.eq('periodo_id', period.id);
@@ -95,10 +118,14 @@ export default function ComprovantesEquipe() {
 
       // Combinar dados dos comprovantes com dados dos usuários
       const enrichedInvoices: TeamInvoice[] = (invoiceData || []).map(invoice => {
-        const user = teamData?.find(member => member.id === invoice.user_id);
+        // Encontrar o profile correspondente
+        const profile = profilesData?.find(p => p.id === invoice.user_id);
+        // Encontrar o user correspondente usando o CPF
+        const user = teamData?.find(member => member.cpf === profile?.cpf);
+        
         return {
           ...invoice,
-          user_name: user?.name || 'Usuário não encontrado',
+          user_name: user?.name || profile?.name || 'Usuário não encontrado',
           user_apelido: user?.apelido || 'N/A',
         };
       });
@@ -165,7 +192,17 @@ export default function ComprovantesEquipe() {
 
   const getFilteredInvoices = () => {
     return teamInvoices.filter(invoice => {
-      const matchesMember = selectedMember === "all" || invoice.user_id === selectedMember;
+      // Para filtrar por membro, precisamos encontrar o CPF correspondente ao profile ID do invoice
+      let matchesMember = selectedMember === "all";
+      if (!matchesMember && selectedMember !== "all") {
+        // Encontrar o profile correspondente ao invoice.user_id e seu CPF
+        const teamMember = teamMembers.find(member => member.cpf === selectedMember);
+        if (teamMember) {
+          // Verificar se este invoice pertence a este membro comparando dados do usuário
+          matchesMember = invoice.user_apelido === teamMember.apelido;
+        }
+      }
+      
       const matchesSearch = searchTerm === "" || 
         invoice.user_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         invoice.user_apelido.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -297,7 +334,7 @@ export default function ComprovantesEquipe() {
               <SelectContent>
                 <SelectItem value="all">Todos os membros</SelectItem>
                 {teamMembers.map(member => (
-                  <SelectItem key={member.id} value={member.id}>
+                  <SelectItem key={member.cpf} value={member.cpf}>
                     {member.apelido}
                   </SelectItem>
                 ))}
