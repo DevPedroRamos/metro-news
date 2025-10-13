@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
+import { useProfileUsers } from '@/hooks/useProfileUsers';
 import { startOfDay, endOfDay, subDays } from 'date-fns';
 
 export type AgendamentoStatus = 'pendente' | 'confirmado' | 'check_in' | 'cancelado';
@@ -34,18 +35,19 @@ export interface AgendamentosFilters {
 
 export const useAgendamentos = (filters?: AgendamentosFilters) => {
   const { user } = useAuth();
+  const { userData } = useProfileUsers();
 
   return useQuery({
-    queryKey: ['agendamentos', user?.id, filters],
+    queryKey: ['agendamentos', userData?.cpf, filters],
     queryFn: async () => {
-      if (!user?.id) return [];
+      if (!userData?.cpf) return [];
 
       const supabaseClient = supabase as any;
       
       let query = supabaseClient
         .from('agendamentos')
         .select('*')
-        .eq('corretor_id', user.id)
+        .eq('corretor_cpf', userData.cpf)
         .order('data_visita', { ascending: false });
 
       // Filter by status
@@ -89,17 +91,18 @@ export const useAgendamentos = (filters?: AgendamentosFilters) => {
 
       return filteredData as Agendamento[];
     },
-    enabled: !!user?.id,
+    enabled: !!userData?.cpf,
   });
 };
 
 export const useAgendamentosStats = () => {
   const { user } = useAuth();
+  const { userData } = useProfileUsers();
 
   return useQuery({
-    queryKey: ['agendamentos-stats', user?.id],
+    queryKey: ['agendamentos-stats', userData?.cpf],
     queryFn: async () => {
-      if (!user?.id) return null;
+      if (!userData?.cpf) return null;
 
       const supabaseClient = supabase as any;
       const now = new Date();
@@ -110,22 +113,22 @@ export const useAgendamentosStats = () => {
         supabaseClient
           .from('agendamentos')
           .select('id', { count: 'exact', head: true })
-          .eq('corretor_id', user.id),
+          .eq('corretor_cpf', userData.cpf),
         supabaseClient
           .from('agendamentos')
           .select('id', { count: 'exact', head: true })
-          .eq('corretor_id', user.id)
+          .eq('corretor_cpf', userData.cpf)
           .gte('data_visita', today)
           .lte('data_visita', todayEnd),
         supabaseClient
           .from('agendamentos')
           .select('id', { count: 'exact', head: true })
-          .eq('corretor_id', user.id)
+          .eq('corretor_cpf', userData.cpf)
           .eq('status', 'pendente'),
         supabaseClient
           .from('agendamentos')
           .select('id', { count: 'exact', head: true })
-          .eq('corretor_id', user.id)
+          .eq('corretor_cpf', userData.cpf)
           .eq('status', 'confirmado'),
       ]);
 
@@ -136,6 +139,6 @@ export const useAgendamentosStats = () => {
         confirmados: confirmadosRes.count || 0,
       };
     },
-    enabled: !!user?.id,
+    enabled: !!userData?.cpf,
   });
 };
