@@ -25,6 +25,7 @@ import Distratos from "./pages/pagamentos/distratos";
 import Outros from "./pages/pagamentos/outros";
 import MinhaEquipe from "./pages/MinhaEquipe";
 import ComprovantesEquipe from "./pages/ComprovantesEquipe";
+import Agendamentos from "./pages/Agendamentos";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -122,6 +123,13 @@ const App = () => (
             <ProtectedRoute>
               <DashboardLayout>
                 <ComprovantesEquipe />
+              </DashboardLayout>
+            </ProtectedRoute>
+          } />
+          <Route path="/agendamentos" element={
+            <ProtectedRoute>
+              <DashboardLayout>
+                <Agendamentos />
               </DashboardLayout>
             </ProtectedRoute>
           } />

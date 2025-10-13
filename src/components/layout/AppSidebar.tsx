@@ -13,7 +13,8 @@ import {
   ChevronRight,
   Target,
   UserCheck,
-  FileText
+  FileText,
+  Calendar
 } from 'lucide-react';
 import { useProfileUsers } from '@/hooks/useProfileUsers';
 import {
@@ -31,6 +32,7 @@ import {
 const menuItems = [
   { title: 'Notícias', url: '/noticias', icon: Newspaper },
   { title: 'Campeões', url: '/campeoes', icon: Trophy },
+  { title: 'Agendamentos', url: '/agendamentos', icon: Calendar },
   // { title: 'Treinamento', url: '/treinamento', icon: GraduationCap },
   // { title: 'Processos', url: '/processos', icon: Settings },
   { title: 'Links', url: '/links-uteis', icon: Link },
