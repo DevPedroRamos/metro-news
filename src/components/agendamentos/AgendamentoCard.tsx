@@ -6,12 +6,12 @@ import { Agendamento } from '@/hooks/useAgendamentos';
 import { format, isPast } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { toast } from 'sonner';
-
 interface AgendamentoCardProps {
   agendamento: Agendamento;
 }
-
-export function AgendamentoCard({ agendamento }: AgendamentoCardProps) {
+export function AgendamentoCard({
+  agendamento
+}: AgendamentoCardProps) {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'pendente':
@@ -26,7 +26,6 @@ export function AgendamentoCard({ agendamento }: AgendamentoCardProps) {
         return 'bg-gray-100 text-gray-800 border-gray-300';
     }
   };
-
   const getStatusLabel = (status: string) => {
     switch (status) {
       case 'pendente':
@@ -41,96 +40,63 @@ export function AgendamentoCard({ agendamento }: AgendamentoCardProps) {
         return status;
     }
   };
-
   const isExpired = agendamento.expires_at && isPast(new Date(agendamento.expires_at));
-
   const copyLink = () => {
     const link = `${window.location.origin}/confirmar/${agendamento.token}`;
     navigator.clipboard.writeText(link);
     toast.success('Link copiado para a área de transferência!');
   };
-
   const openLink = () => {
     const link = `${window.location.origin}/confirmar/${agendamento.token}`;
     window.open(link, '_blank');
   };
-
-  return (
-    <Card className="hover:shadow-md transition-shadow">
+  return <Card className="hover:shadow-md transition-shadow">
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
           <div className="flex-1">
             <h3 className="font-semibold text-lg">
               {agendamento.cliente_nome || 'Cliente não informado'}
             </h3>
-            {agendamento.cliente_telefone && (
-              <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
+            {agendamento.cliente_telefone && <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
                 <Phone className="h-3 w-3" />
                 {agendamento.cliente_telefone}
-              </div>
-            )}
+              </div>}
           </div>
           <div className="flex flex-col gap-2 items-end">
             <Badge className={getStatusColor(agendamento.status)}>
               {getStatusLabel(agendamento.status)}
             </Badge>
-            {isExpired && agendamento.status === 'pendente' && (
-              <Badge variant="destructive" className="text-xs">
+            {isExpired && agendamento.status === 'pendente' && <Badge variant="destructive" className="text-xs">
                 Expirado
-              </Badge>
-            )}
+              </Badge>}
           </div>
         </div>
       </CardHeader>
       <CardContent className="space-y-3">
-        {agendamento.data_visita && (
-          <div className="flex items-center gap-2 text-sm">
+        {agendamento.data_visita && <div className="flex items-center gap-2 text-sm">
             <Calendar className="h-4 w-4 text-muted-foreground" />
             <span>
               {format(new Date(agendamento.data_visita), "dd/MM/yyyy 'às' HH:mm", {
-                locale: ptBR,
-              })}
+            locale: ptBR
+          })}
             </span>
-          </div>
-        )}
+          </div>}
 
-        {agendamento.empreendimento && (
-          <div className="flex items-center gap-2 text-sm">
+        {agendamento.empreendimento && <div className="flex items-center gap-2 text-sm">
             <Building className="h-4 w-4 text-muted-foreground" />
             <span>{agendamento.empreendimento}</span>
-          </div>
-        )}
+          </div>}
 
-        {agendamento.loja && (
-          <div className="flex items-center gap-2 text-sm">
+        {agendamento.loja && <div className="flex items-center gap-2 text-sm">
             <MapPin className="h-4 w-4 text-muted-foreground" />
             <span>
               {agendamento.loja}
               {agendamento.andar && ` - ${agendamento.andar}`}
               {agendamento.mesa && ` - Mesa ${agendamento.mesa}`}
             </span>
-          </div>
-        )}
+          </div>}
 
-        <div className="flex gap-2 pt-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={copyLink}
-            className="flex-1"
-          >
-            <Copy className="h-4 w-4 mr-2" />
-            Copiar Link
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={openLink}
-          >
-            <ExternalLink className="h-4 w-4" />
-          </Button>
-        </div>
+        
       </CardContent>
-    </Card>
-  );
+    </Card>;
 }
