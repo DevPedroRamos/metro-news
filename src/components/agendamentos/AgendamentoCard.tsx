@@ -1,16 +1,18 @@
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Calendar, MapPin, Building, Phone, Copy, ExternalLink } from 'lucide-react';
+import { Calendar, MapPin, Building, Phone, Copy, ExternalLink, Briefcase } from 'lucide-react';
 import { Agendamento } from '@/hooks/useAgendamentos';
 import { format, isPast } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { toast } from 'sonner';
 interface AgendamentoCardProps {
   agendamento: Agendamento;
+  showCorretorName?: boolean;
 }
 export function AgendamentoCard({
-  agendamento
+  agendamento,
+  showCorretorName = false
 }: AgendamentoCardProps) {
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -57,6 +59,12 @@ export function AgendamentoCard({
             <h3 className="font-semibold text-lg">
               {agendamento.cliente_nome || 'Cliente não informado'}
             </h3>
+            {showCorretorName && (
+              <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
+                <Briefcase className="h-3 w-3" />
+                <span>{agendamento.corretor_nome}</span>
+              </div>
+            )}
             {agendamento.cliente_telefone && <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
                 <Phone className="h-3 w-3" />
                 {agendamento.cliente_telefone}

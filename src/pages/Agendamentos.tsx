@@ -5,11 +5,13 @@ import { AgendamentoCard } from '@/components/agendamentos/AgendamentoCard';
 import { useAgendamentos, AgendamentoStatus } from '@/hooks/useAgendamentos';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Calendar } from 'lucide-react';
+import { useProfileUsers } from '@/hooks/useProfileUsers';
 
 export default function Agendamentos() {
   const [selectedStatus, setSelectedStatus] = useState<AgendamentoStatus | 'todos'>('todos');
   const [selectedPeriodo, setSelectedPeriodo] = useState<'hoje' | '7dias' | '30dias' | 'todos'>('todos');
   const [searchQuery, setSearchQuery] = useState('');
+  const { userData } = useProfileUsers();
 
   const { data: agendamentos, isLoading } = useAgendamentos({
     status: selectedStatus === 'todos' ? undefined : selectedStatus,
@@ -17,12 +19,19 @@ export default function Agendamentos() {
     search: searchQuery,
   });
 
+  const getPageDescription = () => {
+    if (userData?.role === 'corretor') return 'Gerencie seus agendamentos de visitas';
+    if (userData?.role === 'gerente') return 'Agendamentos da sua equipe';
+    if (userData?.role === 'superintendente') return 'Agendamentos da superintendência';
+    return 'Gerencie agendamentos de visitas';
+  };
+
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Agendamentos</h1>
         <p className="text-muted-foreground mt-2">
-          Gerencie seus agendamentos de visitas
+          {getPageDescription()}
         </p>
       </div>
 
@@ -46,7 +55,11 @@ export default function Agendamentos() {
       ) : agendamentos && agendamentos.length > 0 ? (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {agendamentos.map((agendamento) => (
-            <AgendamentoCard key={agendamento.id} agendamento={agendamento} />
+            <AgendamentoCard 
+              key={agendamento.id} 
+              agendamento={agendamento}
+              showCorretorName={userData?.role !== 'corretor'}
+            />
           ))}
         </div>
       ) : (

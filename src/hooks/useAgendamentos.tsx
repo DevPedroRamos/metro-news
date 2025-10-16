@@ -38,16 +38,42 @@ export const useAgendamentos = (filters?: AgendamentosFilters) => {
   const { userData } = useProfileUsers();
 
   return useQuery({
-    queryKey: ['agendamentos', userData?.cpf, filters],
+    queryKey: ['agendamentos', userData?.cpf, userData?.role, filters],
     queryFn: async () => {
-      if (!userData?.cpf) return [];
+      if (!userData?.cpf || !userData?.role) return [];
 
       const supabaseClient = supabase as any;
       
+      // Determinar CPFs permitidos baseado no role
+      let allowedCpfs: string[] = [];
+      
+      if (userData.role === 'corretor') {
+        // Corretor vê apenas seus agendamentos
+        allowedCpfs = [userData.cpf];
+      } else if (userData.role === 'gerente') {
+        // Gerente vê agendamentos da equipe
+        const { data: teamMembers } = await supabaseClient
+          .from('users')
+          .select('cpf')
+          .eq('gerente', userData.apelido);
+        
+        allowedCpfs = teamMembers?.map((m: any) => m.cpf) || [];
+      } else if (userData.role === 'superintendente') {
+        // Superintendente vê agendamentos de toda superintendência
+        const { data: teamMembers } = await supabaseClient
+          .from('users')
+          .select('cpf')
+          .eq('superintendente', userData.apelido);
+        
+        allowedCpfs = teamMembers?.map((m: any) => m.cpf) || [];
+      }
+
+      if (allowedCpfs.length === 0) return [];
+
       let query = supabaseClient
         .from('agendamentos')
         .select('*')
-        .eq('corretor_cpf', userData.cpf)
+        .in('corretor_cpf', allowedCpfs)
         .order('data_visita', { ascending: false });
 
       // Filter by status
@@ -91,7 +117,7 @@ export const useAgendamentos = (filters?: AgendamentosFilters) => {
 
       return filteredData as Agendamento[];
     },
-    enabled: !!userData?.cpf,
+    enabled: !!userData?.cpf && !!userData?.role,
   });
 };
 
@@ -100,35 +126,56 @@ export const useAgendamentosStats = () => {
   const { userData } = useProfileUsers();
 
   return useQuery({
-    queryKey: ['agendamentos-stats', userData?.cpf],
+    queryKey: ['agendamentos-stats', userData?.cpf, userData?.role],
     queryFn: async () => {
-      if (!userData?.cpf) return null;
+      if (!userData?.cpf || !userData?.role) return null;
 
       const supabaseClient = supabase as any;
       const now = new Date();
       const today = startOfDay(now).toISOString();
       const todayEnd = endOfDay(now).toISOString();
 
+      // Determinar CPFs permitidos baseado no role
+      let allowedCpfs: string[] = [];
+      
+      if (userData.role === 'corretor') {
+        allowedCpfs = [userData.cpf];
+      } else if (userData.role === 'gerente') {
+        const { data: teamMembers } = await supabaseClient
+          .from('users')
+          .select('cpf')
+          .eq('gerente', userData.apelido);
+        allowedCpfs = teamMembers?.map((m: any) => m.cpf) || [];
+      } else if (userData.role === 'superintendente') {
+        const { data: teamMembers } = await supabaseClient
+          .from('users')
+          .select('cpf')
+          .eq('superintendente', userData.apelido);
+        allowedCpfs = teamMembers?.map((m: any) => m.cpf) || [];
+      }
+
+      if (allowedCpfs.length === 0) return { total: 0, hoje: 0, pendentes: 0, confirmados: 0 };
+
       const [totalRes, todayRes, pendentesRes, confirmadosRes] = await Promise.all([
         supabaseClient
           .from('agendamentos')
           .select('id', { count: 'exact', head: true })
-          .eq('corretor_cpf', userData.cpf),
+          .in('corretor_cpf', allowedCpfs),
         supabaseClient
           .from('agendamentos')
           .select('id', { count: 'exact', head: true })
-          .eq('corretor_cpf', userData.cpf)
+          .in('corretor_cpf', allowedCpfs)
           .gte('data_visita', today)
           .lte('data_visita', todayEnd),
         supabaseClient
           .from('agendamentos')
           .select('id', { count: 'exact', head: true })
-          .eq('corretor_cpf', userData.cpf)
+          .in('corretor_cpf', allowedCpfs)
           .eq('status', 'pendente'),
         supabaseClient
           .from('agendamentos')
           .select('id', { count: 'exact', head: true })
-          .eq('corretor_cpf', userData.cpf)
+          .in('corretor_cpf', allowedCpfs)
           .eq('status', 'confirmado'),
       ]);
 
@@ -139,6 +186,6 @@ export const useAgendamentosStats = () => {
         confirmados: confirmadosRes.count || 0,
       };
     },
-    enabled: !!userData?.cpf,
+    enabled: !!userData?.cpf && !!userData?.role,
   });
 };
