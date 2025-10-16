@@ -43,7 +43,7 @@ export default function Metas() {
   const regularMetas = metas?.filter(meta => !meta.is_featured) || [];
   return <div className="container mx-auto p-6">
       <div className="flex items-center gap-2 mb-8">
-        <Target className="h-8 w-8 text-primary" />
+        
         <h1 className="text-3xl font-bold text-gray-900">Metas</h1>
       </div>
 
