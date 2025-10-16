@@ -108,10 +108,6 @@ All colors MUST be HSL.
     overflow-x: hidden;
   }
 
-  html {
-    scroll-behavior: smooth;
-  }
-
   * {
     @apply border-border;
   }
@@ -120,43 +116,5 @@ All colors MUST be HSL.
     @apply bg-background text-foreground;
     margin: 0;
     padding: 0;
-    font-feature-settings: "kern" 1, "liga" 1;
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-bold;
-    line-height: 1.2;
-    letter-spacing: -0.02em;
-  }
-
-  p, li, td {
-    line-height: 1.5;
-  }
-
-  :focus-visible {
-    @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-background;
-  }
-
-  a:focus-visible {
-    @apply outline-none ring-2 ring-primary ring-offset-2;
-  }
-
-  button:focus-visible {
-    @apply outline-none ring-2 ring-primary ring-offset-2;
-  }
-
-  .sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border-width: 0;
   }
 }

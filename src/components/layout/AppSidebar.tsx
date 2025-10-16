@@ -1,8 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { ChevronDown, ChevronRight } from 'lucide-react';
+import { 
+  Newspaper, 
+  GraduationCap, 
+  Settings, 
+  Link, 
+  Trophy, 
+  Users,
+  User,
+  CreditCard,
+  ChevronDown,
+  ChevronRight,
+  Target,
+  UserCheck,
+  FileText,
+  Calendar
+} from 'lucide-react';
 import { useProfileUsers } from '@/hooks/useProfileUsers';
-import { getNavigationForRole } from '@/config/navigation';
 import {
   Sidebar,
   SidebarContent,
@@ -15,6 +29,31 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar';
 
+const menuItems = [
+  { title: 'Notícias', url: '/noticias', icon: Newspaper },
+  { title: 'Campeões', url: '/campeoes', icon: Trophy },
+  { title: 'Agendamentos', url: '/agendamentos', icon: Calendar },
+  // { title: 'Treinamento', url: '/treinamento', icon: GraduationCap },
+  // { title: 'Processos', url: '/processos', icon: Settings },
+  { title: 'Links', url: '/links-uteis', icon: Link },
+  { title: 'Metas', url: '/metas', icon: Target },
+  // { title: 'Superintendência', url: '/superintendencia', icon: Users },
+  { 
+    title: 'Pagamentos', 
+    url: '/pagamentos', 
+    icon: CreditCard,
+    submenu: [
+      { title: 'Resumo', url: '/pagamentos' },
+      { title: 'Vendas', url: '/pagamentos/vendas' },
+      { title: 'Premiação', url: '/pagamentos/premiacao' },
+      { title: 'Saldo CEF', url: '/pagamentos/saldo-cef' },
+      { title: 'Distratos', url: '/pagamentos/distratos' },
+      { title: 'Outros', url: '/pagamentos/outros' },
+    ]
+  },
+  { title: 'Meu Perfil', url: '/perfil', icon: User },
+];
+
 export function AppSidebar() {
   const { state } = useSidebar();
   const location = useLocation();
@@ -22,18 +61,7 @@ export function AppSidebar() {
   const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
   const { userData } = useProfileUsers();
 
-  const menuItems = getNavigationForRole(userData?.role);
-
-  useEffect(() => {
-    const activeSubmenu = menuItems.find(
-      (item) => item.submenu && location.pathname.startsWith(item.url)
-    );
-    if (activeSubmenu) {
-      setOpenSubmenu(activeSubmenu.title);
-    }
-  }, [location.pathname, menuItems]);
-
-  const isActive = (path: string, exact = true) =>
+  const isActive = (path: string, exact = true) => 
     exact ? location.pathname === path : location.pathname.startsWith(path);
 
   const toggleSubmenu = (title: string) => {
@@ -44,9 +72,9 @@ export function AppSidebar() {
     <Sidebar className="border-r border-border bg-white shadow-sm">
       <SidebarHeader className="p-6 border-b border-border">
         <div className="flex items-center space-x-3">
-          <img
-            src="/lovable-uploads/181eacc0-0dbb-4e16-8c77-31c86f9c49d0.png"
-            alt="Metro News Portal Logo"
+          <img 
+            src="/lovable-uploads/181eacc0-0dbb-4e16-8c77-31c86f9c49d0.png" 
+            alt="Metro News" 
             className="h-auto w-full"
           />
         </div>
@@ -55,7 +83,7 @@ export function AppSidebar() {
       <SidebarContent className="px-3 py-4">
         <SidebarGroup>
           <SidebarGroupContent>
-            <SidebarMenu className="space-y-1" role="navigation" aria-label="Menu principal">
+            <SidebarMenu className="space-y-1">
               {menuItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   {!item.submenu ? (
@@ -63,15 +91,14 @@ export function AppSidebar() {
                       <NavLink
                         to={item.url}
                         className={({ isActive: isActiveLink }) =>
-                          `flex items-center space-x-3 px-3 py-3 rounded-lg text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
+                          `flex items-center space-x-3 px-3 py-5 rounded-lg text-sm font-medium ${
                             isActiveLink
-                              ? 'text-metro-red bg-red-50'
+                              ? 'text-metro-red'
                               : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
                           }`
                         }
-                        aria-label={item.title}
                       >
-                        <item.icon className="h-5 w-5 flex-shrink-0" aria-hidden="true" />
+                        <item.icon className="h-5 w-5 flex-shrink-0" />
                         {!isCollapsed && <span>{item.title}</span>}
                       </NavLink>
                     </SidebarMenuButton>
@@ -79,20 +106,18 @@ export function AppSidebar() {
                     <>
                       <button
                         onClick={() => toggleSubmenu(item.title)}
-                        className={`w-full flex items-center justify-between px-3 py-3 rounded-lg text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
+                        className={`w-full flex items-center justify-between px-3 py-5 rounded-lg text-sm font-medium ${
                           isActive(item.url, false)
-                            ? 'text-metro-red bg-red-50'
+                            ? ''
                             : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
                         }`}
-                        aria-expanded={openSubmenu === item.title}
-                        aria-label={`${item.title} menu`}
                       >
                         <div className="flex items-center space-x-3">
-                          <item.icon className="h-5 w-5 flex-shrink-0" aria-hidden="true" />
+                          <item.icon className="h-5 w-5 flex-shrink-0" />
                           {!isCollapsed && <span>{item.title}</span>}
                         </div>
                         {!isCollapsed && (
-                          <span className="ml-2 transition-transform duration-200" aria-hidden="true">
+                          <span className="ml-2">
                             {openSubmenu === item.title ? (
                               <ChevronDown className="h-4 w-4" />
                             ) : (
@@ -102,19 +127,18 @@ export function AppSidebar() {
                         )}
                       </button>
                       {!isCollapsed && openSubmenu === item.title && (
-                        <div className="ml-8 mt-1 space-y-1 animate-fade-in" role="menu">
+                        <div className="ml-8 mt-1 space-y-1">
                           {item.submenu.map((subItem) => (
                             <NavLink
                               key={subItem.title}
                               to={subItem.url}
                               className={({ isActive: isActiveLink }) =>
-                                `block px-3 py-2 text-sm rounded-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
+                                `block px-3 py-2 text-sm rounded-md ${
                                   isActiveLink
-                                    ? 'font-medium text-metro-red bg-red-50'
-                                    : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                                    ? 'font-medium'
+                                    : 'text-gray-600 hover:bg-gray-100'
                                 }`
                               }
-                              role="menuitem"
                             >
                               {subItem.title}
                             </NavLink>
@@ -125,6 +149,46 @@ export function AppSidebar() {
                   )}
                 </SidebarMenuItem>
               ))}
+              
+              {/* Menu específico para gerentes e superintendentes */}
+              {(userData?.role === 'gerente' || userData?.role === 'superintendente') && (
+                <>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild>
+                      <NavLink
+                        to="/minha-equipe"
+                        className={({ isActive: isActiveLink }) =>
+                          `flex items-center space-x-3 px-3 py-5 rounded-lg text-sm font-medium ${
+                            isActiveLink
+                              ? 'text-metro-red'
+                              : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+                          }`
+                        }
+                      >
+                        <UserCheck className="h-5 w-5 flex-shrink-0" />
+                        {!isCollapsed && <span>Minha Equipe</span>}
+                      </NavLink>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild>
+                      <NavLink
+                        to="/comprovantes-equipe"
+                        className={({ isActive: isActiveLink }) =>
+                          `flex items-center space-x-3 px-3 py-5 rounded-lg text-sm font-medium ${
+                            isActiveLink
+                              ? 'text-metro-red'
+                              : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+                          }`
+                        }
+                      >
+                        <FileText className="h-5 w-5 flex-shrink-0" />
+                        {!isCollapsed && <span>Comprovantes</span>}
+                      </NavLink>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                </>
+              )}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
