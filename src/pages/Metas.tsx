@@ -57,14 +57,7 @@ export default function Metas() {
                     <CardTitle className="text-lg font-semibold">{meta.title}</CardTitle>
                     
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Badge variant="secondary">
-                      Quantidade: {meta.quantidade}
-                    </Badge>
-                    <Badge variant="outline">
-                      {meta.role}
-                    </Badge>
-                  </div>
+                  
                 </CardHeader>
                 {meta.image_url && <CardContent>
                     <Dialog>
