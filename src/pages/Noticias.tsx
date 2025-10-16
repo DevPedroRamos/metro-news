@@ -5,12 +5,12 @@ import { FeaturedNews } from "@/components/news/FeaturedNews"
 import { NewsCard } from "@/components/news/NewsCard"
 import { NewsListItem } from "@/components/news/NewsListItem"
 import { CategoryFilter } from "@/components/news/CategoryFilter"
-import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { ArrowRight, Loader2, TrendingUp, Clock, Tag } from "lucide-react"
+import { TrendingUp, Clock, Tag, Newspaper } from "lucide-react"
 import { useNews, useFilteredNews } from "@/hooks/useNews"
 import { useNewsCategories } from "@/hooks/useNewsCategories"
+import { LoadingSpinner, ErrorState, EmptyState, PageHeader, SectionHeader } from "@/shared/components"
 
 const Noticias = () => {
   const [selectedCategory, setSelectedCategory] = useState("all")
@@ -20,47 +20,38 @@ const Noticias = () => {
 
   if (newsLoading || categoriesLoading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
-        <span className="ml-2 text-muted-foreground">Carregando notícias...</span>
+      <div className="min-h-[400px] flex items-center justify-center">
+        <LoadingSpinner size="lg" message="Carregando notícias..." />
       </div>
     )
   }
 
   if (newsError) {
     return (
-      <div className="text-center py-12">
-        <p className="text-destructive">Erro ao carregar notícias: {newsError}</p>
+      <div className="py-12 px-4">
+        <ErrorState
+          title="Erro ao carregar notícias"
+          message={newsError}
+          onRetry={() => window.location.reload()}
+        />
       </div>
     )
   }
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="bg-gradient-to-r from-primary/5 to-primary/10 border-b">
-        <div className="container mx-auto px-4 py-12">
-          <div className="max-w-4xl">
-           
-            <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4 text-balance">Últimas Notícias</h1>
-            <p className="text-xl text-muted-foreground text-pretty max-w-2xl">
-              Fique por dentro das últimas novidades e acontecimentos mais importantes do momento
-            </p>
-          </div>
-        </div>
-      </div>
+      <PageHeader
+        title="Últimas Notícias"
+        description="Fique por dentro das últimas novidades e acontecimentos mais importantes do momento"
+      />
 
       <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          {/* Main Content */}
           <main className="lg:col-span-3 space-y-12">
-            {/* Featured News */}
             {featuredNews && (
               <section>
-                <div className="flex items-center gap-2 mb-6">
-                  <div className="w-1 h-6 bg-primary rounded-full"></div>
-                  <h2 className="text-2xl font-bold text-foreground">Destaque</h2>
-                </div>
-                <FeaturedNews 
+                <SectionHeader title="Destaque" />
+                <FeaturedNews
                   id={featuredNews.id}
                   title={featuredNews.title}
                   excerpt={featuredNews.description}
@@ -73,55 +64,36 @@ const Noticias = () => {
               </section>
             )}
 
-            {/* Latest Content */}
             <section>
-              <div className="flex justify-between items-center mb-8">
-                <div className="flex items-center gap-2">
-                  <div className="w-1 h-6 bg-primary rounded-full"></div>
-                  <h2 className="text-2xl font-bold text-foreground">Últimos Conteúdos</h2>
-                </div>
-                {/* <Button variant="outline" size="sm" className="group bg-transparent">
-                  Ver todos
-                  <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                </Button> */}
-              </div>
+              <SectionHeader title="Últimos Conteúdos" />
               {latestNews.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {latestNews.map((news) => (
-                    <NewsCard 
-                      key={news.id}
-                      id={news.id}
-                      title={news.title}
-                      excerpt={news.description}
-                      imageUrl={news.image}
-                      category={news.category}
-                      author={news.author}
-                      publishedAt={news.date}
-                      slug={news.slug}
-                    />
+                  {latestNews.map((news, index) => (
+                    <div key={news.id} style={{ animationDelay: `${index * 50}ms` }} className="animate-fade-in">
+                      <NewsCard
+                        id={news.id}
+                        title={news.title}
+                        excerpt={news.description}
+                        imageUrl={news.image}
+                        category={news.category}
+                        author={news.author}
+                        publishedAt={news.date}
+                        slug={news.slug}
+                      />
+                    </div>
                   ))}
                 </div>
               ) : (
-                <Card>
-                  <CardContent className="text-center py-12">
-                    <p className="text-muted-foreground">Nenhuma notícia encontrada.</p>
-                  </CardContent>
-                </Card>
+                <EmptyState
+                  icon={Newspaper}
+                  title="Nenhuma notícia encontrada"
+                  description="Ainda não há notícias publicadas. Volte mais tarde para conferir as novidades."
+                />
               )}
             </section>
 
-            {/* Content by Category */}
             <section>
-              <div className="flex justify-between items-center mb-8">
-                <div className="flex items-center gap-2">
-                  <div className="w-1 h-6 bg-primary rounded-full"></div>
-                  <h2 className="text-2xl font-bold text-foreground">Por Categoria</h2>
-                </div>
-                {/* <Button variant="outline" size="sm" className="group bg-transparent">
-                  Ver categoria completa
-                  <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                </Button> */}
-              </div>
+              <SectionHeader title="Por Categoria" />
 
               <div className="mb-6">
                 <CategoryFilter
@@ -132,33 +104,32 @@ const Noticias = () => {
               </div>
 
               {filteredLoading ? (
-                <Card>
-                  <CardContent className="flex justify-center py-12">
-                    <Loader2 className="w-6 h-6 animate-spin text-primary" />
-                  </CardContent>
-                </Card>
+                <div className="flex justify-center py-12">
+                  <LoadingSpinner message="Carregando categoria..." />
+                </div>
               ) : filteredNews.length > 0 ? (
                 <div className="space-y-4">
-                  {filteredNews.map((news) => (
-                    <NewsListItem 
-                      key={news.id}
-                      id={news.id}
-                      title={news.title}
-                      excerpt={news.description}
-                      imageUrl={news.image}
-                      category={news.category}
-                      author={news.author}
-                      publishedAt={news.date}
-                      slug={news.slug}
-                    />
+                  {filteredNews.map((news, index) => (
+                    <div key={news.id} style={{ animationDelay: `${index * 30}ms` }} className="animate-fade-in">
+                      <NewsListItem
+                        id={news.id}
+                        title={news.title}
+                        excerpt={news.description}
+                        imageUrl={news.image}
+                        category={news.category}
+                        author={news.author}
+                        publishedAt={news.date}
+                        slug={news.slug}
+                      />
+                    </div>
                   ))}
                 </div>
               ) : (
-                <Card>
-                  <CardContent className="text-center py-12">
-                    <p className="text-muted-foreground">Nenhuma notícia encontrada para esta categoria.</p>
-                  </CardContent>
-                </Card>
+                <EmptyState
+                  icon={Tag}
+                  title="Nenhuma notícia encontrada"
+                  description={`Não há notícias na categoria "${selectedCategory}".`}
+                />
               )}
             </section>
           </main>

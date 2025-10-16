@@ -40,16 +40,21 @@ export function NewsCard({
   }
 
   return (
-    <Card className="overflow-hidden hover:shadow-md transition-shadow cursor-pointer group" onClick={handleClick}>
+    <Card
+      className="overflow-hidden hover:shadow-lg transition-all duration-200 cursor-pointer group focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2"
+      onClick={handleClick}
+      role="article"
+    >
       <div className="aspect-video bg-muted flex items-center justify-center overflow-hidden">
         {imageUrl ? (
           <img
             src={imageUrl || "/placeholder.svg"}
-            alt={title}
+            alt={`Imagem: ${title}`}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            loading="lazy"
           />
         ) : (
-          <div className="text-muted-foreground">
+          <div className="text-muted-foreground" aria-hidden="true">
             <svg className="w-12 h-12" fill="currentColor" viewBox="0 0 20 20">
               <path
                 fillRule="evenodd"
@@ -66,18 +71,18 @@ export function NewsCard({
         </Badge>
       </CardHeader>
       <CardContent className="pt-0">
-        <h3 className="font-bold mb-2 text-balance leading-tight group-hover:text-primary transition-colors">
+        <h3 className="font-bold mb-2 text-balance leading-tight group-hover:text-primary transition-colors duration-200">
           {title}
         </h3>
         <p className="text-sm text-muted-foreground mb-3 text-pretty line-clamp-2">{excerpt}</p>
         <div className="flex items-center gap-3 text-xs text-muted-foreground">
           <div className="flex items-center gap-1">
-            <User className="w-3 h-3" />
+            <User className="w-3 h-3" aria-hidden="true" />
             <span>{author}</span>
           </div>
           <div className="flex items-center gap-1">
-            <Clock className="w-3 h-3" />
-            <span>{publishedAt}</span>
+            <Clock className="w-3 h-3" aria-hidden="true" />
+            <time dateTime={publishedAt}>{publishedAt}</time>
           </div>
         </div>
       </CardContent>
