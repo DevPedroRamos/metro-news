@@ -155,7 +155,7 @@ export default function VendasPage() {
                     <div className="flex items-center justify-between w-full">
                       <span className="font-medium">{venda.cliente}</span>
                       <span className="text-gray-500 ml-4">
-                        {venda.empreendimento} • {formatDate(venda.data_do_contrato)}
+                        {venda.empreendimento}
                       </span>
                     </div>
                   </SelectItem>
@@ -865,12 +865,7 @@ export default function VendasPage() {
             </Card>
 
             <Card className="border border-gray-200">
-              <CardHeader className="border-b border-gray-100 pb-3">
-                <CardTitle className="flex items-center gap-2 text-gray-900 text-lg">
-                  <Table className="h-5 w-5 text-gray-600" />
-                  Detalhamento Completo das Vendas
-                </CardTitle>
-              </CardHeader>
+           
               <CardContent className="p-0">
                 <div className="overflow-x-auto">
                   <Table>
