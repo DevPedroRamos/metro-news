@@ -16,7 +16,7 @@ import { useToast } from '@/hooks/use-toast';
 const signUpSchema = z.object({
   email: z.string()
     .email('E-mail inválido')
-    .refine(validateEmailDomain, 'E-mail deve ser do domínio @metrocasa.com.br'),
+    .refine(validateEmailDomain, 'E-mail deve ser do domínio @metrocasa.com.br ou @vendasmetrocasa.com.br'),
   cpf: z.string()
     .min(14, 'CPF é obrigatório')
     .refine((cpf) => validateCPF(cpf), 'CPF inválido'),
@@ -176,7 +176,7 @@ const SignUp = () => {
                     <Input
                       id="email"
                       type="email"
-                      placeholder="seu.email@metrocasa.com.br"
+                      placeholder="seu.email@metrocasa.com.br ou @vendasmetrocasa.com.br"
                       className="pl-10 h-12 border-gray-200 focus:border-red-500 focus:ring-red-500/20 transition-all duration-200"
                       {...form.register('email')}
                     />

@@ -1,7 +1,7 @@
 import { supabase } from "@/integrations/supabase/client";
 
 export const validateEmailDomain = (email: string): boolean => {
-  return email.endsWith('@metrocasa.com.br');
+  return email.endsWith('@metrocasa.com.br') || email.endsWith('@vendasmetrocasa.com.br');
 };
 
 export const validateCPF = (cpf: string): boolean => {
