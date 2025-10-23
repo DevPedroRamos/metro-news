@@ -1,22 +1,23 @@
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
-import { Link, useNavigate } from 'react-router-dom';
-import { Eye, EyeOff, Mail, Lock } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { validateEmailDomain, signIn } from '@/lib/auth';
-import { useToast } from '@/hooks/use-toast';
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { Link, useNavigate } from "react-router-dom";
+import { Eye, EyeOff, Mail, Lock } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { validateEmailDomain, signIn } from "@/lib/auth";
+import { useToast } from "@/hooks/use-toast";
 
 const loginSchema = z.object({
-  email: z.string()
-    .email('E-mail inválido')
-    .refine(validateEmailDomain, 'E-mail deve ser do domínio @metrocasa.com.br'),
-  password: z.string().min(1, 'Senha é obrigatória')
+  email: z
+    .string()
+    .email("E-mail inválido")
+    .refine(validateEmailDomain, "E-mail deve ser do domínio @metrocasa.com.br ou @vendasmetrocasa.com.br"),
+  password: z.string().min(1, "Senha é obrigatória"),
 });
 
 type LoginForm = z.infer<typeof loginSchema>;
@@ -30,35 +31,35 @@ const Login = () => {
   const form = useForm<LoginForm>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: '',
-      password: ''
-    }
+      email: "",
+      password: "",
+    },
   });
 
   const onSubmit = async (data: LoginForm) => {
     setIsLoading(true);
-    
+
     try {
       const { error } = await signIn(data.email, data.password);
-      
+
       if (error) {
         toast({
           variant: "destructive",
           title: "Erro no login",
-          description: "Email ou senha inválidos"
+          description: "Email ou senha inválidos",
         });
       } else {
         toast({
           title: "Login realizado com sucesso!",
-          description: "Redirecionando..."
+          description: "Redirecionando...",
         });
-        navigate('/');
+        navigate("/");
       }
     } catch (error) {
       toast({
         variant: "destructive",
         title: "Erro inesperado",
-        description: "Tente novamente em alguns instantes"
+        description: "Tente novamente em alguns instantes",
       });
     } finally {
       setIsLoading(false);
@@ -120,7 +121,7 @@ const Login = () => {
                       type="email"
                       placeholder="seu.email@metrocasa.com.br"
                       className="pl-10 h-12 border-gray-200 focus:border-red-500 focus:ring-red-500/20 transition-all duration-200"
-                      {...form.register('email')}
+                      {...form.register("email")}
                     />
                   </div>
                   {form.formState.errors.email && (
@@ -141,7 +142,7 @@ const Login = () => {
                       type={showPassword ? "text" : "password"}
                       placeholder="Digite sua senha"
                       className="pl-10 pr-12 h-12 border-gray-200 focus:border-red-500 focus:ring-red-500/20 transition-all duration-200"
-                      {...form.register('password')}
+                      {...form.register("password")}
                     />
                     <Button
                       type="button"
