@@ -28,7 +28,7 @@ const formatPercentage = (value: number | null | undefined): string => {
   return new Intl.NumberFormat("pt-BR", {
     style: "percent",
     minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
+    maximumFractionDigits: 4,
   }).format(value / 100)
 }
 
