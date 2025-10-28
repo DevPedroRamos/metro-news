@@ -36,8 +36,9 @@ const formatPercentage = (value: number | null | undefined): string => {
 const formatDate = (dateStr: string | null): string => {
   if (!dateStr) return "-"
   try {
-    const date = new Date(dateStr)
-    return date.toLocaleDateString("pt-BR")
+    // Parse manual: YYYY-MM-DD → DD/MM/YYYY
+    const [year, month, day] = dateStr.split("-")
+    return `${day}/${month}/${year}`
   } catch {
     return dateStr
   }
