@@ -29,7 +29,7 @@ const formatPercentage = (value: number | null | undefined): string => {
     style: "percent",
     minimumFractionDigits: 2,
     maximumFractionDigits: 4,
-  }).format(value / 100)
+  }).format(value)
 }
 
 // Função para formatar data
