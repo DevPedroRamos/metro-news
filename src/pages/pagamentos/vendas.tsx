@@ -153,13 +153,22 @@ export default function VendasPage() {
               <SelectContent>
                 {data?.vendas.map((venda) => (
                   <SelectItem key={venda.id} value={venda.id.toString()}>
-                    <div className="flex flex-col">
-                      <span className="font-medium">{venda.cliente}</span>
-                      <span className="text-gray-500 text-sm">
-                        {venda.empreendimento}
-                        {venda.bl && ` | Bloco: ${venda.bl}`}
-                        {venda.unid && ` | Unidade: ${venda.unid}`}
-                      </span>
+                    <div className="flex items-center gap-2 text-sm">
+                      <span className="font-medium text-gray-900">{venda.cliente}</span>
+                      <span className="text-gray-400">-</span>
+                      <span className="text-gray-600">{venda.empreendimento}</span>
+                      {venda.bl && (
+                        <>
+                          <span className="text-gray-400">-</span>
+                          <span className="text-gray-600">Bloco: {venda.bl}</span>
+                        </>
+                      )}
+                      {venda.unid && (
+                        <>
+                          <span className="text-gray-400">-</span>
+                          <span className="text-gray-600">Unidade: {venda.unid}</span>
+                        </>
+                      )}
                     </div>
                   </SelectItem>
                 ))}
