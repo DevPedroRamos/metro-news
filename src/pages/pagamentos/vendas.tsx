@@ -153,10 +153,12 @@ export default function VendasPage() {
               <SelectContent>
                 {data?.vendas.map((venda) => (
                   <SelectItem key={venda.id} value={venda.id.toString()}>
-                    <div className="flex items-center justify-between w-full">
+                    <div className="flex flex-col">
                       <span className="font-medium">{venda.cliente}</span>
-                      <span className="text-gray-500 ml-4">
+                      <span className="text-gray-500 text-sm">
                         {venda.empreendimento}
+                        {venda.bl && ` | Bloco: ${venda.bl}`}
+                        {venda.unid && ` | Unidade: ${venda.unid}`}
                       </span>
                     </div>
                   </SelectItem>
