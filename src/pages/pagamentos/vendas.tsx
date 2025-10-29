@@ -893,7 +893,7 @@ export default function VendasPage() {
                         <TableHead className="text-gray-700 font-medium text-xs">% VGV</TableHead>
                         <TableHead className="text-gray-700 font-medium text-xs">% Extra</TableHead>
                         <TableHead className="text-gray-700 font-medium text-xs">Comissão Sinal</TableHead>
-                        <TableHead className="text-gray-700 font-medium text-xs">Comissão VGV</TableHead>
+                        <TableHead className="text-gray-700 font-medium text-xs">Comissão Pré Chaves</TableHead>
                         <TableHead className="text-gray-700 font-medium text-xs">Comissão Extra</TableHead>
                       </TableRow>
                     </TableHeader>
