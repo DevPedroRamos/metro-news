@@ -148,7 +148,7 @@ export function InvoiceUpload() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <FileText className="h-5 w-5" />
-            Upload de Comprovantes
+            Enviar Nota Fiscal de prestação de serviço
           </CardTitle>
         </CardHeader>
         <CardContent>
