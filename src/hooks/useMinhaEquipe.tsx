@@ -45,9 +45,7 @@ export const useMinhaEquipe = () => {
           const result = await supabase
             .from('users')
             .select('id, name, apelido, cpf, role')
-            .eq('gerente', userData.apelido)
-            .eq('role', 'corretor')
-            .eq('ban', false);
+            .eq('gerente', userData.apelido);
           teamMembers = result.data;
           teamError = result.error;
         } else if (userData.role === 'superintendente') {
@@ -55,9 +53,7 @@ export const useMinhaEquipe = () => {
           const result = await supabase
             .from('users')
             .select('id, name, apelido, cpf, role')
-            .eq('superintendente', userData.apelido)
-            .eq('role', 'corretor')
-            .eq('ban', false);
+            .eq('superintendente', userData.apelido);
           teamMembers = result.data;
           teamError = result.error;
         }
@@ -83,7 +79,7 @@ export const useMinhaEquipe = () => {
               .from('base_de_vendas')
               .select('recebido, tipo_venda')
               .eq('periodo_id', period.id)
-              .eq('vendedor_parceiro', member.name);
+              .eq('vendedor_parceiro', member.apelido);
 
             if (vendasError) {
               console.error('Erro ao buscar vendas:', vendasError);
