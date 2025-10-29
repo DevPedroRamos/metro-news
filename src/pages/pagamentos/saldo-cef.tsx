@@ -48,7 +48,7 @@ export default function SaldoCefPage() {
                 <TableHead>Empreendimento</TableHead>
                 <TableHead>Unidade</TableHead>
                 <TableHead>Comissão Sinal</TableHead>
-                <TableHead>Comissão VGV</TableHead>
+                <TableHead>Comissão Pré Chaves</TableHead>
                 <TableHead>Prêmio Repasse</TableHead>
                 <TableHead>VGV Vendedor</TableHead>
                 <TableHead>Subtotal</TableHead>
