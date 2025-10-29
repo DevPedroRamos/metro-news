@@ -46,6 +46,7 @@ export const useMinhaEquipe = () => {
             .from('users')
             .select('id, name, apelido, cpf, role')
             .eq('gerente', userData.apelido)
+            .eq('role', 'corretor')
             .eq('ban', false);
           teamMembers = result.data;
           teamError = result.error;
@@ -55,6 +56,7 @@ export const useMinhaEquipe = () => {
             .from('users')
             .select('id, name, apelido, cpf, role')
             .eq('superintendente', userData.apelido)
+            .eq('role', 'corretor')
             .eq('ban', false);
           teamMembers = result.data;
           teamError = result.error;
@@ -77,21 +79,11 @@ export const useMinhaEquipe = () => {
               .eq('id', member.id)
               .maybeSingle();
             // Buscar vendas do período atual na tabela base_de_vendas
-            let vendasQuery = supabase
+            const { data: vendas, error: vendasError } = await supabase
               .from('base_de_vendas')
               .select('recebido, tipo_venda')
-              .eq('periodo_id', period.id);
-
-            // Aplicar filtro baseado no role do membro
-            if (member.role === 'superintendente') {
-              vendasQuery = vendasQuery.eq('superintendente', member.name);
-            } else if (member.role === 'gerente') {
-              vendasQuery = vendasQuery.eq('gerente', member.name);
-            } else {
-              vendasQuery = vendasQuery.eq('vendedor_parceiro', member.name);
-            }
-
-            const { data: vendas, error: vendasError } = await vendasQuery;
+              .eq('periodo_id', period.id)
+              .eq('vendedor_parceiro', member.name);
 
             if (vendasError) {
               console.error('Erro ao buscar vendas:', vendasError);
