@@ -79,7 +79,7 @@ export const useMinhaEquipe = () => {
               .from('base_de_vendas')
               .select('recebido, tipo_venda')
               .eq('periodo_id', period.id)
-              .eq('vendedor_parceiro', member.apelido);
+              .eq('vendedor_parceiro', member.name);
 
             if (vendasError) {
               console.error('Erro ao buscar vendas:', vendasError);
