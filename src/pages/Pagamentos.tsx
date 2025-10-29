@@ -304,7 +304,7 @@ const Pagamentos: React.FC = () => {
 
         {/* Upload de Comprovantes */}
          <section>
-          <SectionHeader title="Upload de Comprovantes" icon={<CreditCard className="h-4 w-4" />} description="Envie seus comprovantes de pagamento" />
+          <SectionHeader title="Enviar nota fiscal de prestação de serviço" icon={<CreditCard className="h-4 w-4" />} description="Envie seus comprovantes de pagamento" />
           <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
             <InvoiceUpload />
           </div>
