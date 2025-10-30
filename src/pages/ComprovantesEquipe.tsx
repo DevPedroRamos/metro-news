@@ -55,11 +55,11 @@ export default function ComprovantesEquipe() {
       setLoading(true);
 
       // Buscar membros da equipe
-      let teamQuery = supabase.from('users').select('id, name, apelido, cpf');
+      let teamQuery = supabase.from('users').select('id, name, apelido, cpf, ban, role');
       if (userData.role === 'gerente') {
-        teamQuery = teamQuery.eq('gerente', userData.apelido);
+        teamQuery = teamQuery.eq('gerente', userData.apelido).eq('ban', false).eq('role', 'corretor');
       } else if (userData.role === 'superintendente') {
-        teamQuery = teamQuery.eq('superintendente', userData.apelido);
+        teamQuery = teamQuery.eq('superintendente', userData.apelido).eq('ban', false).eq('role', 'corretor');
       }
       const {
         data: teamData,
