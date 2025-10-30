@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { AlertCircle, Users, TrendingUp, Eye, FileText } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 
+
 export default function MinhaEquipe() {
   const {
     teamData,

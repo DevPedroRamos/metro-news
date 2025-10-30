@@ -26,6 +26,7 @@ export const useMinhaEquipe = () => {
   const { userData } = useProfileUsers();
   const { period } = useCurrentPeriod();
   const [teamData, setTeamData] = useState<TeamMember[]>([]);
+  const [totalVendasEquipe, setTotalVendasEquipe] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -45,6 +46,8 @@ export const useMinhaEquipe = () => {
           const result = await supabase
             .from('users')
             .select('id, name, apelido, cpf, role')
+            .eq('ban', false)
+            .eq('role', 'corretor')
             .eq('gerente', userData.apelido);
           teamMembers = result.data;
           teamError = result.error;
@@ -53,6 +56,8 @@ export const useMinhaEquipe = () => {
           const result = await supabase
             .from('users')
             .select('id, name, apelido, cpf, role')
+            .eq('ban', false)
+            .eq('role', 'corretor')
             .eq('superintendente', userData.apelido);
           teamMembers = result.data;
           teamError = result.error;
@@ -62,8 +67,30 @@ export const useMinhaEquipe = () => {
 
         if (!teamMembers || teamMembers.length === 0) {
           setTeamData([]);
+          setTotalVendasEquipe(0);
           return;
         }
+
+        // Buscar total de vendas da equipe (usando lógica do useVendas)
+        let totalVendasQuery = supabase
+          .from('base_de_vendas')
+          .select('*')
+          .eq('periodo_id', period.id);
+
+        if (userData.role === 'superintendente') {
+          totalVendasQuery = totalVendasQuery.eq('superintendente', userData.apelido);
+        } else if (userData.role === 'gerente') {
+          totalVendasQuery = totalVendasQuery.eq('gerente', userData.apelido);
+        }
+
+        const { data: totalVendasData, error: totalVendasError } = await totalVendasQuery;
+
+        if (totalVendasError) {
+          console.error('Erro ao buscar total de vendas:', totalVendasError);
+        }
+
+        // Armazenar o total de vendas da equipe no estado
+        setTotalVendasEquipe(totalVendasData?.length || 0);
 
         // Para cada membro da equipe, buscar suas métricas e avatar
         const teamWithMetrics = await Promise.all(
@@ -74,10 +101,11 @@ export const useMinhaEquipe = () => {
               .select('avatar_url')
               .eq('id', member.id)
               .maybeSingle();
-            // Buscar vendas do período atual na tabela base_de_vendas
+            
+            // Buscar vendas individuais do membro (sempre como vendedor_parceiro)
             const { data: vendas, error: vendasError } = await supabase
               .from('base_de_vendas')
-              .select('recebido, tipo_venda')
+              .select('*')
               .eq('periodo_id', period.id)
               .eq('vendedor_parceiro', member.apelido);
 
@@ -160,7 +188,7 @@ export const useMinhaEquipe = () => {
 
   const teamStats = {
     totalMembros: teamData.length,
-    totalVendas: teamData.reduce((sum, member) => sum + member.vendas, 0),
+    totalVendas: totalVendasEquipe,
     totalVisitas: teamData.reduce((sum, member) => sum + member.visitas, 0),
     totalContratos: teamData.reduce((sum, member) => sum + member.contratos, 0),
   };
