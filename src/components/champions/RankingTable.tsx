@@ -93,7 +93,7 @@ export const RankingTable: React.FC<RankingTableProps> = ({
             <TableHead className="text-center font-semibold text-gray-700">
               <div className="flex items-center justify-center space-x-1">
                 <TrendingUp className="w-4 h-4" />
-                <span>{rankingType === 'consultor' ? 'Vendas' : 'Menções'}</span>
+                <span>{rankingType === 'consultor' ? 'Vendas' : 'Vendas'}</span>
               </div>
             </TableHead>
             
@@ -147,7 +147,7 @@ export const RankingTable: React.FC<RankingTableProps> = ({
                       {person.vendas}
                     </span>
                     <span className="text-xs text-gray-500 font-medium">
-                      {rankingType === 'consultor' ? 'vendas' : 'menções'}
+                      {rankingType === 'consultor' ? 'vendas' : 'Vendas'}
                     </span>
                   </div>
                 </TableCell>

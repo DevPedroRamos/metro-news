@@ -54,7 +54,12 @@ export const useSaldoCef = () => {
         .eq("periodo_id", period.id);
 
       // Apply role-based filtering
-      if (userRole === 'gerente') {
+      // Se for superintendente, busca registros onde ele é o superintendente
+      // Se for gerente, busca registros onde ele é o gerente
+      // Caso contrário, busca registros onde ele é o vendedor
+      if (userRole === "superintendente") {
+        query = query.eq("superintendente", user.apelido);
+      } else if (userRole === "gerente") {
         query = query.eq("gerente", user.apelido);
       } else {
         query = query.eq("vendedor_parceiro", user.apelido);

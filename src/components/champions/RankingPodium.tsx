@@ -149,7 +149,7 @@ export const RankingPodium: React.FC<RankingPodiumProps> = ({
                         <div className="bg-white/70 backdrop-blur-sm rounded-lg p-3 border border-white/50">
                           <div className="text-2xl font-bold text-gray-900">{person.vendas}</div>
                           <div className="text-xs text-gray-600 font-medium uppercase tracking-wide">
-                            {rankingType === 'consultor' ? 'Vendas' : 'Menções'}
+                            {rankingType === 'consultor' ? 'Vendas' : 'Vendas'}
                           </div>
                         </div>
                         

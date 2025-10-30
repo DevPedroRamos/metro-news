@@ -77,10 +77,15 @@ export const useDistrato = () => {
           .eq("periodo_id", period.id);
 
         // Apply role-based filtering
-        if (userRole === 'gerente') {
-          query = query.ilike('gerente', userData.apelido);
+        // Se for superintendente, busca registros onde ele é o superintendente
+        // Se for gerente, busca registros onde ele é o gerente
+        // Caso contrário, busca registros onde ele é o vendedor
+        if (userRole === "superintendente") {
+          query = query.ilike("superintendente", userData.apelido);
+        } else if (userRole === "gerente") {
+          query = query.ilike("gerente", userData.apelido);
         } else {
-          query = query.ilike('vendedor', userData.apelido);
+          query = query.ilike("vendedor", userData.apelido);
         }
 
         const { data, error } = await query.order("created_at", { ascending: false });
