@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useCurrentPeriod } from '@/hooks/useCurrentPeriod';
+import { useProfileUsers } from '@/hooks/useProfileUsers';
 
 interface InvoiceUpload {
   id: string;
@@ -28,6 +29,7 @@ interface UseInvoiceUploadsReturn {
 export const useInvoiceUploads = (): UseInvoiceUploadsReturn => {
   const { user } = useAuth();
   const { period } = useCurrentPeriod();
+  const { userData } = useProfileUsers();
   const [currentInvoice, setCurrentInvoice] = useState<InvoiceUpload | null>(null);
   const [allInvoices, setAllInvoices] = useState<InvoiceUpload[]>([]);
   const [loading, setLoading] = useState(true);
@@ -76,12 +78,23 @@ export const useInvoiceUploads = (): UseInvoiceUploadsReturn => {
       return false;
     }
 
+    if (!userData?.name) {
+      setError('Nome do usuário não encontrado');
+      return false;
+    }
+
     try {
       setLoading(true);
       setError(null);
 
+      // Extrair a extensão do arquivo original
+      const fileExtension = file.name.substring(file.name.lastIndexOf('.'));
+      
+      // Criar nome do arquivo com o nome completo do usuário + extensão
+      const userFileName = `${userData.name}${fileExtension}`;
+
       // Upload do arquivo para o storage
-      const fileName = `${user.id}/${period.id}_${Date.now()}_${file.name}`;
+      const fileName = `${user.id}/${period.id}_${Date.now()}_${userFileName}`;
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from('invoices')
         .upload(fileName, file);
@@ -99,7 +112,7 @@ export const useInvoiceUploads = (): UseInvoiceUploadsReturn => {
         const { error: updateError } = await supabase
           .from('invoice_uploads')
           .update({
-            file_name: file.name,
+            file_name: userFileName,
             file_url: publicUrl,
             file_type: file.type,
             file_size: file.size,
@@ -114,7 +127,7 @@ export const useInvoiceUploads = (): UseInvoiceUploadsReturn => {
           .insert({
             user_id: user.id,
             periodo_id: period.id,
-            file_name: file.name,
+            file_name: userFileName,
             file_url: publicUrl,
             file_type: file.type,
             file_size: file.size,
