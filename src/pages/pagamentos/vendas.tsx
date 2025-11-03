@@ -819,7 +819,7 @@ export default function VendasPage() {
                     </TabsList>
                     <TabsContent value="corretor" className="mt-4">
                       <div className="text-center border border-gray-200 p-4 rounded">
-                        <div className="text-gray-600 text-sm mb-1">Sinal Comissão Extra Vendedor</div>
+                        <div className="text-gray-600 text-sm mb-1">Sinal Comissão Extra Consultor</div>
                         <div className="text-xl font-semibold text-gray-900">
                           {formatCurrency(vendaSelecionada.sinal_comissao_extra_vendedor)}
                         </div>
@@ -827,7 +827,7 @@ export default function VendasPage() {
                     </TabsContent>
                     <TabsContent value="gerente" className="mt-4">
                       <div className="text-center border border-gray-200 p-4 rounded">
-                        <div className="text-gray-600 text-sm mb-1">Sinal Comissão Extra Vendedor</div>
+                        <div className="text-gray-600 text-sm mb-1">Sinal Comissão Extra Gerente</div>
                         <div className="text-xl font-semibold text-gray-900">
                           {formatCurrency(vendaSelecionada.sinal_comissao_extra_vendedor_gerente)}
                         </div>
@@ -835,7 +835,7 @@ export default function VendasPage() {
                     </TabsContent>
                     <TabsContent value="superintendente" className="mt-4">
                       <div className="text-center border border-gray-200 p-4 rounded">
-                        <div className="text-gray-600 text-sm mb-1">Sinal Comissão Extra Vendedor</div>
+                        <div className="text-gray-600 text-sm mb-1">Sinal Comissão Extra Superintendente</div>
                         <div className="text-xl font-semibold text-gray-900">
                           {formatCurrency(vendaSelecionada.sinal_comissao_extra_vendedor_superintendente)}
                         </div>
