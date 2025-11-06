@@ -18,6 +18,11 @@ export default {
 			}
 		},
 		extend: {
+			fontFamily: {
+				sans: ['Poppins', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+				serif: ['Montserrat', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+				mono: ['IBM Plex Mono', 'monospace'],
+			},
 			colors: {
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
