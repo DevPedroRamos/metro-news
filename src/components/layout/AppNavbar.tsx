@@ -11,7 +11,6 @@ import { signOut } from '@/lib/auth';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import { VisitButton } from '@/components/visits/VisitButton';
-import { ModeToggle } from '@/components/theme/ModeToggle';
 
 export function AppNavbar() {
   const {
@@ -61,7 +60,6 @@ export function AppNavbar() {
           <span className="absolute -top-1 -right-1 h-3 w-3 bg-metro-green rounded-full text-xs"></span>
         </Button> */}
 
-        <ModeToggle />
         <VisitButton />
 
         <DropdownMenu>
