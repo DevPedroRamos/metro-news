@@ -14,6 +14,8 @@ export interface SaldoCef {
   gerente: string | null;
   superintendente: string | null;
   gestor: string | null;
+  
+  // Vendedor
   comissao_sinal_perc: number | null;
   comissao_vgv_perc: number | null;
   comissao_extra_perc: number | null;
@@ -22,6 +24,25 @@ export interface SaldoCef {
   premio_repasse_fiador_valor: number | null;
   vendedor_vgv_valor: number | null;
   vendedor_premio_repasse_fiador_valor: number | null;
+  
+  // Gerente
+  gerente_comissao_sinal_perc: number | null;
+  gerente_comissao_vgv_perc: number | null;
+  gerente_comissao_extra_perc: number | null;
+  gerente_comissao_sinal_valor: number | null;
+  gerente_comissao_vgv_valor: number | null;
+  gerente_premio_repasse_fiador_valor: number | null;
+  gerente_vgv_valor: number | null;
+  
+  // Superintendente
+  superintendente_comissao_sinal_perc: number | null;
+  superintendente_comissao_vgv_perc: number | null;
+  superintendente_comissao_extra_perc: number | null;
+  superintendente_comissao_sinal_valor: number | null;
+  superintendente_comissao_vgv_valor: number | null;
+  superintendente_premio_repasse_fiador_valor: number | null;
+  superintendente_vgv_valor: number | null;
+  
   subtotal: number | null;
   total: number | null;
   created_at: string;

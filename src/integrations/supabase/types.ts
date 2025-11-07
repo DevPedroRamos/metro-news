@@ -1583,12 +1583,26 @@ export type Database = {
           created_at: string | null
           empreendimento: string | null
           gerente: string | null
+          gerente_comissao_extra_perc: number | null
+          gerente_comissao_sinal_perc: number | null
+          gerente_comissao_sinal_valor: number | null
+          gerente_comissao_vgv_perc: number | null
+          gerente_comissao_vgv_valor: number | null
+          gerente_premio_repasse_fiador_valor: number | null
+          gerente_vgv_valor: number | null
           gestor: string | null
           id: number | null
           periodo_id: number | null
           premio_repasse_fiador_valor: number | null
           subtotal: number | null
           superintendente: string | null
+          superintendente_comissao_extra_perc: number | null
+          superintendente_comissao_sinal_perc: number | null
+          superintendente_comissao_sinal_valor: number | null
+          superintendente_comissao_vgv_perc: number | null
+          superintendente_comissao_vgv_valor: number | null
+          superintendente_premio_repasse_fiador_valor: number | null
+          superintendente_vgv_valor: number | null
           supervisor_coord_parceiro: string | null
           total: number | null
           unid: string | null
@@ -1607,12 +1621,26 @@ export type Database = {
           created_at?: string | null
           empreendimento?: string | null
           gerente?: string | null
+          gerente_comissao_extra_perc?: number | null
+          gerente_comissao_sinal_perc?: number | null
+          gerente_comissao_sinal_valor?: number | null
+          gerente_comissao_vgv_perc?: number | null
+          gerente_comissao_vgv_valor?: number | null
+          gerente_premio_repasse_fiador_valor?: number | null
+          gerente_vgv_valor?: number | null
           gestor?: string | null
           id?: number | null
           periodo_id?: number | null
           premio_repasse_fiador_valor?: number | null
           subtotal?: number | null
           superintendente?: string | null
+          superintendente_comissao_extra_perc?: number | null
+          superintendente_comissao_sinal_perc?: number | null
+          superintendente_comissao_sinal_valor?: number | null
+          superintendente_comissao_vgv_perc?: number | null
+          superintendente_comissao_vgv_valor?: number | null
+          superintendente_premio_repasse_fiador_valor?: number | null
+          superintendente_vgv_valor?: number | null
           supervisor_coord_parceiro?: string | null
           total?: number | null
           unid?: string | null
@@ -1631,12 +1659,26 @@ export type Database = {
           created_at?: string | null
           empreendimento?: string | null
           gerente?: string | null
+          gerente_comissao_extra_perc?: number | null
+          gerente_comissao_sinal_perc?: number | null
+          gerente_comissao_sinal_valor?: number | null
+          gerente_comissao_vgv_perc?: number | null
+          gerente_comissao_vgv_valor?: number | null
+          gerente_premio_repasse_fiador_valor?: number | null
+          gerente_vgv_valor?: number | null
           gestor?: string | null
           id?: number | null
           periodo_id?: number | null
           premio_repasse_fiador_valor?: number | null
           subtotal?: number | null
           superintendente?: string | null
+          superintendente_comissao_extra_perc?: number | null
+          superintendente_comissao_sinal_perc?: number | null
+          superintendente_comissao_sinal_valor?: number | null
+          superintendente_comissao_vgv_perc?: number | null
+          superintendente_comissao_vgv_valor?: number | null
+          superintendente_premio_repasse_fiador_valor?: number | null
+          superintendente_vgv_valor?: number | null
           supervisor_coord_parceiro?: string | null
           total?: number | null
           unid?: string | null
@@ -1673,6 +1715,14 @@ export type Database = {
       gerar_link_corretor: {
         Args: { corretor_uuid: string; link_titulo?: string }
         Returns: string
+      }
+      get_all_periodos: {
+        Args: never
+        Returns: {
+          end: string
+          id: number
+          start: string
+        }[]
       }
       get_champions_ranking: {
         Args: {

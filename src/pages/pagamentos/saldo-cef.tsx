@@ -44,16 +44,31 @@ export default function SaldoCefPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Cliente</TableHead>
-                <TableHead>Empreendimento</TableHead>
-                <TableHead>Unidade</TableHead>
-                <TableHead>Comissão Sinal</TableHead>
-                <TableHead>Comissão Pré Chaves</TableHead>
-                <TableHead>Prêmio Repasse</TableHead>
-                <TableHead>VGV Vendedor</TableHead>
-                <TableHead>Subtotal</TableHead>
-                <TableHead>Total</TableHead>
-                <TableHead>Data</TableHead>
+                <TableHead rowSpan={2}>Cliente</TableHead>
+                <TableHead rowSpan={2}>Empreendimento</TableHead>
+                <TableHead rowSpan={2}>Unidade</TableHead>
+                <TableHead colSpan={4} className="text-center bg-blue-50/10 dark:bg-blue-950/20">Vendedor</TableHead>
+                <TableHead colSpan={4} className="text-center bg-green-50/10 dark:bg-green-950/20">Gerente</TableHead>
+                <TableHead colSpan={4} className="text-center bg-purple-50/10 dark:bg-purple-950/20">Superintendente</TableHead>
+                <TableHead rowSpan={2}>Subtotal</TableHead>
+                <TableHead rowSpan={2}>Total</TableHead>
+                <TableHead rowSpan={2}>Data</TableHead>
+              </TableRow>
+              <TableRow>
+                <TableHead className="bg-blue-50/10 dark:bg-blue-950/20">Comissão Sinal</TableHead>
+                <TableHead className="bg-blue-50/10 dark:bg-blue-950/20">VGV</TableHead>
+                <TableHead className="bg-blue-50/10 dark:bg-blue-950/20">Prêmio</TableHead>
+                <TableHead className="bg-blue-50/10 dark:bg-blue-950/20">VGV Valor</TableHead>
+                
+                <TableHead className="bg-green-50/10 dark:bg-green-950/20">Comissão Sinal</TableHead>
+                <TableHead className="bg-green-50/10 dark:bg-green-950/20">VGV</TableHead>
+                <TableHead className="bg-green-50/10 dark:bg-green-950/20">Prêmio</TableHead>
+                <TableHead className="bg-green-50/10 dark:bg-green-950/20">VGV Valor</TableHead>
+                
+                <TableHead className="bg-purple-50/10 dark:bg-purple-950/20">Comissão Sinal</TableHead>
+                <TableHead className="bg-purple-50/10 dark:bg-purple-950/20">VGV</TableHead>
+                <TableHead className="bg-purple-50/10 dark:bg-purple-950/20">Prêmio</TableHead>
+                <TableHead className="bg-purple-50/10 dark:bg-purple-950/20">VGV Valor</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -62,10 +77,25 @@ export default function SaldoCefPage() {
                   <TableCell className="whitespace-nowrap">{item.cliente}</TableCell>
                   <TableCell>{item.empreendimento}</TableCell>
                   <TableCell>{`${item.bl} - ${item.unid}`}</TableCell>
-                  <TableCell className="whitespace-nowrap">{formatCurrency(item.comissao_sinal_valor)}</TableCell>
-                  <TableCell className="whitespace-nowrap">{formatCurrency(item.comissao_vgv_valor)}</TableCell>
-                  <TableCell className="whitespace-nowrap">{formatCurrency(item.vendedor_premio_repasse_fiador_valor)}</TableCell>
-                  <TableCell className="whitespace-nowrap">{formatCurrency(item.vendedor_vgv_valor)}</TableCell>
+                  
+                  {/* Vendedor */}
+                  <TableCell className="whitespace-nowrap bg-blue-50/5 dark:bg-blue-950/10">{formatCurrency(item.comissao_sinal_valor)}</TableCell>
+                  <TableCell className="whitespace-nowrap bg-blue-50/5 dark:bg-blue-950/10">{formatCurrency(item.comissao_vgv_valor)}</TableCell>
+                  <TableCell className="whitespace-nowrap bg-blue-50/5 dark:bg-blue-950/10">{formatCurrency(item.premio_repasse_fiador_valor)}</TableCell>
+                  <TableCell className="whitespace-nowrap bg-blue-50/5 dark:bg-blue-950/10">{formatCurrency(item.vendedor_vgv_valor)}</TableCell>
+                  
+                  {/* Gerente */}
+                  <TableCell className="whitespace-nowrap bg-green-50/5 dark:bg-green-950/10">{formatCurrency(item.gerente_comissao_sinal_valor)}</TableCell>
+                  <TableCell className="whitespace-nowrap bg-green-50/5 dark:bg-green-950/10">{formatCurrency(item.gerente_comissao_vgv_valor)}</TableCell>
+                  <TableCell className="whitespace-nowrap bg-green-50/5 dark:bg-green-950/10">{formatCurrency(item.gerente_premio_repasse_fiador_valor)}</TableCell>
+                  <TableCell className="whitespace-nowrap bg-green-50/5 dark:bg-green-950/10">{formatCurrency(item.gerente_vgv_valor)}</TableCell>
+                  
+                  {/* Superintendente */}
+                  <TableCell className="whitespace-nowrap bg-purple-50/5 dark:bg-purple-950/10">{formatCurrency(item.superintendente_comissao_sinal_valor)}</TableCell>
+                  <TableCell className="whitespace-nowrap bg-purple-50/5 dark:bg-purple-950/10">{formatCurrency(item.superintendente_comissao_vgv_valor)}</TableCell>
+                  <TableCell className="whitespace-nowrap bg-purple-50/5 dark:bg-purple-950/10">{formatCurrency(item.superintendente_premio_repasse_fiador_valor)}</TableCell>
+                  <TableCell className="whitespace-nowrap bg-purple-50/5 dark:bg-purple-950/10">{formatCurrency(item.superintendente_vgv_valor)}</TableCell>
+                  
                   <TableCell className="whitespace-nowrap font-medium">{formatCurrency(item.subtotal)}</TableCell>
                   <TableCell className="whitespace-nowrap font-bold">{formatCurrency(item.total)}</TableCell>
                   <TableCell className="whitespace-nowrap">{formatDate(item.created_at)}</TableCell>
