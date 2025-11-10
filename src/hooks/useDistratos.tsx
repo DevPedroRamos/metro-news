@@ -111,5 +111,6 @@ export const useDistrato = () => {
     distratos,
     loading,
     error: error || errorPeriod || errorUserData,
+    userRole,
   };
 };
