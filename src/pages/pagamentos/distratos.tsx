@@ -58,18 +58,18 @@ export default function DistratosPage() {
                 <TableHead rowSpan={2}>Tipo</TableHead>
                 <TableHead rowSpan={2}>Motivo</TableHead>
                 
-                <TableHead colSpan={2} className="text-center bg-blue-50">
+                <TableHead colSpan={2} className="text-center">
                   Vendedor
                 </TableHead>
                 
                 {(isGerente || isSuperintendente) && (
-                  <TableHead colSpan={2} className="text-center bg-green-50">
+                  <TableHead colSpan={2} className="text-center">
                     Gerente
                   </TableHead>
                 )}
                 
                 {isSuperintendente && (
-                  <TableHead colSpan={2} className="text-center bg-purple-50">
+                  <TableHead className="text-center">
                     Superintendente
                   </TableHead>
                 )}
@@ -80,21 +80,18 @@ export default function DistratosPage() {
               </TableRow>
               
               <TableRow>
-                <TableHead className="bg-blue-50">Nome</TableHead>
-                <TableHead className="bg-blue-50">Valor</TableHead>
+                <TableHead>Nome</TableHead>
+                <TableHead>Valor</TableHead>
                 
                 {(isGerente || isSuperintendente) && (
                   <>
-                    <TableHead className="bg-green-50">Nome</TableHead>
-                    <TableHead className="bg-green-50">Valor</TableHead>
+                    <TableHead>Nome</TableHead>
+                    <TableHead>Valor</TableHead>
                   </>
                 )}
                 
                 {isSuperintendente && (
-                  <>
-                    <TableHead className="bg-purple-50">Nome</TableHead>
-                    <TableHead className="bg-purple-50">Valor</TableHead>
-                  </>
+                  <TableHead>Valor</TableHead>
                 )}
               </TableRow>
             </TableHeader>
@@ -109,21 +106,18 @@ export default function DistratosPage() {
                   <TableCell>{distrato.tipo_distrato}</TableCell>
                   <TableCell className="max-w-[200px] truncate">{distrato.motivo}</TableCell>
                   
-                  <TableCell className="bg-blue-50">{distrato.vendedor}</TableCell>
-                  <TableCell className="bg-blue-50 whitespace-nowrap">{formatCurrency(distrato.valor_vendedor)}</TableCell>
+                  <TableCell>{distrato.vendedor}</TableCell>
+                  <TableCell className="whitespace-nowrap">{formatCurrency(distrato.valor_vendedor)}</TableCell>
                   
                   {(isGerente || isSuperintendente) && (
                     <>
-                      <TableCell className="bg-green-50">{distrato.gerente}</TableCell>
-                      <TableCell className="bg-green-50 whitespace-nowrap">{formatCurrency(distrato.valor_gerente)}</TableCell>
+                      <TableCell>{distrato.gerente}</TableCell>
+                      <TableCell className="whitespace-nowrap">{formatCurrency(distrato.valor_gerente)}</TableCell>
                     </>
                   )}
                   
                   {isSuperintendente && (
-                    <>
-                      <TableCell className="bg-purple-50">{distrato.superintendente}</TableCell>
-                      <TableCell className="bg-purple-50 whitespace-nowrap">{formatCurrency(distrato.valor_superintendente)}</TableCell>
-                    </>
+                    <TableCell className="whitespace-nowrap">{formatCurrency(distrato.valor_superintendente)}</TableCell>
                   )}
                   
                   <TableCell className="whitespace-nowrap font-semibold">{formatCurrency(distrato.valor_total)}</TableCell>
