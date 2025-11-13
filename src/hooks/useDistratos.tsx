@@ -28,7 +28,7 @@ export interface Distrato {
   created_at: string;
 }
 
-export const useDistrato = () => {
+export const useDistrato = (viewAsAdmin = false) => {
   const { period, loading: loadingPeriod, error: errorPeriod } = useCurrentPeriod();
   const { userData, loading: loadingUserData, error: errorUserData } = useProfileUsers();
 
@@ -76,16 +76,15 @@ export const useDistrato = () => {
           .select("*")
           .eq("periodo_id", period.id);
 
-        // Apply role-based filtering
-        // Se for superintendente, busca registros onde ele é o superintendente
-        // Se for gerente, busca registros onde ele é o gerente
-        // Caso contrário, busca registros onde ele é o vendedor
-        if (userRole === "superintendente") {
-          query = query.ilike("superintendente", userData.apelido);
-        } else if (userRole === "gerente") {
-          query = query.ilike("gerente", userData.apelido);
-        } else {
-          query = query.ilike("vendedor", userData.apelido);
+        // Filtrar baseado na role apenas se não for admin
+        if (!viewAsAdmin) {
+          if (userRole === "superintendente") {
+            query = query.ilike("superintendente", userData.apelido);
+          } else if (userRole === "gerente") {
+            query = query.ilike("gerente", userData.apelido);
+          } else {
+            query = query.ilike("vendedor", userData.apelido);
+          }
         }
 
         const { data, error } = await query.order("created_at", { ascending: false });

@@ -13,6 +13,8 @@ import { Table, TableBody, TableHead, TableHeader, TableRow, TableCell } from "@
 import { Info, TrendingUp, DollarSign, Calendar, Award, CreditCard, Wallet, Target, Gift, Banknote, AlertTriangle, ArrowDown, ArrowUp, Clock, CheckCircle } from "lucide-react";
 import { useProfileUsers } from "@/hooks/useProfileUsers";
 import { usePayments } from "@/hooks/usePayments";
+import { UserSelector } from "@/components/pagamentos/UserSelector";
+import type { UserSearchResult } from "@/hooks/useUserSearch";
 interface ApiResponse {
   period_start: string;
   period_end: string;
@@ -122,6 +124,10 @@ const MetaSEO: React.FC = () => {
   return null;
 };
 const Pagamentos: React.FC = () => {
+  const { userData } = useProfileUsers();
+  const [selectedUser, setSelectedUser] = useState<UserSearchResult | null>(null);
+  const isAdmin = userData?.role === 'adm';
+  
   const {
     data,
     loading,
@@ -161,7 +167,26 @@ const Pagamentos: React.FC = () => {
 
       <div className="bg-white border border-gray-200 shadow-sm rounded-lg">
         <div className="max-w-7xl mx-auto p-6">
-          <div className="flex items-center gap-4">
+          {isAdmin && (
+            <Card className="mb-6">
+              <CardHeader>
+                <CardTitle>Selecionar Usuário</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <UserSelector 
+                  selectedUser={selectedUser}
+                  onSelectUser={setSelectedUser}
+                />
+                {!selectedUser && (
+                  <p className="text-sm text-muted-foreground mt-2">
+                    Selecione um usuário para visualizar seu resumo de pagamento
+                  </p>
+                )}
+              </CardContent>
+            </Card>
+          )}
+          
+          <div className="flex items-center gap-4">{/* ... keep existing code */}
             <div className="p-4 bg-red-600 text-white rounded-xl">
               <DollarSign className="h-6 w-6" />
             </div>

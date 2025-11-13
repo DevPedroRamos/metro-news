@@ -8,8 +8,9 @@ import { format } from "date-fns"
 import { ptBR } from "date-fns/locale"
 
 export default function SaldoCefPage() {
-  const { saldoCef, loading, error } = useSaldoCef()
   const { userData } = useProfileUsers()
+  const isAdmin = userData?.role === 'adm'
+  const { saldoCef, loading, error } = useSaldoCef(isAdmin)
 
   // Definir variáveis de controle de visualização
   const isGerente = userData?.role === 'gerente'

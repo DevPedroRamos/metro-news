@@ -45,8 +45,9 @@ const formatDate = (dateStr: string | null): string => {
 }
 
 export default function VendasPage() {
-  const { data, loading, error } = useVendas()
-  const { userData } = useProfileUsers()
+  const { userData } = useProfileUsers();
+  const isAdmin = userData?.role === 'adm';
+  const { data, loading, error } = useVendas(isAdmin);
   const [selectedVendaId, setSelectedVendaId] = useState<number | null>(null)
 
   // Selecionar a venda mais recente por padrão

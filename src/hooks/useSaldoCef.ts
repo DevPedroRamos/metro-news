@@ -48,7 +48,7 @@ export interface SaldoCef {
   created_at: string;
 }
 
-export const useSaldoCef = () => {
+export const useSaldoCef = (viewAsAdmin = false) => {
   const { period, loading: periodLoading, error: periodError } = useCurrentPeriod();
   const { userData: user, loading: userLoading, error: userError } = useProfileUsers();
 
@@ -74,16 +74,18 @@ export const useSaldoCef = () => {
         .select("*")
         .eq("periodo_id", period.id);
 
-      // Apply role-based filtering
-      // Se for superintendente, busca registros onde ele é o superintendente
-      // Se for gerente, busca registros onde ele é o gerente
-      // Caso contrário, busca registros onde ele é o vendedor
-      if (userRole === "superintendente") {
-        query = query.eq("superintendente", user.apelido);
-      } else if (userRole === "gerente") {
-        query = query.eq("gerente", user.apelido);
-      } else {
-        query = query.eq("vendedor_parceiro", user.apelido);
+      // Apply role-based filtering only if not viewing as admin
+      if (!viewAsAdmin) {
+        // Se for superintendente, busca registros onde ele é o superintendente
+        // Se for gerente, busca registros onde ele é o gerente
+        // Caso contrário, busca registros onde ele é o vendedor
+        if (userRole === "superintendente") {
+          query = query.eq("superintendente", user.apelido);
+        } else if (userRole === "gerente") {
+          query = query.eq("gerente", user.apelido);
+        } else {
+          query = query.eq("vendedor_parceiro", user.apelido);
+        }
       }
 
       const { data: rows, error } = await query.order("created_at", { ascending: false });

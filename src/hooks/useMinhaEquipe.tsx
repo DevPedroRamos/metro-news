@@ -22,65 +22,72 @@ export interface TeamMember {
   valorNota: number;
 }
 
-export const useMinhaEquipe = () => {
-  const { userData } = useProfileUsers();
-  const { period } = useCurrentPeriod();
+export const useMinhaEquipe = (viewAsAdmin = false) => {
+  const { userData, loading: userLoading, error: userError } = useProfileUsers();
+  const { period, loading: periodLoading, error: periodError } = useCurrentPeriod();
+
   const [teamData, setTeamData] = useState<TeamMember[]>([]);
-  const [totalVendasEquipe, setTotalVendasEquipe] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (!userData?.apelido || (userData.role !== 'gerente' && userData.role !== 'superintendente') || !period) return;
+  const isManager = userData?.role === 'gerente';
+  const isSuperintendente = userData?.role === 'superintendente';
+  const isAdmin = viewAsAdmin;
 
+  useEffect(() => {
     const fetchTeamData = async () => {
+      if (userLoading || periodLoading || !userData || !period?.id) return;
+      if (!isManager && !isSuperintendente && !isAdmin) {
+        setError('Acesso negado. Apenas gerentes, superintendentes e administradores podem visualizar esta página.');
+        setLoading(false);
+        return;
+      }
+
       try {
         setLoading(true);
         setError(null);
 
-        let teamMembers;
-        let teamError;
+        // Buscar membros da equipe
+        let teamQuery = supabase
+          .from('users')
+          .select('id, name, apelido, cpf, role')
+          .eq('ban', false);
 
-        if (userData.role === 'gerente') {
-          // Buscar membros da equipe do gerente
-          const result = await supabase
-            .from('users')
-            .select('id, name, apelido, cpf, role')
-            .eq('ban', false)
-            .eq('role', 'corretor')
-            .eq('gerente', userData.apelido);
-          teamMembers = result.data;
-          teamError = result.error;
-        } else if (userData.role === 'superintendente') {
-          // Buscar todos os membros da superintendência (gerentes e corretores)
-          const result = await supabase
-            .from('users')
-            .select('id, name, apelido, cpf, role')
-            .eq('ban', false)
+        if (isAdmin) {
+          // Admin vê TODOS: corretores, gerentes E superintendentes
+          teamQuery = teamQuery.in('role', ['corretor', 'gerente', 'superintendente']);
+        } else if (isSuperintendente) {
+          teamQuery = teamQuery
             .eq('role', 'corretor')
             .eq('superintendente', userData.apelido);
-          teamMembers = result.data;
-          teamError = result.error;
+        } else if (isManager) {
+          teamQuery = teamQuery
+            .eq('role', 'corretor')
+            .eq('gerente', userData.apelido);
         }
+
+        const { data: teamMembers, error: teamError } = await teamQuery;
 
         if (teamError) throw teamError;
 
         if (!teamMembers || teamMembers.length === 0) {
           setTeamData([]);
-          setTotalVendasEquipe(0);
+          setLoading(false);
           return;
         }
 
-        // Buscar total de vendas da equipe (usando lógica do useVendas)
+        // Buscar total de vendas da equipe
         let totalVendasQuery = supabase
           .from('base_de_vendas')
           .select('*')
           .eq('periodo_id', period.id);
 
-        if (userData.role === 'superintendente') {
-          totalVendasQuery = totalVendasQuery.eq('superintendente', userData.apelido);
-        } else if (userData.role === 'gerente') {
-          totalVendasQuery = totalVendasQuery.eq('gerente', userData.apelido);
+        if (!isAdmin) {
+          if (isSuperintendente) {
+            totalVendasQuery = totalVendasQuery.eq('superintendente', userData.apelido);
+          } else if (isManager) {
+            totalVendasQuery = totalVendasQuery.eq('gerente', userData.apelido);
+          }
         }
 
         const { data: totalVendasData, error: totalVendasError } = await totalVendasQuery;
@@ -89,12 +96,11 @@ export const useMinhaEquipe = () => {
           console.error('Erro ao buscar total de vendas:', totalVendasError);
         }
 
-        // Armazenar o total de vendas da equipe no estado
-        setTotalVendasEquipe(totalVendasData?.length || 0);
+        const totalVendas = totalVendasData?.length || 0;
 
         // Para cada membro da equipe, buscar suas métricas e avatar
         const teamWithMetrics = await Promise.all(
-          teamMembers.map(async (member: any) => {
+          teamMembers.map(async (member) => {
             // Buscar avatar do perfil
             const { data: profileData } = await supabase
               .from('profiles')
@@ -188,7 +194,7 @@ export const useMinhaEquipe = () => {
 
   const teamStats = {
     totalMembros: teamData.length,
-    totalVendas: totalVendasEquipe,
+    totalVendas: teamData.reduce((sum, member) => sum + member.vendas, 0),
     totalVisitas: teamData.reduce((sum, member) => sum + member.visitas, 0),
     totalContratos: teamData.reduce((sum, member) => sum + member.contratos, 0),
   };
@@ -198,7 +204,8 @@ export const useMinhaEquipe = () => {
     teamStats,
     loading,
     error,
-    isManager: userData?.role === 'gerente',
-    isSuperintendente: userData?.role === 'superintendente',
+    isManager,
+    isSuperintendente,
+    isAdmin
   };
 };

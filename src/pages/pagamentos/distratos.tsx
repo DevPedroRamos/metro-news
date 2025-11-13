@@ -9,8 +9,9 @@ import { ptBR } from "date-fns/locale"
 import { DistratoStats } from "@/components/distratos/DistratoStats"
 
 export default function DistratosPage() {
-  const { distratos, loading, error, userRole } = useDistrato()
   const { userData } = useProfileUsers()
+  const isAdmin = userData?.role === 'adm'
+  const { distratos, loading, error, userRole } = useDistrato(isAdmin)
 
   // Definir variáveis de controle de visualização
   const isGerente = userData?.role === 'gerente'

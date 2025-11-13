@@ -44,11 +44,14 @@ export default function ComprovantesEquipe() {
   const [selectedPeriod, setSelectedPeriod] = useState<string>("current");
   const [selectedMember, setSelectedMember] = useState<string>("all");
   const [searchTerm, setSearchTerm] = useState("");
+  const isAdmin = userData?.role === 'adm';
   const isManagerOrSuperintendent = userData?.role === 'gerente' || userData?.role === 'superintendente';
+  const hasAccess = isAdmin || isManagerOrSuperintendent;
+
   useEffect(() => {
-    if (!isManagerOrSuperintendent) return;
+    if (!hasAccess) return;
     fetchTeamData();
-  }, [userData, isManagerOrSuperintendent, selectedPeriod]);
+  }, [userData, hasAccess, selectedPeriod]);
   const fetchTeamData = async () => {
     if (!userData?.apelido) return;
     try {
@@ -56,7 +59,13 @@ export default function ComprovantesEquipe() {
 
       // Buscar membros da equipe
       let teamQuery = supabase.from('users').select('id, name, apelido, cpf, ban, role');
-      if (userData.role === 'gerente') {
+      
+      if (isAdmin) {
+        // Admin vê comprovantes de TODOS os usuários
+        teamQuery = teamQuery
+          .eq('ban', false)
+          .in('role', ['corretor', 'gerente', 'superintendente']);
+      } else if (userData.role === 'gerente') {
         teamQuery = teamQuery.eq('gerente', userData.apelido).eq('ban', false).eq('role', 'corretor');
       } else if (userData.role === 'superintendente') {
         teamQuery = teamQuery.eq('superintendente', userData.apelido).eq('ban', false).eq('role', 'corretor');

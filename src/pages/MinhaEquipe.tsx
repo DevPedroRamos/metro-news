@@ -1,5 +1,6 @@
 import React from 'react';
 import { useMinhaEquipe } from '@/hooks/useMinhaEquipe';
+import { useProfileUsers } from '@/hooks/useProfileUsers';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -9,6 +10,9 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 
 
 export default function MinhaEquipe() {
+  const { userData } = useProfileUsers();
+  const isAdmin = userData?.role === 'adm';
+  
   const {
     teamData,
     teamStats,
@@ -16,7 +20,7 @@ export default function MinhaEquipe() {
     error,
     isManager,
     isSuperintendente
-  } = useMinhaEquipe();
+  } = useMinhaEquipe(isAdmin);
 
   if (!isManager && !isSuperintendente) {
     return (
