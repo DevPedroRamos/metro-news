@@ -35,7 +35,7 @@ export interface PaymentHistoryItem {
   created_at: string;
 }
 
-export const usePayments = () => {
+export const usePayments = (cpfOverride?: string) => {
   const [data, setData] = useState<PaymentData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -45,20 +45,23 @@ export const usePayments = () => {
   const { userData: user, loading: userLoading, error: userError } = useProfileUsers();
   const { period, loading: periodLoading, error: periodError } = useCurrentPeriod();
 
+  // Use cpfOverride if provided (for admin viewing other users), otherwise use current user's CPF
+  const effectiveCpf = cpfOverride || user?.cpf;
+
   const fetchPaymentData = async () => {
     try {
-      if (userLoading || periodLoading || !user?.cpf || !period || !period.id || period.id <= 0) return;
+      if (userLoading || periodLoading || !effectiveCpf || !period || !period.id || period.id <= 0) return;
       if (userError) throw new Error(userError);
       if (periodError) throw new Error(periodError);
 
       setLoading(true);
       setError(null);
 
-      // Query resume data for the current period and user
+      // Query resume data for the current period and effective user
       const { data: rows, error } = await (supabase as any)
         .from("resume")
         .select("*")
-        .eq("cpf", user.cpf)
+        .eq("cpf", effectiveCpf)
         .eq("periodo_id", period.id)
         .order("created_at", { ascending: false })
         .limit(1);
@@ -130,14 +133,14 @@ export const usePayments = () => {
   };
 
   const fetchPaymentHistory = async () => {
-    if (!user?.cpf || !period || !period.id || period.id <= 0) return;
+    if (!effectiveCpf || !period || !period.id || period.id <= 0) return;
     try {
       setHistoryLoading(true);
 
       // Query para buscar histórico com JOIN para obter as datas dos períodos
       const { data: historyData, error: historyError } = await (supabase as any)
         .rpc('get_payment_history', { 
-          user_cpf: user.cpf, 
+          user_cpf: effectiveCpf, 
           current_period_id: period.id 
         });
 
@@ -233,11 +236,11 @@ export const usePayments = () => {
 
   useEffect(() => {
     fetchPaymentData();
-  }, [user, userLoading, userError, period, periodLoading, periodError]);
+  }, [user, userLoading, userError, period, periodLoading, periodError, cpfOverride]);
 
   useEffect(() => {
     fetchPaymentHistory();
-  }, [user, period]);
+  }, [user, period, cpfOverride]);
 
   return {
     data,
