@@ -139,7 +139,7 @@ const Pagamentos: React.FC = () => {
     totalReceber,
     receitaItems,
     descontoItems
-  } = usePayments();
+  } = usePayments(selectedUser?.cpf);
   const receitaItemsWithIcons = useMemo(() => {
     // Filter out the "valor_base" (Fixo) item
     const filteredItems = receitaItems.filter(item => item.key !== 'valor_base');
@@ -327,13 +327,15 @@ const Pagamentos: React.FC = () => {
         </div>
       </section>
 
-        {/* Upload de Comprovantes */}
-         <section>
-          <SectionHeader title="Enviar nota fiscal de prestação de serviço" icon={<CreditCard className="h-4 w-4" />} description="Envie seus comprovantes de pagamento" />
-          <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-            <InvoiceUpload />
-          </div>
-        </section> 
+        {/* Upload de Comprovantes - Hidden for Admin */}
+        {!isAdmin && (
+          <section>
+            <SectionHeader title="Enviar nota fiscal de prestação de serviço" icon={<CreditCard className="h-4 w-4" />} description="Envie seus comprovantes de pagamento" />
+            <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
+              <InvoiceUpload />
+            </div>
+          </section>
+        )}
 
         <Separator className="my-12" />
 
