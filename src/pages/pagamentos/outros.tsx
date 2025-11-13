@@ -1,13 +1,16 @@
 "use client"
 
 import { useOutros } from "@/hooks/useOutros"
+import { useProfileUsers } from "@/hooks/useProfileUsers"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { format } from "date-fns"
 import { ptBR } from "date-fns/locale"
 
 export default function OutrosPage() {
-  const { outros, loading, error } = useOutros()
+  const { userData } = useProfileUsers()
+  const isAdmin = userData?.role === 'adm'
+  const { outros, loading, error } = useOutros(isAdmin)
 
   if (loading) {
     return <p className="p-4">Carregando registros...</p>

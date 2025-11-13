@@ -6,6 +6,7 @@ import { useCurrentPeriod } from './useCurrentPeriod';
 export interface UsePremiosProps {
   periodStart?: string;
   periodEnd?: string;
+  viewAsAdmin?: boolean;
 }
 
 export interface Premiacao {
@@ -17,7 +18,7 @@ export interface Premiacao {
   created_at: string;
 }
 
-export function usePremios({ periodStart, periodEnd }: UsePremiosProps = {}) {
+export function usePremios({ periodStart, periodEnd, viewAsAdmin = false }: UsePremiosProps = {}) {
   const { userData, loading: userLoading, error: userError } = useProfileUsers();
   const { period, loading: periodLoading, error: periodError } = useCurrentPeriod();
 
@@ -33,12 +34,17 @@ export function usePremios({ periodStart, periodEnd }: UsePremiosProps = {}) {
         periodId: period.id
       });
 
-      const { data, error } = await supabase
+      let query = supabase
         .from('premiacao')
         .select('*')
-        .eq('periodo_id', period.id)
-        .ilike('premiado', userData.apelido)
-        .order('created_at', { ascending: false });
+        .eq('periodo_id', period.id);
+
+      // Filtrar por apelido apenas se não for admin
+      if (!viewAsAdmin) {
+        query = query.ilike('premiado', userData.apelido);
+      }
+
+      const { data, error } = await query.order('created_at', { ascending: false });
 
       if (error) {
         throw new Error(error.message);
@@ -53,7 +59,7 @@ export function usePremios({ periodStart, periodEnd }: UsePremiosProps = {}) {
         created_at: item.created_at || '',
       }));
     },
-    enabled: !userLoading && !userError && !periodLoading && !periodError && !!userData?.apelido && !!period?.id && period.id > 0,
+    enabled: !userLoading && !userError && !periodLoading && !periodError && (viewAsAdmin || !!userData?.apelido) && !!period?.id && period.id > 0,
   });
 }
 

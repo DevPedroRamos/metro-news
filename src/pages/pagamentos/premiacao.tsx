@@ -1,11 +1,14 @@
 "use client"
 
 import { usePremios } from "@/hooks/usePremios"
+import { useProfileUsers } from "@/hooks/useProfileUsers"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 
 export default function PremiacaoPage() {
-  const { data, isLoading, error } = usePremios()
+  const { userData } = useProfileUsers()
+  const isAdmin = userData?.role === 'adm'
+  const { data, isLoading, error } = usePremios({ viewAsAdmin: isAdmin })
 
   if (isLoading) {
     return <p className="p-4">Carregando premiações...</p>

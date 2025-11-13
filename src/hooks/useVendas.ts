@@ -90,7 +90,7 @@ const nextDayStartISO = (isoDateYMD: string) => {
   return dt.toISOString(); // exclusivo
 };
 
-export const useVendas = () => {
+export const useVendas = (viewAsAdmin = false) => {
   const [vendas, setVendas] = useState<Venda[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

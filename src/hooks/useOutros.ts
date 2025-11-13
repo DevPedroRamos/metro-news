@@ -11,7 +11,7 @@ export interface Outro {
   created_at: string;
 }
 
-export const useOutros = () => {
+export const useOutros = (viewAsAdmin = false) => {
   const { period, loading: loadingPeriod, error: errorPeriod } = useCurrentPeriod();
   const { userData, loading: loadingUser, error: errorUser } = useProfileUsers();
 
@@ -27,12 +27,17 @@ export const useOutros = () => {
         setLoading(true);
         setError(null);
 
-        const { data, error } = await (supabase as any)
+        let query = (supabase as any)
           .from("outros")
           .select("*")
-          .eq("periodo_id", period.id)
-          .eq("nome_completo", userData.name)
-          .order("created_at", { ascending: false });
+          .eq("periodo_id", period.id);
+
+        // Filtrar por nome apenas se não for admin
+        if (!viewAsAdmin) {
+          query = query.eq("nome_completo", userData.name);
+        }
+
+        const { data, error } = await query.order("created_at", { ascending: false });
 
         if (error) throw error;
 
