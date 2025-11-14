@@ -3,7 +3,6 @@
 import { useState, useMemo } from "react"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
@@ -12,6 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { CalendarDays, Building2, DollarSign, TrendingUp, Users, Calculator } from "lucide-react"
 import { useVendas } from "@/hooks/useVendas"
 import { useProfileUsers } from "@/hooks/useProfileUsers"
+import { VendaSelector } from "@/components/pagamentos/VendaSelector"
 
 // Função para formatar valores em BRL
 const formatCurrency = (value: number | null | undefined): string => {
@@ -144,37 +144,11 @@ export default function VendasPage() {
             </CardTitle>
           </CardHeader>
           <CardContent className="p-4">
-            <Select
-              value={selectedVendaId?.toString() || vendaMaisRecente?.id.toString() || ""}
-              onValueChange={(value) => setSelectedVendaId(Number(value))}
-            >
-              <SelectTrigger className="w-full border-gray-200 focus:border-red-500 focus:ring-red-500">
-                <SelectValue placeholder="Selecione uma venda..." />
-              </SelectTrigger>
-              <SelectContent>
-                {data?.vendas.map((venda) => (
-                  <SelectItem key={venda.id} value={venda.id.toString()}>
-                    <div className="flex items-center gap-2 text-sm">
-                      <span className="font-medium text-gray-900">{venda.cliente}</span>
-                      <span className="text-gray-400">-</span>
-                      <span className="text-gray-600">{venda.empreendimento}</span>
-                      {venda.bl && (
-                        <>
-                          <span className="text-gray-400">-</span>
-                          <span className="text-gray-600">Bloco: {venda.bl}</span>
-                        </>
-                      )}
-                      {venda.unid && (
-                        <>
-                          <span className="text-gray-400">-</span>
-                          <span className="text-gray-600">Unidade: {venda.unid}</span>
-                        </>
-                      )}
-                    </div>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <VendaSelector
+              vendas={data.vendas}
+              selectedVendaId={selectedVendaId || vendaMaisRecente?.id || null}
+              onSelectVenda={setSelectedVendaId}
+            />
           </CardContent>
         </Card>
 
