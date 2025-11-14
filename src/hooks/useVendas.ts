@@ -126,16 +126,20 @@ export const useVendas = (viewAsAdmin = false) => {
         .select("*")
         .eq("periodo_id", period.id);
 
-      // Se for superintendente, busca vendas onde ele é o superintendente
-      // Se for gerente, busca vendas onde ele é o gerente
-      // Caso contrário, busca vendas onde ele é o vendedor
-      if (role === "superintendente") {
-        query = query.eq("superintendente", apelido);
-      } else if (role === "gerente") {
-        query = query.eq("gerente", apelido);
-      } else {
-        query = query.eq("vendedor_parceiro", apelido);
+      // Se NÃO for admin, filtrar por role
+      if (!viewAsAdmin) {
+        // Se for superintendente, busca vendas onde ele é o superintendente
+        // Se for gerente, busca vendas onde ele é o gerente
+        // Caso contrário, busca vendas onde ele é o vendedor
+        if (role === "superintendente") {
+          query = query.eq("superintendente", apelido);
+        } else if (role === "gerente") {
+          query = query.eq("gerente", apelido);
+        } else {
+          query = query.eq("vendedor_parceiro", apelido);
+        }
       }
+      // Se for admin (viewAsAdmin = true), NÃO filtra - busca TUDO
 
       const { data, error } = await query.order("created_at", { ascending: false });
 
