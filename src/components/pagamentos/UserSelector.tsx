@@ -24,7 +24,7 @@ export function UserSelector({ onSelectUser, selectedUser }: UserSelectorProps) 
             variant="outline"
             role="combobox"
             aria-expanded={open}
-            className="w-[400px] justify-between"
+            className="w-full justify-between"
           >
             {selectedUser ? (
               <span>
@@ -36,8 +36,8 @@ export function UserSelector({ onSelectUser, selectedUser }: UserSelectorProps) 
             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-[400px] p-0">
-          <Command>
+        <PopoverContent className="w-full p-0">
+          <Command shouldFilter={false}>
             <CommandInput 
               placeholder="Digite o apelido do usuário..." 
               value={searchValue}
