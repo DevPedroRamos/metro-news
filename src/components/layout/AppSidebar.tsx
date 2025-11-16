@@ -150,8 +150,8 @@ export function AppSidebar() {
                 </SidebarMenuItem>
               ))}
               
-              {/* Menu específico para gerentes e superintendentes */}
-              {(userData?.role === 'gerente' || userData?.role === 'superintendente') && (
+              {/* Menu específico para gerentes, superintendentes e administradores */}
+              {(userData?.role === 'gerente' || userData?.role === 'superintendente' || userData?.role === 'adm') && (
                 <>
                   <SidebarMenuItem>
                     <SidebarMenuButton asChild>

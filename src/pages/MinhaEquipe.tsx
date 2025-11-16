@@ -22,7 +22,7 @@ export default function MinhaEquipe() {
     isSuperintendente
   } = useMinhaEquipe(isAdmin);
 
-  if (!isManager && !isSuperintendente) {
+  if (!isManager && !isSuperintendente && !isAdmin) {
     return (
       <div className="container mx-auto p-6">
         <Alert>
@@ -80,9 +80,11 @@ export default function MinhaEquipe() {
       <div>
         <h1 className="text-3xl font-bold text-gray-900">Minha Equipe</h1>
         <p className="text-gray-600 mt-2">
-          {isSuperintendente 
-            ? "Visão geral da performance da sua superintendência" 
-            : "Visão geral da performance da sua equipe"
+          {isAdmin
+            ? "Visão geral de TODOS os membros da organização (corretores, gerentes e superintendentes)"
+            : isSuperintendente 
+              ? "Visão geral da performance da sua superintendência" 
+              : "Visão geral da performance da sua equipe"
           }
         </p>
       </div>
@@ -92,7 +94,12 @@ export default function MinhaEquipe() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              {isSuperintendente ? "Total de Membros" : "Total de consultores"}
+              {isAdmin 
+                ? "Total de Membros (Todos)"
+                : isSuperintendente 
+                  ? "Total de Membros" 
+                  : "Total de consultores"
+              }
             </CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
