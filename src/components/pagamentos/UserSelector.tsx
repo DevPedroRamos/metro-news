@@ -24,36 +24,55 @@ export function UserSelector({ onSelectUser, selectedUser }: UserSelectorProps) 
             variant="outline"
             role="combobox"
             aria-expanded={open}
-            className="w-full justify-between"
+            className="w-full justify-between h-12 px-4 font-normal hover:bg-accent/50 transition-colors"
           >
             {selectedUser ? (
-              <span>
-                {selectedUser.name} <span className="text-muted-foreground">({selectedUser.apelido})</span>
-              </span>
+              <div className="flex items-center gap-2 truncate">
+                <span className="font-medium">{selectedUser.name}</span>
+                <span className="text-muted-foreground">•</span>
+                <span className="text-muted-foreground text-sm">{selectedUser.apelido}</span>
+              </div>
             ) : (
-              "Selecione um usuário..."
+              <span className="text-muted-foreground">Selecione um usuário...</span>
             )}
             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-full p-0">
-          <Command shouldFilter={false}>
-            <CommandInput 
-              placeholder="Digite o apelido do usuário..." 
-              value={searchValue}
-              onValueChange={setSearchValue}
-            />
-            <CommandList>
+        <PopoverContent className="w-[500px] p-0" align="start">
+          <Command shouldFilter={false} className="rounded-lg border-0">
+            <div className="border-b px-3">
+              <CommandInput 
+                placeholder="Digite o apelido do usuário..." 
+                value={searchValue}
+                onValueChange={setSearchValue}
+                className="h-12"
+              />
+            </div>
+            <CommandList className="max-h-[350px]">
               {loading ? (
-                <CommandEmpty>Buscando...</CommandEmpty>
+                <CommandEmpty className="py-8 px-4">
+                  <div className="flex items-center justify-center gap-2 text-muted-foreground">
+                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                    <span>Buscando usuários...</span>
+                  </div>
+                </CommandEmpty>
               ) : users.length === 0 ? (
-                <CommandEmpty>
-                  {searchValue.length < 2 
-                    ? "Digite pelo menos 2 caracteres para buscar" 
-                    : "Nenhum usuário encontrado."}
+                <CommandEmpty className="py-8 px-4">
+                  <div className="text-center space-y-2">
+                    <p className="text-sm text-muted-foreground">
+                      {searchValue.length < 2 
+                        ? "Digite pelo menos 2 caracteres para buscar" 
+                        : "Nenhum usuário encontrado"}
+                    </p>
+                    {searchValue.length >= 2 && (
+                      <p className="text-xs text-muted-foreground">
+                        Tente buscar por outro apelido
+                      </p>
+                    )}
+                  </div>
                 </CommandEmpty>
               ) : (
-                <CommandGroup>
+                <CommandGroup className="p-2">
                   {users.map((user) => (
                     <CommandItem
                       key={user.id}
@@ -63,18 +82,23 @@ export function UserSelector({ onSelectUser, selectedUser }: UserSelectorProps) 
                         setOpen(false);
                         setSearchValue('');
                       }}
+                      className="px-3 py-3 cursor-pointer rounded-md aria-selected:bg-accent"
                     >
                       <Check
                         className={cn(
-                          "mr-2 h-4 w-4",
-                          selectedUser?.id === user.id ? "opacity-100" : "opacity-0"
+                          "mr-3 h-4 w-4 shrink-0",
+                          selectedUser?.id === user.id ? "opacity-100 text-primary" : "opacity-0"
                         )}
                       />
-                      <div className="flex flex-col">
-                        <span className="font-medium">{user.name}</span>
-                        <span className="text-sm text-muted-foreground">
-                          {user.apelido} - {user.role}
-                        </span>
+                      <div className="flex flex-col gap-1 min-w-0 flex-1">
+                        <span className="font-medium text-sm truncate">{user.name}</span>
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                          <span className="truncate">{user.apelido}</span>
+                          <span className="text-muted-foreground/50">•</span>
+                          <span className="capitalize px-2 py-0.5 bg-muted rounded text-xs font-medium">
+                            {user.role}
+                          </span>
+                        </div>
                       </div>
                     </CommandItem>
                   ))}
@@ -89,7 +113,8 @@ export function UserSelector({ onSelectUser, selectedUser }: UserSelectorProps) 
           variant="ghost"
           size="icon"
           onClick={() => onSelectUser(null)}
-          className="h-10 w-10"
+          className="h-12 w-12 hover:bg-destructive/10 hover:text-destructive transition-colors"
+          title="Limpar seleção"
         >
           <X className="h-4 w-4" />
         </Button>
