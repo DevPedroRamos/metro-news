@@ -177,7 +177,9 @@ export default function VendasPage() {
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-gray-600 text-sm">Data SICAQ</span>
-                    <span className="font-medium text-gray-900 text-sm">{formatDate(vendaSelecionada.data_sicaq)}</span>
+                    <span className="font-medium text-gray-900 text-sm">
+                      {vendaSelecionada.tipo_venda?.toLowerCase() === 'direto' ? 'DIRETO' : formatDate(vendaSelecionada.data_sicaq)}
+                    </span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-gray-600 text-sm">Data Pagto</span>
