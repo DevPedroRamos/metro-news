@@ -10,7 +10,7 @@ import { formatCurrency } from "@/lib/utils";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { InvoiceUpload } from "@/components/profile/InvoiceUpload";
 import { Table, TableBody, TableHead, TableHeader, TableRow, TableCell } from "@/components/ui/table";
-import { Info, TrendingUp, DollarSign, Calendar, Award, CreditCard, Wallet, Target, Gift, Banknote, AlertTriangle, ArrowDown, ArrowUp, Clock, CheckCircle } from "lucide-react";
+import { Info, TrendingUp, DollarSign, Calendar, Award, CreditCard, Wallet, Target, Gift, Banknote, AlertTriangle, ArrowDown, ArrowUp, Clock, CheckCircle, Users } from "lucide-react";
 import { useProfileUsers } from "@/hooks/useProfileUsers";
 import { usePayments } from "@/hooks/usePayments";
 import { UserSelector } from "@/components/pagamentos/UserSelector";
