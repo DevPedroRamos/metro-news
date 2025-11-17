@@ -12,6 +12,7 @@ interface Venda {
   bl?: string | null;
   unid?: string | null;
   data_do_contrato: string;
+  vendedor_parceiro: string;
 }
 
 interface VendaSelectorProps {
@@ -50,6 +51,8 @@ export function VendaSelector({ vendas, selectedVendaId, onSelectVenda }: VendaS
             <div className="flex items-center gap-2 text-sm truncate">
               <span className="font-medium text-gray-900">{selectedVenda.cliente}</span>
               <span className="text-gray-400">-</span>
+              <span className="text-gray-600">{selectedVenda.vendedor_parceiro}</span>
+                      <span className="text-gray-400">-</span>
               <span className="text-gray-600">{selectedVenda.empreendimento}</span>
               {selectedVenda.bl && (
                 <>
@@ -105,6 +108,9 @@ export function VendaSelector({ vendas, selectedVendaId, onSelectVenda }: VendaS
                     <div className="flex items-center gap-2 text-sm">
                       <span className="font-medium text-gray-900">{venda.cliente}</span>
                       <span className="text-gray-400">-</span>
+                      <span className="text-gray-600">{venda.vendedor_parceiro}</span>
+                      <span className="text-gray-400">-</span>
+
                       <span className="text-gray-600">{venda.empreendimento}</span>
                       {venda.bl && (
                         <>

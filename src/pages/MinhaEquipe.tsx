@@ -171,8 +171,8 @@ export default function MinhaEquipe() {
                              </AvatarFallback>
                            </Avatar>
                            <div>
-                             <div className="font-medium">{member.name}</div>
-                             <div className="text-sm text-gray-500">{member.apelido}</div>
+                             <div className="font-medium">{member.apelido}</div>
+                             <div className="text-sm text-gray-500">{member.name}</div>
                            </div>
                          </div>
                        </TableCell>

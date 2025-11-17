@@ -45,7 +45,7 @@ export default function ComprovantesEquipe() {
   const [selectedMember, setSelectedMember] = useState<string>("all");
   const [searchTerm, setSearchTerm] = useState("");
   const isAdmin = userData?.role === 'adm';
-  const isManagerOrSuperintendent = userData?.role === 'gerente' || userData?.role === 'superintendente';
+  const isManagerOrSuperintendent = userData?.role === 'gerente' || userData?.role === 'superintendente' || userData?.role === 'adm';
   const hasAccess = isAdmin || isManagerOrSuperintendent;
 
   useEffect(() => {
