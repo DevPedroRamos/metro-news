@@ -17,6 +17,7 @@ import {
   Calendar
 } from 'lucide-react';
 import { useProfileUsers } from '@/hooks/useProfileUsers';
+import logo from '@/assets/logo.png';
 import {
   Sidebar,
   SidebarContent,
@@ -73,7 +74,7 @@ export function AppSidebar() {
       <SidebarHeader className="p-6 border-b border-border">
         <div className="flex items-center space-x-3">
           <img 
-            src="/src/assets/logo.png" 
+            src={logo} 
             alt="Metrocasa Construtora" 
             className="h-auto w-full"
           />
