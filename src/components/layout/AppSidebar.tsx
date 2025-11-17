@@ -31,8 +31,8 @@ import {
 
 const menuItems = [
   { title: 'Notícias', url: '/noticias', icon: Newspaper },
-  { title: 'Campeões', url: '/campeoes', icon: Trophy },
-  { title: 'Agendamentos', url: '/agendamentos', icon: Calendar },
+  // { title: 'Campeões', url: '/campeoes', icon: Trophy },
+  // { title: 'Agendamentos', url: '/agendamentos', icon: Calendar },
   // { title: 'Treinamento', url: '/treinamento', icon: GraduationCap },
   // { title: 'Processos', url: '/processos', icon: Settings },
   { title: 'Links', url: '/links-uteis', icon: Link },
@@ -73,8 +73,8 @@ export function AppSidebar() {
       <SidebarHeader className="p-6 border-b border-border">
         <div className="flex items-center space-x-3">
           <img 
-            src="/lovable-uploads/181eacc0-0dbb-4e16-8c77-31c86f9c49d0.png" 
-            alt="Metro News" 
+            src="/src/assets/logo.png" 
+            alt="Metrocasa Construtora" 
             className="h-auto w-full"
           />
         </div>
