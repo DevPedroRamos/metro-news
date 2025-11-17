@@ -3,7 +3,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useProfileData } from '@/hooks/useProfileData';
-import ProfileLoadingSpinner from '@/components/profile/ProfileLoadingSpinner';
 import ImageUpload from '@/components/profile/ImageUpload';
 import { TrendingUp, DollarSign, FileText, Users } from 'lucide-react';
 import { formatCurrency } from '@/lib/utils';
@@ -19,7 +18,14 @@ const Perfil = () => {
     updateProfileImages
   } = useProfileData();
   if (loading) {
-    return <ProfileLoadingSpinner />;
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-center space-y-4">
+          <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto" />
+          <p className="text-muted-foreground">Carregando perfil...</p>
+        </div>
+      </div>
+    );
   }
   if (error) {
     return <div className="min-h-screen flex items-center justify-center">

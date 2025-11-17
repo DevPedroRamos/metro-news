@@ -6,7 +6,6 @@ import { MotivationalBanner } from '@/components/champions/MotivationalBanner';
 import { RankingPodium } from '@/components/champions/RankingPodium';
 import { RankingTable } from '@/components/champions/RankingTable';
 import { PodiumSkeleton, TableSkeleton } from '@/components/champions/RankingSkeleton';
-import ProfileLoadingSpinner from '@/components/profile/ProfileLoadingSpinner';
 const Campeoes = () => {
   const {
     user
