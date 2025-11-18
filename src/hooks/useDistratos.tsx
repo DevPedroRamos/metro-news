@@ -82,6 +82,21 @@ export const useDistrato = (viewAsAdmin = false) => {
             query = query.ilike("superintendente", userData.apelido);
           } else if (userRole === "gerente") {
             query = query.ilike("gerente", userData.apelido);
+          } else if (userRole === "diretor") {
+            // NOVO: Buscar superintendentes da diretoria
+            const { data: superintendentes, error: superError } = await supabase
+              .from("users")
+              .select("apelido")
+              .eq("role", "superintendente")
+              .eq("diretor", userData.apelido);
+
+            if (superError) throw superError;
+
+            const superList = superintendentes?.map(s => s.apelido) || [];
+
+            if (superList.length > 0) {
+              query = query.in("superintendente", superList);
+            }
           } else {
             query = query.ilike("vendedor", userData.apelido);
           }

@@ -83,6 +83,21 @@ export const useSaldoCef = (viewAsAdmin = false) => {
           query = query.eq("superintendente", user.apelido);
         } else if (userRole === "gerente") {
           query = query.eq("gerente", user.apelido);
+        } else if (userRole === "diretor") {
+          // Buscar superintendentes da diretoria
+          const { data: superintendentes, error: superError } = await supabase
+            .from("users")
+            .select("apelido")
+            .eq("role", "superintendente")
+            .eq("diretor", user.apelido);
+
+          if (superError) throw superError;
+
+          const superList = superintendentes?.map(s => s.apelido) || [];
+
+          if (superList.length > 0) {
+            query = query.in("superintendente", superList);
+          }
         } else {
           query = query.eq("vendedor_parceiro", user.apelido);
         }

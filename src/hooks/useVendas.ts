@@ -135,6 +135,24 @@ export const useVendas = (viewAsAdmin = false) => {
           query = query.eq("superintendente", apelido);
         } else if (role === "gerente") {
           query = query.eq("gerente", apelido);
+        } else if (role === "diretor") {
+          // NOVO: Buscar superintendentes da diretoria
+          const { data: superintendentes, error: superError } = await supabase
+            .from("users")
+            .select("apelido")
+            .eq("role", "superintendente")
+            .eq("diretor", apelido);
+
+          if (superError) throw superError;
+
+          const superList = superintendentes?.map(s => s.apelido) || [];
+
+          if (superList.length > 0) {
+            query = query.in("superintendente", superList);
+          } else {
+            // Se não houver superintendentes, retornar vazio
+            return { data: [], totais: { vlr_venda: 0, vlr_contrato: 0, recebido: 0, receber: 0, comissao_integral_sinal: 0, comissao_integral_vgv_pre_chaves: 0, comissao_integral_extra: 0 } };
+          }
         } else {
           query = query.eq("vendedor_parceiro", apelido);
         }

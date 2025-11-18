@@ -32,6 +32,29 @@ export const useOutros = (viewAsAdmin = false) => {
           .select("*")
           .eq("periodo_id", period.id);
 
+        // Buscar superintendentes da diretoria
+        const { data: superintendentes } = await supabase
+          .from("users")
+          .select("apelido")
+          .eq("role", "superintendente")
+          .eq("diretor", userData.apelido);
+
+        const superList = superintendentes?.map(s => s.apelido) || [];
+
+        if (superList.length > 0) {
+          // Buscar nomes completos dos usuários dessa diretoria
+          const { data: teamUsers } = await supabase
+            .from("users")
+            .select("name")
+            .in("superintendente", superList);
+
+          const nameList = teamUsers?.map(u => u.name) || [];
+
+          if (nameList.length > 0) {
+            query = query.in("nome_completo", nameList);
+          }
+        }
+
         // Filtrar por nome apenas se não for admin
         if (!viewAsAdmin) {
           query = query.eq("nome_completo", userData.name);
@@ -54,7 +77,7 @@ export const useOutros = (viewAsAdmin = false) => {
     };
 
     fetchOutros();
-  }, [period?.id, loadingPeriod, userData?.name, loadingUser]);
+  }, [period?.id, loadingPeriod, userData?.name, userData?.apelido, loadingUser]);
 
   return {
     outros,
