@@ -1013,6 +1013,7 @@ export type Database = {
           ban: boolean
           cpf: string
           created_at: string | null
+          diretor: string
           gerente: string
           id: string
           name: string
@@ -1024,6 +1025,7 @@ export type Database = {
           ban?: boolean
           cpf: string
           created_at?: string | null
+          diretor?: string
           gerente: string
           id?: string
           name: string
@@ -1035,6 +1037,7 @@ export type Database = {
           ban?: boolean
           cpf?: string
           created_at?: string | null
+          diretor?: string
           gerente?: string
           id?: string
           name?: string

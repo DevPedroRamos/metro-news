@@ -19,16 +19,17 @@ export default function MinhaEquipe() {
     loading,
     error,
     isManager,
-    isSuperintendente
+    isSuperintendente,
+    isDiretor
   } = useMinhaEquipe(isAdmin);
 
-  if (!isManager && !isSuperintendente && !isAdmin) {
+  if (!isManager && !isSuperintendente && !isDiretor && !isAdmin) {
     return (
       <div className="container mx-auto p-6">
         <Alert>
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
-            Esta página é restrita para usuários com perfil de gerente ou superintendente.
+            Esta página é restrita para usuários com perfil de gerente, superintendente, diretor ou administrador.
           </AlertDescription>
         </Alert>
       </div>
@@ -82,9 +83,11 @@ export default function MinhaEquipe() {
         <p className="text-gray-600 mt-2">
           {isAdmin
             ? "Visão geral de TODOS os membros da organização (corretores, gerentes e superintendentes)"
-            : isSuperintendente 
-              ? "Visão geral da performance da sua superintendência" 
-              : "Visão geral da performance da sua equipe"
+            : isDiretor
+              ? "Visão geral de TODOS os membros sob sua diretoria (corretores, gerentes e superintendentes)"
+              : isSuperintendente 
+                ? "Visão geral da performance da sua superintendência" 
+                : "Visão geral da performance da sua equipe"
           }
         </p>
       </div>
@@ -96,9 +99,11 @@ export default function MinhaEquipe() {
             <CardTitle className="text-sm font-medium">
               {isAdmin 
                 ? "Total de Membros (Todos)"
-                : isSuperintendente 
-                  ? "Total de Membros" 
-                  : "Total de consultores"
+                : isDiretor
+                  ? "Total de Membros (Diretoria)"
+                  : isSuperintendente 
+                    ? "Total de Membros" 
+                    : "Total de consultores"
               }
             </CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />

@@ -45,8 +45,9 @@ export default function ComprovantesEquipe() {
   const [selectedMember, setSelectedMember] = useState<string>("all");
   const [searchTerm, setSearchTerm] = useState("");
   const isAdmin = userData?.role === 'adm';
+  const isDiretor = userData?.role === 'diretor';
   const isManagerOrSuperintendent = userData?.role === 'gerente' || userData?.role === 'superintendente' || userData?.role === 'adm';
-  const hasAccess = isAdmin || isManagerOrSuperintendent;
+  const hasAccess = isAdmin || isDiretor || isManagerOrSuperintendent;
 
   useEffect(() => {
     if (!hasAccess) return;
@@ -63,6 +64,12 @@ export default function ComprovantesEquipe() {
       if (isAdmin) {
         // Admin vê comprovantes de TODOS os usuários
         teamQuery = teamQuery
+          .eq('ban', false)
+          .in('role', ['corretor', 'gerente', 'superintendente']);
+      } else if (isDiretor) {
+        // Diretor vê comprovantes de usuários da sua diretoria
+        teamQuery = teamQuery
+          .eq('diretor', userData.apelido)
           .eq('ban', false)
           .in('role', ['corretor', 'gerente', 'superintendente']);
       } else if (userData.role === 'gerente') {
