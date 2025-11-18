@@ -32,13 +32,14 @@ export const useMinhaEquipe = (viewAsAdmin = false) => {
 
   const isManager = userData?.role === 'gerente';
   const isSuperintendente = userData?.role === 'superintendente';
+  const isDiretor = userData?.role === 'diretor';
   const isAdmin = viewAsAdmin;
 
   useEffect(() => {
     const fetchTeamData = async () => {
       if (userLoading || periodLoading || !userData || !period?.id) return;
-      if (!isManager && !isSuperintendente && !isAdmin) {
-        setError('Acesso negado. Apenas gerentes, superintendentes e administradores podem visualizar esta página.');
+      if (!isManager && !isSuperintendente && !isDiretor && !isAdmin) {
+        setError('Acesso negado. Apenas gerentes, superintendentes, diretores e administradores podem visualizar esta página.');
         setLoading(false);
         return;
       }
@@ -53,18 +54,23 @@ export const useMinhaEquipe = (viewAsAdmin = false) => {
           .select('id, name, apelido, cpf, role')
           .eq('ban', false);
 
-        if (isAdmin) {
-          // Admin vê TODOS: corretores, gerentes E superintendentes
-          teamQuery = teamQuery.in('role', ['corretor', 'gerente', 'superintendente']);
-        } else if (isSuperintendente) {
-          teamQuery = teamQuery
-            .eq('role', 'corretor')
-            .eq('superintendente', userData.apelido);
-        } else if (isManager) {
-          teamQuery = teamQuery
-            .eq('role', 'corretor')
-            .eq('gerente', userData.apelido);
-        }
+      if (isAdmin) {
+        // Admin vê TODOS: corretores, gerentes E superintendentes
+        teamQuery = teamQuery.in('role', ['corretor', 'gerente', 'superintendente']);
+      } else if (isDiretor) {
+        // Diretor vê todos onde diretor = seu apelido
+        teamQuery = teamQuery
+          .in('role', ['corretor', 'gerente', 'superintendente'])
+          .eq('diretor', userData.apelido);
+      } else if (isSuperintendente) {
+        teamQuery = teamQuery
+          .eq('role', 'corretor')
+          .eq('superintendente', userData.apelido);
+      } else if (isManager) {
+        teamQuery = teamQuery
+          .eq('role', 'corretor')
+          .eq('gerente', userData.apelido);
+      }
 
         const { data: teamMembers, error: teamError } = await teamQuery;
 
@@ -83,7 +89,9 @@ export const useMinhaEquipe = (viewAsAdmin = false) => {
           .eq('periodo_id', period.id);
 
         if (!isAdmin) {
-          if (isSuperintendente) {
+          if (isDiretor) {
+            totalVendasQuery = totalVendasQuery.eq('diretor', userData.apelido);
+          } else if (isSuperintendente) {
             totalVendasQuery = totalVendasQuery.eq('superintendente', userData.apelido);
           } else if (isManager) {
             totalVendasQuery = totalVendasQuery.eq('gerente', userData.apelido);
@@ -109,11 +117,24 @@ export const useMinhaEquipe = (viewAsAdmin = false) => {
               .maybeSingle();
             
             // Buscar vendas individuais do membro (sempre como vendedor_parceiro)
-            const { data: vendas, error: vendasError } = await supabase
+            let vendasQuery = supabase
               .from('base_de_vendas')
               .select('*')
               .eq('periodo_id', period.id)
               .eq('vendedor_parceiro', member.apelido);
+
+            // Aplicar filtro adicional baseado no papel do usuário logado
+            if (!isAdmin) {
+              if (isDiretor) {
+                vendasQuery = vendasQuery.eq('diretor', userData.apelido);
+              } else if (isSuperintendente) {
+                vendasQuery = vendasQuery.eq('superintendente', userData.apelido);
+              } else if (isManager) {
+                vendasQuery = vendasQuery.eq('gerente', userData.apelido);
+              }
+            }
+
+            const { data: vendas, error: vendasError } = await vendasQuery;
 
             if (vendasError) {
               console.error('Erro ao buscar vendas:', vendasError);
@@ -206,6 +227,7 @@ export const useMinhaEquipe = (viewAsAdmin = false) => {
     error,
     isManager,
     isSuperintendente,
+    isDiretor,
     isAdmin
   };
 };
