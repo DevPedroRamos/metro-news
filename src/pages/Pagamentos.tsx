@@ -153,6 +153,8 @@ const Pagamentos: React.FC = () => {
     null
   );
   const isAdmin = userData?.role === "adm";
+  const isDiretor = userData?.role === "diretor";
+  const canSelectUser = isAdmin || isDiretor;
 
   const {
     data,
@@ -216,21 +218,43 @@ const Pagamentos: React.FC = () => {
         </div>
       </div>
 
-      {isAdmin && (
+      {canSelectUser && userData && (
         <div className="max-w-7xl mx-auto space-y-6 mt-6">
-          <Card className="mb-6">
-            <CardHeader>
-              <CardTitle>Selecionar Usuário</CardTitle>
+          <Card className="bg-white border border-gray-200 shadow-sm">
+            <CardHeader className="pb-3">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 bg-blue-100 text-blue-600 rounded-lg">
+                  <Users className="h-5 w-5" />
+                </div>
+                <div>
+                  <CardTitle className="text-base font-semibold text-gray-900">
+                    {isAdmin ? "Visualizar Pagamentos de Outro Usuário (Admin)" : "Visualizar Pagamentos da Equipe"}
+                  </CardTitle>
+                  <p className="text-sm text-gray-600 mt-1">
+                    {isAdmin 
+                      ? "Selecione qualquer usuário para visualizar seus dados de pagamento" 
+                      : "Selecione um usuário da sua diretoria para visualizar"}
+                  </p>
+                </div>
+              </div>
             </CardHeader>
-            <CardContent>
+            <CardContent className="space-y-4">
               <UserSelector
                 selectedUser={selectedUser}
                 onSelectUser={setSelectedUser}
+                currentUserApelido={userData.apelido}
+                currentUserRole={userData.role}
               />
-              {!selectedUser && (
-                <p className="text-sm  mt-2">
-                  Selecione um usuário para visualizar seu resumo de pagamento
-                </p>
+              {selectedUser && (
+                <Alert className="bg-blue-50 border-blue-200">
+                  <Info className="h-4 w-4 text-blue-600" />
+                  <AlertTitle className="text-blue-900 font-semibold">
+                    Visualizando dados de: {selectedUser.name}
+                  </AlertTitle>
+                  <AlertDescription className="text-blue-800">
+                    Apelido: {selectedUser.apelido} • CPF: {selectedUser.cpf}
+                  </AlertDescription>
+                </Alert>
               )}
             </CardContent>
           </Card>
@@ -439,8 +463,8 @@ const Pagamentos: React.FC = () => {
           </div>
         </section>
 
-        {/* Upload de Comprovantes - Hidden for Admin */}
-        {!isAdmin && (
+        {/* Upload de Comprovantes - Hidden for Admin & Diretor */}
+        {!isAdmin && !isDiretor && (
           <section>
             <SectionHeader
               title="Enviar nota fiscal de prestação de serviço"
