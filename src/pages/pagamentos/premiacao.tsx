@@ -8,6 +8,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 export default function PremiacaoPage() {
   const { userData } = useProfileUsers()
   const isAdmin = userData?.role === 'adm'
+  const isDiretor = userData?.role === 'diretor'
+  const showPremiado = isAdmin || isDiretor
   const { data, isLoading, error } = usePremios({ viewAsAdmin: isAdmin })
 
   if (isLoading) {
@@ -26,12 +28,15 @@ export default function PremiacaoPage() {
     <div className="max-w-[1280px] w-[100%]">
       <Card>
         <CardHeader>
-          <CardTitle>Minhas Premiações</CardTitle>
+          <CardTitle>
+            {showPremiado ? "Premiações da Equipe" : "Minhas Premiações"}
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
+                {showPremiado && <TableHead>Premiado</TableHead>}
                 <TableHead>Descrição</TableHead>
                 <TableHead>Qtd. Vendas</TableHead>
                 <TableHead>Valor Prêmio</TableHead>
@@ -41,6 +46,9 @@ export default function PremiacaoPage() {
             <TableBody>
               {data.map((p) => (
                 <TableRow key={p.id}>
+                  {showPremiado && (
+                    <TableCell className="font-medium">{p.premiado}</TableCell>
+                  )}
                   <TableCell>{p.descricao_premio_regra}</TableCell>
                   <TableCell>{p.qtd_vendas}</TableCell>
                   <TableCell>R$ {Number(p.valor_premio).toFixed(2)}</TableCell>

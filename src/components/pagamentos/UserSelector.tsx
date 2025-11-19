@@ -9,12 +9,14 @@ import { useUserSearch, type UserSearchResult } from '@/hooks/useUserSearch';
 interface UserSelectorProps {
   onSelectUser: (user: UserSearchResult | null) => void;
   selectedUser: UserSearchResult | null;
+  currentUserApelido?: string;
+  currentUserRole?: string;
 }
 
-export function UserSelector({ onSelectUser, selectedUser }: UserSelectorProps) {
+export function UserSelector({ onSelectUser, selectedUser, currentUserApelido, currentUserRole }: UserSelectorProps) {
   const [open, setOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
-  const { users, loading } = useUserSearch(searchValue);
+  const { users, loading } = useUserSearch(searchValue, currentUserApelido, currentUserRole);
 
   return (
     <div className="flex gap-2 items-center">
