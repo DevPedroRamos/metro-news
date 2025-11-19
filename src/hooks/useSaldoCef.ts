@@ -76,10 +76,22 @@ export const useSaldoCef = (viewAsAdmin = false) => {
 
       // Apply role-based filtering only if not viewing as admin
       if (!viewAsAdmin) {
-        // Se for superintendente, busca registros onde ele é o superintendente
-        // Se for gerente, busca registros onde ele é o gerente
-        // Caso contrário, busca registros onde ele é o vendedor
-        if (userRole === "superintendente") {
+        if (userRole === "diretor") {
+          // Buscar superintendentes da diretoria
+          const { data: superintendentes, error: superError } = await supabase
+            .from("users")
+            .select("apelido")
+            .eq("role", "superintendente")
+            .eq("diretor", user.apelido);
+          
+          if (superError) throw superError;
+          
+          const superList = superintendentes?.map(s => s.apelido) || [];
+          
+          if (superList.length > 0) {
+            query = query.in("superintendente", superList);
+          }
+        } else if (userRole === "superintendente") {
           query = query.eq("superintendente", user.apelido);
         } else if (userRole === "gerente") {
           query = query.eq("gerente", user.apelido);

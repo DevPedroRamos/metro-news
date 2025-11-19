@@ -128,10 +128,27 @@ export const useVendas = (viewAsAdmin = false) => {
 
       // Se NÃO for admin, filtrar por role
       if (!viewAsAdmin) {
-        // Se for superintendente, busca vendas onde ele é o superintendente
-        // Se for gerente, busca vendas onde ele é o gerente
-        // Caso contrário, busca vendas onde ele é o vendedor
-        if (role === "superintendente") {
+        if (role === "diretor") {
+          // Buscar superintendentes da diretoria
+          const { data: superintendentes, error: superError } = await supabase
+            .from("users")
+            .select("apelido")
+            .eq("role", "superintendente")
+            .eq("diretor", apelido);
+          
+          if (superError) throw superError;
+          
+          const superList = superintendentes?.map(s => s.apelido) || [];
+          
+          if (superList.length > 0) {
+            query = query.in("superintendente", superList);
+          } else {
+            // Se não houver superintendentes, retornar vazio
+            setVendas([]);
+            setLoading(false);
+            return;
+          }
+        } else if (role === "superintendente") {
           query = query.eq("superintendente", apelido);
         } else if (role === "gerente") {
           query = query.eq("gerente", apelido);
