@@ -39,32 +39,6 @@ export function usePremios({ periodStart, periodEnd, viewAsAdmin = false }: UseP
         .select('*')
         .eq('periodo_id', period.id);
 
-      // Buscar superintendentes da diretoria
-      const { data: superintendentes } = await supabase
-        .from("users")
-        .select("apelido")
-        .eq("role", "superintendente")
-        .eq("diretor", userData.apelido);
-
-      const superList = superintendentes?.map(s => s.apelido) || [];
-
-      if (superList.length > 0) {
-        // Buscar apelidos de todos os usuários dessa diretoria
-        const { data: teamUsers } = await supabase
-          .from("users")
-          .select("apelido")
-          .in("superintendente", superList);
-
-        const apelidoList = teamUsers?.map(u => u.apelido) || [];
-
-        // Adicionar os próprios superintendentes à lista
-        apelidoList.push(...superList);
-
-        if (apelidoList.length > 0) {
-          query = query.in('premiado', apelidoList);
-        }
-      }
-
       // Filtrar por apelido apenas se não for admin
       if (!viewAsAdmin) {
         query = query.ilike('premiado', userData.apelido);
