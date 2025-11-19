@@ -27,14 +27,50 @@ export const useOutros = (viewAsAdmin = false) => {
         setLoading(true);
         setError(null);
 
+        // Buscar role do usuário
+        const { data: userRoleData } = await supabase
+          .from('users')
+          .select('role, apelido')
+          .eq('name', userData.name)
+          .maybeSingle();
+
+        const userRole = userRoleData?.role;
+        const userApelido = userRoleData?.apelido;
+
         let query = (supabase as any)
           .from("outros")
           .select("*")
           .eq("periodo_id", period.id);
 
-        // Filtrar por nome apenas se não for admin
+        // Filtrar por hierarquia se não for admin
         if (!viewAsAdmin) {
-          query = query.eq("nome_completo", userData.name);
+          if (userRole === "diretor") {
+            // Buscar superintendentes da diretoria
+            const { data: superintendentes } = await supabase
+              .from("users")
+              .select("apelido")
+              .eq("role", "superintendente")
+              .eq("diretor", userApelido);
+            
+            const superList = superintendentes?.map(s => s.apelido) || [];
+            
+            if (superList.length > 0) {
+              // Buscar nomes completos dos usuários dessa diretoria
+              const { data: teamUsers } = await supabase
+                .from("users")
+                .select("name")
+                .in("superintendente", superList);
+              
+              const nameList = teamUsers?.map(u => u.name) || [];
+              
+              if (nameList.length > 0) {
+                query = query.in("nome_completo", nameList);
+              }
+            }
+          } else {
+            // Corretor, gerente, superintendente veem apenas os próprios
+            query = query.eq("nome_completo", userData.name);
+          }
         }
 
         const { data, error } = await query.order("created_at", { ascending: false });
@@ -54,7 +90,7 @@ export const useOutros = (viewAsAdmin = false) => {
     };
 
     fetchOutros();
-  }, [period?.id, loadingPeriod, userData?.name, loadingUser]);
+  }, [period?.id, loadingPeriod, userData?.name, loadingUser, viewAsAdmin]);
 
   return {
     outros,

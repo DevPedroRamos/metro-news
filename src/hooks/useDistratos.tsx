@@ -78,7 +78,22 @@ export const useDistrato = (viewAsAdmin = false) => {
 
         // Filtrar baseado na role apenas se não for admin
         if (!viewAsAdmin) {
-          if (userRole === "superintendente") {
+          if (userRole === "diretor") {
+            // Buscar superintendentes da diretoria
+            const { data: superintendentes, error: superError } = await supabase
+              .from("users")
+              .select("apelido")
+              .eq("role", "superintendente")
+              .eq("diretor", userData.apelido);
+            
+            if (superError) throw superError;
+            
+            const superList = superintendentes?.map(s => s.apelido) || [];
+            
+            if (superList.length > 0) {
+              query = query.in("superintendente", superList);
+            }
+          } else if (userRole === "superintendente") {
             query = query.ilike("superintendente", userData.apelido);
           } else if (userRole === "gerente") {
             query = query.ilike("gerente", userData.apelido);

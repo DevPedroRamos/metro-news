@@ -29,19 +29,51 @@ export function usePremios({ periodStart, periodEnd, viewAsAdmin = false }: UseP
         return [];
       }
 
-      console.log('Filtering premiacao with:', {
-        apelido: userData.apelido,
-        periodId: period.id
-      });
+      // Buscar role do usuário
+      const { data: userRoleData } = await supabase
+        .from('users')
+        .select('role')
+        .eq('apelido', userData.apelido)
+        .maybeSingle();
+
+      const userRole = userRoleData?.role;
 
       let query = supabase
         .from('premiacao')
         .select('*')
         .eq('periodo_id', period.id);
 
-      // Filtrar por apelido apenas se não for admin
+      // Filtrar por hierarquia apenas se não for admin
       if (!viewAsAdmin) {
-        query = query.ilike('premiado', userData.apelido);
+        if (userRole === 'diretor') {
+          // Buscar superintendentes da diretoria
+          const { data: superintendentes } = await supabase
+            .from("users")
+            .select("apelido")
+            .eq("role", "superintendente")
+            .eq("diretor", userData.apelido);
+          
+          const superList = superintendentes?.map(s => s.apelido) || [];
+          
+          if (superList.length > 0) {
+            // Buscar apelidos de todos os usuários dessa diretoria
+            const { data: teamUsers } = await supabase
+              .from("users")
+              .select("apelido")
+              .in("superintendente", superList);
+            
+            const apelidoList = teamUsers?.map(u => u.apelido) || [];
+            
+            // Adicionar os próprios superintendentes à lista
+            apelidoList.push(...superList);
+            
+            if (apelidoList.length > 0) {
+              query = query.in('premiado', apelidoList);
+            }
+          }
+        } else {
+          query = query.ilike('premiado', userData.apelido);
+        }
       }
 
       const { data, error } = await query.order('created_at', { ascending: false });
