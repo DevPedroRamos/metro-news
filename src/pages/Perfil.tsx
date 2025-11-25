@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useProfileData } from '@/hooks/useProfileData';
 import ImageUpload from '@/components/profile/ImageUpload';
+import ProfilePhotoPrompt from '@/components/profile/ProfilePhotoPrompt';
 import { TrendingUp, DollarSign, FileText, Users } from 'lucide-react';
 import { formatCurrency } from '@/lib/utils';
 import defaultCover from '@/assets/default-cover.jpg';
@@ -117,6 +118,13 @@ const Perfil = () => {
           </div>
         </div>
       </Card>
+
+      {/* Prompt para adicionar foto de perfil */}
+      {!data.user.avatar_url && (
+        <ProfilePhotoPrompt 
+          onImageUpdate={(url) => updateProfileImages('avatar_url', url)} 
+        />
+      )}
 
       {/* Metrics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
