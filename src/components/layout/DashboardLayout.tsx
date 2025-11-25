@@ -3,12 +3,16 @@ import React from 'react';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { AppSidebar } from './AppSidebar';
 import { AppNavbar } from './AppNavbar';
+import { useAvatarCheck } from '@/hooks/useAvatarCheck';
+import ProfilePhotoPrompt from '@/components/profile/ProfilePhotoPrompt';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
 }
 
 export function DashboardLayout({ children }: DashboardLayoutProps) {
+  const { avatarUrl, loading, updateAvatar } = useAvatarCheck();
+
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full bg-gray-50 overflow-x-hidden">
@@ -20,6 +24,11 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           </main>
         </div>
       </div>
+
+      {/* Pop-up global para foto de perfil */}
+      {!loading && !avatarUrl && (
+        <ProfilePhotoPrompt onImageUpdate={updateAvatar} />
+      )}
     </SidebarProvider>
   );
 }
