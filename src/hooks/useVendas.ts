@@ -41,6 +41,12 @@ export interface Venda {
   comissao_integral_vgv_pre_chaves: number | null;
   comissao_integral_extra: number | null;
   sinal_comissao_extra_vendedor: number | null;
+  // Campos de comissão para coordenador/parceria
+  comissao_sinal_perc_coord: number | null;
+  comissao_vgv_pre_chaves_perc_coord: number | null;
+  comissao_integral_sinal_coord: number | null;
+  comissao_integral_vgv_pre_chaves_coord: number | null;
+  sinal_comissao_extra_coord: number | null;
   // Campos de comissão para gerente
   comissao_sinal_perc_gerente: number | null;
   comissao_vgv_pre_chaves_perc_gerente: number | null;
@@ -152,6 +158,8 @@ export const useVendas = (viewAsAdmin = false) => {
           query = query.eq("superintendente", apelido);
         } else if (role === "gerente") {
           query = query.eq("gerente", apelido);
+        } else if (role === "parceria") {
+          query = query.eq("supervisor_coord_parceiro", apelido);
         } else {
           query = query.eq("vendedor_parceiro", apelido);
         }

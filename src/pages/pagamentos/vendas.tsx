@@ -71,12 +71,21 @@ export default function VendasPage() {
   // Calcular total das comissões integrais
   const totalComissaoIntegral = useMemo(() => {
     if (!vendaSelecionada) return 0
+    const isParceria = userData?.role === "parceria"
+    
+    if (isParceria) {
+      return (
+        (vendaSelecionada.comissao_integral_sinal_coord || 0) +
+        (vendaSelecionada.comissao_integral_vgv_pre_chaves_coord || 0)
+      )
+    }
+    
     return (
       (vendaSelecionada.comissao_integral_sinal || 0) +
       (vendaSelecionada.comissao_integral_vgv_pre_chaves || 0) +
       (vendaSelecionada.comissao_integral_extra || 0)
     )
-  }, [vendaSelecionada])
+  }, [vendaSelecionada, userData?.role])
 
   if (loading) {
     return (
@@ -497,7 +506,11 @@ export default function VendasPage() {
                           </Tooltip>
                         </TooltipProvider>
                         <span className="font-medium text-gray-900 text-sm">
-                          {formatPercentage(vendaSelecionada.comissao_sinal_perc)}
+                          {formatPercentage(
+                            userData?.role === "parceria" 
+                              ? vendaSelecionada.comissao_sinal_perc_coord 
+                              : vendaSelecionada.comissao_sinal_perc
+                          )}
                         </span>
                       </div>
                       <Separator className="bg-gray-200" />
@@ -513,25 +526,33 @@ export default function VendasPage() {
                           </Tooltip>
                         </TooltipProvider>
                         <span className="font-medium text-gray-900 text-sm">
-                          {formatPercentage(vendaSelecionada.comissao_vgv_pre_chaves_perc)}
+                          {formatPercentage(
+                            userData?.role === "parceria" 
+                              ? vendaSelecionada.comissao_vgv_pre_chaves_perc_coord 
+                              : vendaSelecionada.comissao_vgv_pre_chaves_perc
+                          )}
                         </span>
                       </div>
-                      <Separator className="bg-gray-200" />
-                      <div className="flex justify-between items-center py-1">
-                        <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <span className="text-gray-600 text-sm cursor-help">Extra Comissão</span>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>Comissão extra por performance ou metas</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-                        <span className="font-medium text-gray-900 text-sm">
-                          {formatPercentage(vendaSelecionada.comissao_extra_perc)}
-                        </span>
-                      </div>
+                      {userData?.role !== "parceria" && (
+                        <>
+                          <Separator className="bg-gray-200" />
+                          <div className="flex justify-between items-center py-1">
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <span className="text-gray-600 text-sm cursor-help">Extra Comissão</span>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>Comissão extra por performance ou metas</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                            <span className="font-medium text-gray-900 text-sm">
+                              {formatPercentage(vendaSelecionada.comissao_extra_perc)}
+                            </span>
+                          </div>
+                        </>
+                      )}
                     </div>
                   )}
                 </CardContent>
@@ -751,23 +772,35 @@ export default function VendasPage() {
                       <div className="flex justify-between items-center py-1">
                         <span className="text-gray-600 text-sm">Sinal</span>
                         <span className="font-medium text-gray-900 text-sm">
-                          {formatCurrency(vendaSelecionada.comissao_integral_sinal)}
+                          {formatCurrency(
+                            userData?.role === "parceria" 
+                              ? vendaSelecionada.comissao_integral_sinal_coord 
+                              : vendaSelecionada.comissao_integral_sinal
+                          )}
                         </span>
                       </div>
                       <Separator className="bg-gray-200" />
                       <div className="flex justify-between items-center py-1">
                         <span className="text-gray-600 text-sm">VGV / Pré-Chaves</span>
                         <span className="font-medium text-gray-900 text-sm">
-                          {formatCurrency(vendaSelecionada.comissao_integral_vgv_pre_chaves)}
+                          {formatCurrency(
+                            userData?.role === "parceria" 
+                              ? vendaSelecionada.comissao_integral_vgv_pre_chaves_coord 
+                              : vendaSelecionada.comissao_integral_vgv_pre_chaves
+                          )}
                         </span>
                       </div>
-                      <Separator className="bg-gray-200" />
-                      <div className="flex justify-between items-center py-1">
-                        <span className="text-gray-600 text-sm">Extra</span>
-                        <span className="font-medium text-gray-900 text-sm">
-                          {formatCurrency(vendaSelecionada.comissao_integral_extra)}
-                        </span>
-                      </div>
+                      {userData?.role !== "parceria" && (
+                        <>
+                          <Separator className="bg-gray-200" />
+                          <div className="flex justify-between items-center py-1">
+                            <span className="text-gray-600 text-sm">Extra</span>
+                            <span className="font-medium text-gray-900 text-sm">
+                              {formatCurrency(vendaSelecionada.comissao_integral_extra)}
+                            </span>
+                          </div>
+                        </>
+                      )}
                       <Separator className="bg-gray-200" />
                       <div className="flex justify-between items-center py-1 pt-2 border-t border-gray-200">
                         <span className="text-gray-600 text-sm font-medium">Total Comissões</span>
@@ -844,9 +877,17 @@ export default function VendasPage() {
                   </Tabs>
                 ) : (
                   <div className="text-center border border-gray-200 p-4 rounded">
-                    <div className="text-gray-600 text-sm mb-1">Sinal Comissão Extra Vendedor</div>
+                    <div className="text-gray-600 text-sm mb-1">
+                      {userData?.role === "parceria" 
+                        ? "Sinal Comissão Extra Coordenador" 
+                        : "Sinal Comissão Extra Vendedor"}
+                    </div>
                     <div className="text-xl font-semibold text-gray-900">
-                      {formatCurrency(vendaSelecionada.sinal_comissao_extra_vendedor)}
+                      {formatCurrency(
+                        userData?.role === "parceria" 
+                          ? vendaSelecionada.sinal_comissao_extra_coord 
+                          : vendaSelecionada.sinal_comissao_extra_vendedor
+                      )}
                     </div>
                   </div>
                 )}
