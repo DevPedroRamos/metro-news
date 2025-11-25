@@ -35,6 +35,14 @@ import {
   CheckCircle,
   Users,
 } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import { Badge } from "@/components/ui/badge";
 import { useProfileUsers } from "@/hooks/useProfileUsers";
 import { usePayments } from "@/hooks/usePayments";
 import { UserSelector } from "@/components/pagamentos/UserSelector";
@@ -152,6 +160,7 @@ const Pagamentos: React.FC = () => {
   const [selectedUser, setSelectedUser] = useState<UserSearchResult | null>(
     null
   );
+  const [showStatusDialog, setShowStatusDialog] = useState(false);
   const isAdmin = userData?.role === "adm";
   const isDiretor = userData?.role === "diretor";
   const canSelectUser = isAdmin || isDiretor;
@@ -194,10 +203,82 @@ const Pagamentos: React.FC = () => {
     [descontoItems]
   );
 
+  useEffect(() => {
+    if (!loading && data && !selectedUser && !isAdmin && !isDiretor) {
+      if (data.pagamento === 'aguardar' || data.pagamento === 'concluido') {
+        setShowStatusDialog(true);
+      }
+    }
+  }, [loading, data, selectedUser, isAdmin, isDiretor]);
+
+  const getPaymentStatusBadge = (status: string | null) => {
+    switch (status) {
+      case 'concluido':
+        return (
+          <Badge className="bg-green-100 text-green-700 hover:bg-green-100">
+            <CheckCircle className="h-3 w-3 mr-1" />
+            Concluído
+          </Badge>
+        );
+      case 'aguardar':
+        return (
+          <Badge className="bg-yellow-100 text-yellow-700 hover:bg-yellow-100">
+            <Clock className="h-3 w-3 mr-1" />
+            Aguardando
+          </Badge>
+        );
+      case 'pendente':
+        return (
+          <Badge className="bg-gray-100 text-gray-700 hover:bg-gray-100">
+            <Clock className="h-3 w-3 mr-1" />
+            Pendente
+          </Badge>
+        );
+      default:
+        return (
+          <Badge className="bg-gray-100 text-gray-500 hover:bg-gray-100">
+            —
+          </Badge>
+        );
+    }
+  };
+
   const saldoLiquido = totalReceber;
   return (
     <div className="min-h-screen bg-gray-50">
       <MetaSEO />
+
+      <Dialog open={showStatusDialog} onOpenChange={setShowStatusDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader className="text-center">
+            {data?.pagamento === 'aguardar' ? (
+              <>
+                <div className="mx-auto mb-4 p-3 bg-yellow-100 rounded-full w-fit">
+                  <Clock className="h-8 w-8 text-yellow-600" />
+                </div>
+                <DialogTitle className="text-xl font-bold text-yellow-700">
+                  AGUARDAR REVISÃO DE VALORES
+                </DialogTitle>
+                <DialogDescription className="text-yellow-600 mt-2">
+                  Seus valores estão sendo revisados. Aguarde a conclusão para enviar sua nota fiscal.
+                </DialogDescription>
+              </>
+            ) : data?.pagamento === 'concluido' ? (
+              <>
+                <div className="mx-auto mb-4 p-3 bg-green-100 rounded-full w-fit">
+                  <CheckCircle className="h-8 w-8 text-green-600" />
+                </div>
+                <DialogTitle className="text-xl font-bold text-green-700">
+                  LIBERADO PARA ENVIO DE NOTA FISCAL
+                </DialogTitle>
+                <DialogDescription className="text-green-600 mt-2">
+                  Seus valores foram aprovados. Você já pode enviar sua nota fiscal.
+                </DialogDescription>
+              </>
+            ) : null}
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
 
       <div className="bg-white border border-gray-200 shadow-sm rounded-lg">
         <div className="max-w-7xl mx-auto p-6">
@@ -463,13 +544,13 @@ const Pagamentos: React.FC = () => {
           </div>
         </section>
 
-        {/* Upload de Comprovantes - Hidden for Admin & Diretor */}
-        {!isAdmin && !isDiretor && (
+        {/* Upload de Comprovantes - Only for concluido status */}
+        {!isAdmin && !isDiretor && data?.pagamento === 'concluido' && (
           <section>
             <SectionHeader
               title="Enviar nota fiscal de prestação de serviço"
               icon={<CreditCard className="h-4 w-4" />}
-              description="Envie seus comprovantes de pagamento"
+              description="Seus valores foram aprovados. Envie sua nota fiscal."
             />
             <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
               <InvoiceUpload />
@@ -502,6 +583,9 @@ const Pagamentos: React.FC = () => {
                         <TableHead className="font-semibold text-gray-900">
                           Período
                         </TableHead>
+                        <TableHead className="font-semibold text-gray-900">
+                          Status
+                        </TableHead>
                         <TableHead className="text-right font-semibold text-gray-900">
                           Receita Total
                         </TableHead>
@@ -525,6 +609,9 @@ const Pagamentos: React.FC = () => {
                             <div className="font-medium text-gray-900">
                               {item.period_start} - {item.period_end}
                             </div>
+                          </TableCell>
+                          <TableCell>
+                            {getPaymentStatusBadge(item.pagamento)}
                           </TableCell>
                           <TableCell className="text-right">
                             <div className="font-semibold text-gray-900">

@@ -1525,6 +1525,7 @@ export type Database = {
           id: string | null
           outras: number | null
           outros: number | null
+          pagamento: string | null
           pagar: number | null
           periodo_id: number | null
           premio: number | null
@@ -1544,6 +1545,7 @@ export type Database = {
           id?: string | null
           outras?: number | null
           outros?: number | null
+          pagamento?: string | null
           pagar?: number | null
           periodo_id?: number | null
           premio?: number | null
@@ -1563,6 +1565,7 @@ export type Database = {
           id?: string | null
           outras?: number | null
           outros?: number | null
+          pagamento?: string | null
           pagar?: number | null
           periodo_id?: number | null
           premio?: number | null
@@ -1708,10 +1711,20 @@ export type Database = {
         Returns: boolean
       }
       check_tempo_espera: { Args: { created_time: string }; Returns: boolean }
+      create_periodo: {
+        Args: { p_end: string; p_start: string }
+        Returns: {
+          created_at: string
+          end: string
+          id: number
+          start: string
+        }[]
+      }
       delete_category_reassign_articles: {
         Args: { p_category_id: string }
         Returns: number
       }
+      delete_periodo: { Args: { p_id: number }; Returns: undefined }
       finalizar_visita: { Args: { visit_id: string }; Returns: undefined }
       fix_user_relations: { Args: never; Returns: undefined }
       generate_scheduling_token: { Args: never; Returns: string }
@@ -1877,6 +1890,15 @@ export type Database = {
           id: string
           relevance: number
           title: string
+        }[]
+      }
+      update_periodo: {
+        Args: { p_end: string; p_id: number; p_start: string }
+        Returns: {
+          created_at: string
+          end: string
+          id: number
+          start: string
         }[]
       }
       validate_cpf_and_create_profile: {
