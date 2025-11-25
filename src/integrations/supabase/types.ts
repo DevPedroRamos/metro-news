@@ -1218,15 +1218,19 @@ export type Database = {
           comissao_integral_extra_gerente: number | null
           comissao_integral_extra_superintendente: number | null
           comissao_integral_sinal: number | null
+          comissao_integral_sinal_coord: number | null
           comissao_integral_sinal_gerente: number | null
           comissao_integral_sinal_superintendente: number | null
           comissao_integral_vgv_pre_chaves: number | null
+          comissao_integral_vgv_pre_chaves_coord: number | null
           comissao_integral_vgv_pre_chaves_gerente: number | null
           comissao_integral_vgv_pre_chaves_superintendente: number | null
           comissao_sinal_perc: number | null
+          comissao_sinal_perc_coord: number | null
           comissao_sinal_perc_gerente: number | null
           comissao_sinal_perc_superintendente: number | null
           comissao_vgv_pre_chaves_perc: number | null
+          comissao_vgv_pre_chaves_perc_coord: number | null
           comissao_vgv_pre_chaves_perc_gerente: number | null
           comissao_vgv_pre_chaves_perc_superintendente: number | null
           created_at: string | null
@@ -1246,6 +1250,7 @@ export type Database = {
           receber: number | null
           recebido: number | null
           recebido_de_sinal: number | null
+          sinal_comissao_extra_coord: number | null
           sinal_comissao_extra_vendedor: number | null
           sinal_comissao_extra_vendedor_gerente: number | null
           sinal_comissao_extra_vendedor_superintendente: number | null
@@ -1273,15 +1278,19 @@ export type Database = {
           comissao_integral_extra_gerente?: number | null
           comissao_integral_extra_superintendente?: number | null
           comissao_integral_sinal?: number | null
+          comissao_integral_sinal_coord?: number | null
           comissao_integral_sinal_gerente?: number | null
           comissao_integral_sinal_superintendente?: number | null
           comissao_integral_vgv_pre_chaves?: number | null
+          comissao_integral_vgv_pre_chaves_coord?: number | null
           comissao_integral_vgv_pre_chaves_gerente?: number | null
           comissao_integral_vgv_pre_chaves_superintendente?: number | null
           comissao_sinal_perc?: number | null
+          comissao_sinal_perc_coord?: number | null
           comissao_sinal_perc_gerente?: number | null
           comissao_sinal_perc_superintendente?: number | null
           comissao_vgv_pre_chaves_perc?: number | null
+          comissao_vgv_pre_chaves_perc_coord?: number | null
           comissao_vgv_pre_chaves_perc_gerente?: number | null
           comissao_vgv_pre_chaves_perc_superintendente?: number | null
           created_at?: string | null
@@ -1301,6 +1310,7 @@ export type Database = {
           receber?: number | null
           recebido?: number | null
           recebido_de_sinal?: number | null
+          sinal_comissao_extra_coord?: number | null
           sinal_comissao_extra_vendedor?: number | null
           sinal_comissao_extra_vendedor_gerente?: number | null
           sinal_comissao_extra_vendedor_superintendente?: number | null
@@ -1328,15 +1338,19 @@ export type Database = {
           comissao_integral_extra_gerente?: number | null
           comissao_integral_extra_superintendente?: number | null
           comissao_integral_sinal?: number | null
+          comissao_integral_sinal_coord?: number | null
           comissao_integral_sinal_gerente?: number | null
           comissao_integral_sinal_superintendente?: number | null
           comissao_integral_vgv_pre_chaves?: number | null
+          comissao_integral_vgv_pre_chaves_coord?: number | null
           comissao_integral_vgv_pre_chaves_gerente?: number | null
           comissao_integral_vgv_pre_chaves_superintendente?: number | null
           comissao_sinal_perc?: number | null
+          comissao_sinal_perc_coord?: number | null
           comissao_sinal_perc_gerente?: number | null
           comissao_sinal_perc_superintendente?: number | null
           comissao_vgv_pre_chaves_perc?: number | null
+          comissao_vgv_pre_chaves_perc_coord?: number | null
           comissao_vgv_pre_chaves_perc_gerente?: number | null
           comissao_vgv_pre_chaves_perc_superintendente?: number | null
           created_at?: string | null
@@ -1356,6 +1370,7 @@ export type Database = {
           receber?: number | null
           recebido?: number | null
           recebido_de_sinal?: number | null
+          sinal_comissao_extra_coord?: number | null
           sinal_comissao_extra_vendedor?: number | null
           sinal_comissao_extra_vendedor_gerente?: number | null
           sinal_comissao_extra_vendedor_superintendente?: number | null
