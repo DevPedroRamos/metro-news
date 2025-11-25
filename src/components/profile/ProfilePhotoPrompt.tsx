@@ -76,8 +76,8 @@ const ProfilePhotoPrompt: React.FC<ProfilePhotoPromptProps> = ({ onImageUpdate }
       setUploadProgress(10);
 
       const fileExt = selectedFile.name.split('.').pop();
-      const fileName = `${user.id}-${Date.now()}.${fileExt}`;
-      const filePath = `avatars/${fileName}`;
+      const fileName = `${Date.now()}.${fileExt}`;
+      const filePath = `${user.id}/${fileName}`;
 
       setUploadProgress(30);
 
