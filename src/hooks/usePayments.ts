@@ -6,6 +6,7 @@ import { useCurrentPeriod } from "./useCurrentPeriod";
 export interface PaymentData {
   period_start: string; // BR
   period_end: string;   // BR
+  pagamento: string | null;
   receita: {
     valor_base: number;
     pagar: number;
@@ -29,6 +30,7 @@ export interface PaymentHistoryItem {
   id: string;
   period_start: string;
   period_end: string;
+  pagamento: string | null;
   receita_total: number;
   descontos_total: number;
   total_receber: number;
@@ -74,6 +76,7 @@ export const usePayments = (cpfOverride?: string) => {
         const mapped: PaymentData = {
           period_start: period.start,
           period_end: period.end,
+          pagamento: row.pagamento || null,
           receita: {
             valor_base: Number(row.valor_base || 0),
             pagar: Number(row.pagar || 0),
@@ -105,6 +108,7 @@ export const usePayments = (cpfOverride?: string) => {
         setData({
           period_start: period.start,
           period_end: period.end,
+          pagamento: null,
           receita: {
             valor_base: 0,
             pagar: 0,
@@ -173,6 +177,7 @@ export const usePayments = (cpfOverride?: string) => {
             id: row.id,
             period_start: formatDate(row.period_start),
             period_end: formatDate(row.period_end),
+            pagamento: row.pagamento || null,
             receita_total: receitaTotal,
             descontos_total: descontosTotal,
             total_receber: receitaTotal - descontosTotal,
