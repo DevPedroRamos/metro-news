@@ -19,7 +19,7 @@ interface ProfilePhotoPromptProps {
 }
 
 const ProfilePhotoPrompt: React.FC<ProfilePhotoPromptProps> = ({ onImageUpdate }) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [preview, setPreview] = useState<string | null>(null);
@@ -123,34 +123,19 @@ const ProfilePhotoPrompt: React.FC<ProfilePhotoPromptProps> = ({ onImageUpdate }
   };
 
   return (
-    <>
-      <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
-        <CardContent className="flex flex-col items-center text-center py-8 space-y-4">
-          <div className="p-4 bg-blue-100 rounded-full">
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader className="text-center">
+          <div className="mx-auto mb-4 p-4 bg-blue-100 rounded-full w-fit">
             <UserCircle className="h-12 w-12 text-blue-600" />
           </div>
-          
-          <div className="space-y-2">
-            <h3 className="text-lg font-semibold text-gray-900">
-              Adicione uma foto de perfil profissional.
-            </h3>
-            <p className="text-sm text-gray-600 max-w-md">
-              Uma foto de perfil ajuda sua equipe a te reconhecer e transmite profissionalismo.
-            </p>
-          </div>
-
-          <Button onClick={() => setIsOpen(true)} className="gap-2">
-            <Camera className="h-4 w-4" />
-            Adicionar foto de perfil
-          </Button>
-        </CardContent>
-      </Card>
-
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Adicionar foto de perfil</DialogTitle>
-          </DialogHeader>
+          <DialogTitle className="text-xl font-semibold text-gray-900">
+            Adicione uma foto de perfil profissional.
+          </DialogTitle>
+          <p className="text-sm text-gray-600 mt-2">
+            Uma foto de perfil ajuda sua equipe a te reconhecer e transmite profissionalismo.
+          </p>
+        </DialogHeader>
 
           <div className="space-y-4">
             {preview ? (
@@ -204,27 +189,26 @@ const ProfilePhotoPrompt: React.FC<ProfilePhotoPromptProps> = ({ onImageUpdate }
             )}
           </div>
 
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => {
-                clearPreview();
-                setIsOpen(false);
-              }}
-              disabled={uploading}
-            >
-              Cancelar
-            </Button>
-            <Button
-              onClick={handleUpload}
-              disabled={!preview || uploading}
-            >
-              {uploading ? 'Enviando...' : 'Salvar'}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    </>
+        <DialogFooter>
+          <Button
+            variant="outline"
+            onClick={() => {
+              clearPreview();
+              setIsOpen(false);
+            }}
+            disabled={uploading}
+          >
+            Depois
+          </Button>
+          <Button
+            onClick={handleUpload}
+            disabled={!preview || uploading}
+          >
+            {uploading ? 'Enviando...' : 'Salvar'}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 };
 
