@@ -282,6 +282,36 @@ export type Database = {
         }
         Relationships: []
       }
+      dashboards: {
+        Row: {
+          created_at: string
+          description: string | null
+          embed_url: string
+          id: string
+          is_active: boolean
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          embed_url: string
+          id?: string
+          is_active?: boolean
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          embed_url?: string
+          id?: string
+          is_active?: boolean
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       empreendimentos: {
         Row: {
           address: string | null
@@ -306,6 +336,60 @@ export type Database = {
           idobra?: string | null
           nome?: string
           project_status?: string | null
+        }
+        Relationships: []
+      }
+      entregas: {
+        Row: {
+          andar: string | null
+          created_at: string | null
+          data_hora_registro: string
+          data_hora_retirada: string | null
+          destinatario: string
+          id: string
+          loja: string
+          observacoes: string | null
+          quem_retirou: string | null
+          quem_retirou_cpf: string | null
+          remetente: string
+          status: string
+          updated_at: string | null
+          usuario_registro_id: string
+          usuario_registro_nome: string
+        }
+        Insert: {
+          andar?: string | null
+          created_at?: string | null
+          data_hora_registro?: string
+          data_hora_retirada?: string | null
+          destinatario: string
+          id?: string
+          loja: string
+          observacoes?: string | null
+          quem_retirou?: string | null
+          quem_retirou_cpf?: string | null
+          remetente: string
+          status?: string
+          updated_at?: string | null
+          usuario_registro_id: string
+          usuario_registro_nome: string
+        }
+        Update: {
+          andar?: string | null
+          created_at?: string | null
+          data_hora_registro?: string
+          data_hora_retirada?: string | null
+          destinatario?: string
+          id?: string
+          loja?: string
+          observacoes?: string | null
+          quem_retirou?: string | null
+          quem_retirou_cpf?: string | null
+          remetente?: string
+          status?: string
+          updated_at?: string | null
+          usuario_registro_id?: string
+          usuario_registro_nome?: string
         }
         Relationships: []
       }
@@ -903,6 +987,39 @@ export type Database = {
           results_count?: number | null
           search_term?: string
           user_ip?: string | null
+        }
+        Relationships: []
+      }
+      treinamento_candidatos: {
+        Row: {
+          comprovante_residencia_url: string
+          cpf: string
+          created_at: string | null
+          documento_rg_url: string
+          email: string
+          expires_at: string | null
+          id: string
+          nome_completo: string
+        }
+        Insert: {
+          comprovante_residencia_url: string
+          cpf: string
+          created_at?: string | null
+          documento_rg_url: string
+          email: string
+          expires_at?: string | null
+          id?: string
+          nome_completo: string
+        }
+        Update: {
+          comprovante_residencia_url?: string
+          cpf?: string
+          created_at?: string | null
+          documento_rg_url?: string
+          email?: string
+          expires_at?: string | null
+          id?: string
+          nome_completo?: string
         }
         Relationships: []
       }
