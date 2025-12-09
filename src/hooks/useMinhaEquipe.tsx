@@ -64,11 +64,11 @@ export const useMinhaEquipe = (viewAsAdmin = false) => {
           .eq('diretor', userData.apelido);
       } else if (isSuperintendente) {
         teamQuery = teamQuery
-          .eq('role', 'corretor')
+          .in('role', ['corretor', 'parceria'])
           .eq('superintendente', userData.apelido);
       } else if (isManager) {
         teamQuery = teamQuery
-          .eq('role', 'corretor')
+          .in('role', ['corretor', 'parceria'])
           .eq('gerente', userData.apelido);
       }
 

@@ -73,9 +73,9 @@ export default function ComprovantesEquipe() {
           .eq('ban', false)
           .in('role', ['corretor', 'gerente', 'superintendente']);
       } else if (userData.role === 'gerente') {
-        teamQuery = teamQuery.eq('gerente', userData.apelido).eq('ban', false).eq('role', 'corretor');
+        teamQuery = teamQuery.eq('gerente', userData.apelido).eq('ban', false).in('role', ['corretor', 'parceria']);
       } else if (userData.role === 'superintendente') {
-        teamQuery = teamQuery.eq('superintendente', userData.apelido).eq('ban', false).eq('role', 'corretor');
+        teamQuery = teamQuery.eq('superintendente', userData.apelido).eq('ban', false).in('role', ['corretor', 'parceria']);
       }
       const {
         data: teamData,
