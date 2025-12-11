@@ -14,7 +14,8 @@ import {
   Target,
   UserCheck,
   FileText,
-  Calendar
+  Calendar,
+  FileSearch
 } from 'lucide-react';
 import { useProfileUsers } from '@/hooks/useProfileUsers';
 import logo from '@/assets/logo.png';
@@ -38,6 +39,7 @@ const menuItems = [
   // { title: 'Processos', url: '/processos', icon: Settings },
   { title: 'Links', url: '/links-uteis', icon: Link },
   { title: 'Metas', url: '/metas', icon: Target },
+  { title: 'Análise de Crédito', url: '/analise-credito', icon: FileSearch },
   // { title: 'Superintendência', url: '/superintendencia', icon: Users },
   { 
     title: 'Pagamentos', 
