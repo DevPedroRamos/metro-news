@@ -65,13 +65,13 @@ export default function ComprovantesEquipe() {
         // Admin vê comprovantes de TODOS os usuários
         teamQuery = teamQuery
           .eq('ban', false)
-          .in('role', ['corretor', 'gerente', 'superintendente']);
+          .in('role', ['corretor', 'parceria', 'gerente', 'superintendente']);
       } else if (isDiretor) {
         // Diretor vê comprovantes de usuários da sua diretoria
         teamQuery = teamQuery
           .eq('diretor', userData.apelido)
           .eq('ban', false)
-          .in('role', ['corretor', 'gerente', 'superintendente']);
+          .in('role', ['corretor', 'parceria', 'gerente', 'superintendente']);
       } else if (userData.role === 'gerente') {
         teamQuery = teamQuery.eq('gerente', userData.apelido).eq('ban', false).in('role', ['corretor', 'parceria']);
       } else if (userData.role === 'superintendente') {

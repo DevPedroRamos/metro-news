@@ -55,12 +55,12 @@ export const useMinhaEquipe = (viewAsAdmin = false) => {
           .eq('ban', false);
 
       if (isAdmin) {
-        // Admin vê TODOS: corretores, gerentes E superintendentes
-        teamQuery = teamQuery.in('role', ['corretor', 'gerente', 'superintendente']);
+        // Admin vê TODOS: corretores, parcerias, gerentes E superintendentes
+        teamQuery = teamQuery.in('role', ['corretor', 'parceria', 'gerente', 'superintendente']);
       } else if (isDiretor) {
         // Diretor vê todos onde diretor = seu apelido
         teamQuery = teamQuery
-          .in('role', ['corretor', 'gerente', 'superintendente'])
+          .in('role', ['corretor', 'parceria', 'gerente', 'superintendente'])
           .eq('diretor', userData.apelido);
       } else if (isSuperintendente) {
         teamQuery = teamQuery
