@@ -26,6 +26,7 @@ import Outros from "./pages/pagamentos/outros";
 import MinhaEquipe from "./pages/MinhaEquipe";
 import ComprovantesEquipe from "./pages/ComprovantesEquipe";
 import Agendamentos from "./pages/Agendamentos";
+import AnaliseCredito from "./pages/AnaliseCredito";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -130,6 +131,13 @@ const App = () => (
             <ProtectedRoute>
               <DashboardLayout>
                 <Agendamentos />
+              </DashboardLayout>
+            </ProtectedRoute>
+          } />
+          <Route path="/analise-credito" element={
+            <ProtectedRoute>
+              <DashboardLayout>
+                <AnaliseCredito />
               </DashboardLayout>
             </ProtectedRoute>
           } />
