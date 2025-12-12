@@ -9,7 +9,6 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Skeleton } from '@/components/ui/skeleton';
-
 const getStatusBadge = (status: string) => {
   switch (status) {
     case 'PENDING':
@@ -24,30 +23,29 @@ const getStatusBadge = (status: string) => {
       return <Badge variant="outline">{status}</Badge>;
   }
 };
-
 const AnaliseCredito = () => {
   const [startDate, setStartDate] = useState<Date | undefined>();
   const [endDate, setEndDate] = useState<Date | undefined>();
-  
-  const { data, loading, error, refresh, stats } = useAnaliseCredito(startDate, endDate);
-
+  const {
+    data,
+    loading,
+    error,
+    refresh,
+    stats
+  } = useAnaliseCredito(startDate, endDate);
   const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setStartDate(value ? new Date(value + 'T00:00:00') : undefined);
   };
-
   const handleEndDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setEndDate(value ? new Date(value + 'T23:59:59') : undefined);
   };
-
   const clearFilters = () => {
     setStartDate(undefined);
     setEndDate(undefined);
   };
-
-  return (
-    <div className="container mx-auto py-6 px-4 space-y-6">
+  return <div className="container mx-auto py-6 px-4 space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div className="flex items-center gap-3">
@@ -69,21 +67,11 @@ const AnaliseCredito = () => {
           <div className="flex flex-col sm:flex-row gap-4 items-end">
             <div className="flex-1 space-y-2">
               <Label htmlFor="startDate">Data Início</Label>
-              <Input
-                id="startDate"
-                type="date"
-                value={startDate ? format(startDate, 'yyyy-MM-dd') : ''}
-                onChange={handleStartDateChange}
-              />
+              <Input id="startDate" type="date" value={startDate ? format(startDate, 'yyyy-MM-dd') : ''} onChange={handleStartDateChange} />
             </div>
             <div className="flex-1 space-y-2">
               <Label htmlFor="endDate">Data Fim</Label>
-              <Input
-                id="endDate"
-                type="date"
-                value={endDate ? format(endDate, 'yyyy-MM-dd') : ''}
-                onChange={handleEndDateChange}
-              />
+              <Input id="endDate" type="date" value={endDate ? format(endDate, 'yyyy-MM-dd') : ''} onChange={handleEndDateChange} />
             </div>
             <Button variant="ghost" onClick={clearFilters} className="text-muted-foreground">
               Limpar
@@ -141,19 +129,15 @@ const AnaliseCredito = () => {
       </div>
 
       {/* Error */}
-      {error && (
-        <Card className="border-destructive">
+      {error && <Card className="border-destructive">
           <CardContent className="pt-6">
             <p className="text-destructive">Erro ao carregar dados: {error}</p>
           </CardContent>
-        </Card>
-      )}
+        </Card>}
 
       {/* Loading */}
-      {loading && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {[1, 2, 3, 4, 5, 6].map((i) => (
-            <Card key={i} className="overflow-hidden">
+      {loading && <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {[1, 2, 3, 4, 5, 6].map(i => <Card key={i} className="overflow-hidden">
               <div className="flex">
                 <div className="w-12 bg-amber-100 flex items-start justify-center pt-4">
                   <Skeleton className="h-6 w-6" />
@@ -165,36 +149,21 @@ const AnaliseCredito = () => {
                   <Skeleton className="h-4 w-3/4" />
                 </div>
               </div>
-            </Card>
-          ))}
-        </div>
-      )}
+            </Card>)}
+        </div>}
 
       {/* Data Grid */}
-      {!loading && !error && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {data.length === 0 ? (
-            <Card className="col-span-full">
+      {!loading && !error && <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {data.length === 0 ? <Card className="col-span-full">
               <CardContent className="pt-6 text-center">
                 <FileSearch className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                 <p className="text-muted-foreground">Nenhuma análise encontrada</p>
               </CardContent>
-            </Card>
-          ) : (
-            data.map((item) => (
-              <a
-                key={item.id}
-                href={item.linkToProcess}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block"
-              >
+            </Card> : data.map(item => <a key={item.id} href={item.linkToProcess} target="_blank" rel="noopener noreferrer" className="block">
                 <Card className="overflow-hidden hover:shadow-lg transition-all hover:scale-[1.02] cursor-pointer h-full">
                   <div className="flex h-full">
                     {/* Barra lateral amarela */}
-                    <div className="w-12 bg-amber-100 flex items-start justify-center pt-4 border-r border-amber-200 shrink-0">
-                      <span className="text-amber-700 font-bold text-lg">L</span>
-                    </div>
+                    
                     
                     {/* Conteúdo principal */}
                     <div className="flex-1 p-4">
@@ -207,7 +176,9 @@ const AnaliseCredito = () => {
                       {/* Data */}
                       <div className="flex items-center gap-1 text-xs text-muted-foreground mb-4">
                         <Clock className="h-3 w-3" />
-                        {format(new Date(item.createdAt), "dd MMM yyyy 'às' HH:mm", { locale: ptBR })}
+                        {format(new Date(item.createdAt), "dd MMM yyyy 'às' HH:mm", {
+                  locale: ptBR
+                })}
                       </div>
 
                       {/* Seções rotuladas */}
@@ -233,25 +204,18 @@ const AnaliseCredito = () => {
                           <p className="truncate">{item.requesterName} ({item.requesterNickname})</p>
                         </div>
                         
-                        {item.observation && (
-                          <div>
+                        {item.observation && <div>
                             <span className="text-muted-foreground text-xs uppercase font-medium tracking-wide">
                               📝 Observação
                             </span>
                             <p className="text-muted-foreground line-clamp-2">{item.observation}</p>
-                          </div>
-                        )}
+                          </div>}
                       </div>
                     </div>
                   </div>
                 </Card>
-              </a>
-            ))
-          )}
-        </div>
-      )}
-    </div>
-  );
+              </a>)}
+        </div>}
+    </div>;
 };
-
 export default AnaliseCredito;
