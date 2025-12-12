@@ -19,6 +19,13 @@ const getStatusBadge = (status: string) => {
       return <Badge variant="outline" className="bg-red-100 text-red-800 border-red-300">Rejeitado</Badge>;
     case 'IN_PROGRESS':
       return <Badge variant="outline" className="bg-blue-100 text-blue-800 border-blue-300">Em Análise</Badge>;
+    case 'COMPLETED':
+      return (
+        <Badge variant="outline" className="bg-emerald-100 text-emerald-800 border-emerald-300 gap-1">
+          <CheckCircle className="h-3 w-3" />
+          Concluído
+        </Badge>
+      );
     default:
       return <Badge variant="outline">{status}</Badge>;
   }
@@ -81,7 +88,7 @@ const AnaliseCredito = () => {
       </Card>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
         <Card>
           <CardContent className="pt-6">
             <div className="flex items-center gap-3">
@@ -122,6 +129,17 @@ const AnaliseCredito = () => {
               <div>
                 <p className="text-2xl font-bold">{stats.rejected}</p>
                 <p className="text-sm text-muted-foreground">Rejeitados</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-3">
+              <CheckCircle className="h-8 w-8 text-emerald-600" />
+              <div>
+                <p className="text-2xl font-bold">{stats.completed}</p>
+                <p className="text-sm text-muted-foreground">Concluídos</p>
               </div>
             </div>
           </CardContent>
@@ -211,6 +229,19 @@ const AnaliseCredito = () => {
                             <p className="text-muted-foreground line-clamp-2">{item.observation}</p>
                           </div>}
                       </div>
+
+                      {/* Resultado da Análise - exibe quando COMPLETED */}
+                      {item.status === 'COMPLETED' && item.approvalStatus && (
+                        <div className="mt-4 pt-3 border-t border-emerald-200 bg-emerald-50/50 -mx-4 -mb-4 px-4 pb-4 rounded-b-lg">
+                          <span className="flex items-center gap-1 text-emerald-700 text-xs uppercase font-medium tracking-wide mb-1">
+                            <CheckCircle className="h-3 w-3" />
+                            Resultado da Análise
+                          </span>
+                          <p className="text-emerald-800 font-medium">
+                            {item.approvalStatus}{item.approvalObservation ? `: ${item.approvalObservation}` : ''}
+                          </p>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </Card>

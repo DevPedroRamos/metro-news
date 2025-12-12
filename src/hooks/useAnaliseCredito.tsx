@@ -167,6 +167,7 @@ export const useAnaliseCredito = (startDate?: Date, endDate?: Date) => {
     approved: filteredData.filter(item => item.status === 'APPROVED').length,
     rejected: filteredData.filter(item => item.status === 'REJECTED').length,
     inProgress: filteredData.filter(item => item.status === 'IN_PROGRESS').length,
+    completed: filteredData.filter(item => item.status === 'COMPLETED').length,
   };
 
   return {
