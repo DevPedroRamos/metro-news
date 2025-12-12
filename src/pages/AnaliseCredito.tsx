@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { RefreshCw, ExternalLink, Calendar, FileSearch, Clock, CheckCircle, XCircle, Loader2 } from 'lucide-react';
+import { RefreshCw, FileSearch, Clock, CheckCircle, XCircle } from 'lucide-react';
 import { useAnaliseCredito } from '@/hooks/useAnaliseCredito';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -151,26 +151,30 @@ const AnaliseCredito = () => {
 
       {/* Loading */}
       {loading && (
-        <div className="space-y-4">
-          {[1, 2, 3].map((i) => (
-            <Card key={i}>
-              <CardContent className="pt-6">
-                <div className="space-y-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <Card key={i} className="overflow-hidden">
+              <div className="flex">
+                <div className="w-12 bg-amber-100 flex items-start justify-center pt-4">
+                  <Skeleton className="h-6 w-6" />
+                </div>
+                <div className="flex-1 p-4 space-y-3">
                   <Skeleton className="h-6 w-2/3" />
                   <Skeleton className="h-4 w-1/2" />
                   <Skeleton className="h-4 w-full" />
+                  <Skeleton className="h-4 w-3/4" />
                 </div>
-              </CardContent>
+              </div>
             </Card>
           ))}
         </div>
       )}
 
-      {/* Data List */}
+      {/* Data Grid */}
       {!loading && !error && (
-        <div className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {data.length === 0 ? (
-            <Card>
+            <Card className="col-span-full">
               <CardContent className="pt-6 text-center">
                 <FileSearch className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                 <p className="text-muted-foreground">Nenhuma análise encontrada</p>
@@ -178,53 +182,70 @@ const AnaliseCredito = () => {
             </Card>
           ) : (
             data.map((item) => (
-              <Card key={item.id} className="hover:shadow-md transition-shadow">
-                <CardContent className="pt-6">
-                  <div className="space-y-4">
-                    {/* Header */}
-                    <div className="flex flex-col sm:flex-row justify-between items-start gap-3">
-                      <div className="space-y-1">
-                        <h3 className="font-semibold text-lg">{item.clientName}</h3>
-                        <p className="text-primary font-medium">{item.projectName}</p>
-                      </div>
-                      <div className="flex items-center gap-2">
+              <a
+                key={item.id}
+                href={item.linkToProcess}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block"
+              >
+                <Card className="overflow-hidden hover:shadow-lg transition-all hover:scale-[1.02] cursor-pointer h-full">
+                  <div className="flex h-full">
+                    {/* Barra lateral amarela */}
+                    <div className="w-12 bg-amber-100 flex items-start justify-center pt-4 border-r border-amber-200 shrink-0">
+                      <span className="text-amber-700 font-bold text-lg">L</span>
+                    </div>
+                    
+                    {/* Conteúdo principal */}
+                    <div className="flex-1 p-4">
+                      {/* Header: Número + Status */}
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="font-bold text-base">#{item.processNumber}</span>
                         {getStatusBadge(item.status)}
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          asChild
-                          className="gap-2"
-                        >
-                          <a href={item.linkToProcess} target="_blank" rel="noopener noreferrer">
-                            <ExternalLink className="h-4 w-4" />
-                            Ver Processo
-                          </a>
-                        </Button>
+                      </div>
+                      
+                      {/* Data */}
+                      <div className="flex items-center gap-1 text-xs text-muted-foreground mb-4">
+                        <Clock className="h-3 w-3" />
+                        {format(new Date(item.createdAt), "dd MMM yyyy 'às' HH:mm", { locale: ptBR })}
+                      </div>
+
+                      {/* Seções rotuladas */}
+                      <div className="space-y-3 text-sm">
+                        <div>
+                          <span className="text-muted-foreground text-xs uppercase font-medium tracking-wide">
+                            👤 Cliente
+                          </span>
+                          <p className="font-semibold truncate">{item.clientName}</p>
+                        </div>
+                        
+                        <div>
+                          <span className="text-muted-foreground text-xs uppercase font-medium tracking-wide">
+                            🏢 Projeto
+                          </span>
+                          <p className="font-semibold truncate">{item.projectName}</p>
+                        </div>
+                        
+                        <div>
+                          <span className="text-muted-foreground text-xs uppercase font-medium tracking-wide">
+                            📞 Solicitante
+                          </span>
+                          <p className="truncate">{item.requesterName} ({item.requesterNickname})</p>
+                        </div>
+                        
+                        {item.observation && (
+                          <div>
+                            <span className="text-muted-foreground text-xs uppercase font-medium tracking-wide">
+                              📝 Observação
+                            </span>
+                            <p className="text-muted-foreground line-clamp-2">{item.observation}</p>
+                          </div>
+                        )}
                       </div>
                     </div>
-
-                    {/* Info */}
-                    <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-muted-foreground">
-                      <span className="flex items-center gap-1">
-                        <span className="font-medium">Solicitante:</span> {item.requesterNickname}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Calendar className="h-4 w-4" />
-                        {format(new Date(item.createdAt), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}
-                      </span>
-                    </div>
-
-                    {/* Observation */}
-                    {item.observation && (
-                      <div className="bg-muted/50 rounded-md p-3">
-                        <p className="text-sm text-muted-foreground">
-                          <span className="font-medium">Observação:</span> {item.observation}
-                        </p>
-                      </div>
-                    )}
                   </div>
-                </CardContent>
-              </Card>
+                </Card>
+              </a>
             ))
           )}
         </div>
