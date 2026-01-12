@@ -163,6 +163,14 @@ const Login = () => {
                       <AlertDescription className="text-sm">{form.formState.errors.password.message}</AlertDescription>
                     </Alert>
                   )}
+                  <div className="flex justify-end">
+                    <Link
+                      to="/forgot-password"
+                      className="text-sm text-red-600 hover:text-red-700 hover:underline transition-colors"
+                    >
+                      Esqueci minha senha
+                    </Link>
+                  </div>
                 </div>
 
                 <Button
