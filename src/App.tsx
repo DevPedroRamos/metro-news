@@ -25,6 +25,7 @@ import Premiacao from "./pages/pagamentos/premiacao";
 import SaldoCef from "./pages/pagamentos/saldo-cef";
 import Distratos from "./pages/pagamentos/distratos"; 
 import Outros from "./pages/pagamentos/outros";
+import Uber from "./pages/pagamentos/uber";
 import MinhaEquipe from "./pages/MinhaEquipe";
 import ComprovantesEquipe from "./pages/ComprovantesEquipe";
 import Agendamentos from "./pages/Agendamentos";
@@ -185,6 +186,13 @@ const App = () => (
               <ProtectedRoute>
                 <DashboardLayout>
                   <Outros />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+            <Route path="uber" element={
+              <ProtectedRoute>
+                <DashboardLayout>
+                  <Uber />
                 </DashboardLayout>
               </ProtectedRoute>
             } />
