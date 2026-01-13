@@ -12,6 +12,7 @@ import {
   DialogFooter,
   DialogDescription 
 } from '@/components/ui/dialog';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -244,8 +245,8 @@ const UberDetailDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg">
-        <DialogHeader>
+      <DialogContent className="max-w-[95vw] sm:max-w-md md:max-w-lg max-h-[85vh] flex flex-col p-0">
+        <DialogHeader className="flex-shrink-0 px-6 pt-6 pb-2">
           <DialogTitle className="flex items-center gap-2">
             <Car className="h-5 w-5" />
             Detalhes da Corrida
@@ -255,97 +256,99 @@ const UberDetailDialog = ({
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-4 py-4">
-          {/* Data e Valor */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-1">
-              <Label className="text-muted-foreground text-xs">Data</Label>
-              <p className="font-medium">{formatDate(trip.data_transacao)}</p>
+        <ScrollArea className="flex-1 px-6">
+          <div className="space-y-4 py-4">
+            {/* Data e Valor */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-1">
+                <Label className="text-muted-foreground text-xs">Data</Label>
+                <p className="font-medium">{formatDate(trip.data_transacao)}</p>
+              </div>
+              <div className="space-y-1">
+                <Label className="text-muted-foreground text-xs">Valor</Label>
+                <p className="font-medium text-lg">{formatCurrency(trip.valor)}</p>
+              </div>
             </div>
+
+            {/* Trip ID */}
             <div className="space-y-1">
-              <Label className="text-muted-foreground text-xs">Valor</Label>
-              <p className="font-medium text-lg">{formatCurrency(trip.valor)}</p>
+              <Label className="text-muted-foreground text-xs">Trip ID</Label>
+              <p className="font-mono text-xs sm:text-sm bg-muted p-2 rounded break-all">{trip.trip_id}</p>
             </div>
-          </div>
 
-          {/* Trip ID */}
-          <div className="space-y-1">
-            <Label className="text-muted-foreground text-xs">Trip ID</Label>
-            <p className="font-mono text-sm bg-muted p-2 rounded">{trip.trip_id}</p>
-          </div>
-
-          {/* Partida */}
-          <div className="space-y-1">
-            <Label className="text-muted-foreground text-xs flex items-center gap-1">
-              <MapPin className="h-3 w-3" /> Partida
-            </Label>
-            <p className="text-sm">{trip.endereco_partida || '-'}</p>
-          </div>
-
-          {/* Destino */}
-          <div className="space-y-1">
-            <Label className="text-muted-foreground text-xs flex items-center gap-1">
-              <MapPin className="h-3 w-3" /> Destino
-            </Label>
-            <p className="text-sm">{trip.endereco_destino || '-'}</p>
-          </div>
-
-          {/* Convidado */}
-          {(trip.nome_convidado || trip.sobrenome_convidado) && (
+            {/* Partida */}
             <div className="space-y-1">
               <Label className="text-muted-foreground text-xs flex items-center gap-1">
-                <User className="h-3 w-3" /> Convidado
+                <MapPin className="h-3 w-3" /> Partida
               </Label>
-              <p className="text-sm font-medium">
-                {[trip.nome_convidado, trip.sobrenome_convidado].filter(Boolean).join(' ')}
-              </p>
+              <p className="text-sm break-words">{trip.endereco_partida || '-'}</p>
             </div>
-          )}
 
-          {/* Código de Despesa */}
-          {trip.codigo_despesa && (
+            {/* Destino */}
             <div className="space-y-1">
-              <Label className="text-muted-foreground text-xs">Código de Despesa</Label>
-              <p className="text-sm">{trip.codigo_despesa}</p>
+              <Label className="text-muted-foreground text-xs flex items-center gap-1">
+                <MapPin className="h-3 w-3" /> Destino
+              </Label>
+              <p className="text-sm break-words">{trip.endereco_destino || '-'}</p>
             </div>
-          )}
 
-          {/* Separator */}
-          <div className="border-t pt-4">
-            <Label className="font-medium">Esta corrida foi para uma venda?</Label>
-            
-            <RadioGroup 
-              value={isVenda} 
-              onValueChange={(value) => setIsVenda(value as 'sim' | 'nao')}
-              className="mt-3"
-              disabled={isAnswered}
-            >
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="sim" id="sim" />
-                <Label htmlFor="sim" className="cursor-pointer">Sim</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="nao" id="nao" />
-                <Label htmlFor="nao" className="cursor-pointer">Não</Label>
-              </div>
-            </RadioGroup>
-
-            {isVenda === 'sim' && (
-              <div className="mt-4 space-y-2">
-                <Label htmlFor="processo">Número do processo da venda</Label>
-                <Input
-                  id="processo"
-                  placeholder="Digite o número do processo"
-                  value={processoNumero}
-                  onChange={(e) => setProcessoNumero(e.target.value)}
-                  disabled={isAnswered}
-                />
+            {/* Convidado */}
+            {(trip.nome_convidado || trip.sobrenome_convidado) && (
+              <div className="space-y-1">
+                <Label className="text-muted-foreground text-xs flex items-center gap-1">
+                  <User className="h-3 w-3" /> Convidado
+                </Label>
+                <p className="text-sm font-medium">
+                  {[trip.nome_convidado, trip.sobrenome_convidado].filter(Boolean).join(' ')}
+                </p>
               </div>
             )}
-          </div>
-        </div>
 
-        <DialogFooter>
+            {/* Código de Despesa */}
+            {trip.codigo_despesa && (
+              <div className="space-y-1">
+                <Label className="text-muted-foreground text-xs">Código de Despesa</Label>
+                <p className="text-sm">{trip.codigo_despesa}</p>
+              </div>
+            )}
+
+            {/* Separator */}
+            <div className="border-t pt-4">
+              <Label className="font-medium">Esta corrida foi para uma venda?</Label>
+              
+              <RadioGroup 
+                value={isVenda} 
+                onValueChange={(value) => setIsVenda(value as 'sim' | 'nao')}
+                className="mt-3"
+                disabled={isAnswered}
+              >
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="sim" id="sim" />
+                  <Label htmlFor="sim" className="cursor-pointer">Sim</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="nao" id="nao" />
+                  <Label htmlFor="nao" className="cursor-pointer">Não</Label>
+                </div>
+              </RadioGroup>
+
+              {isVenda === 'sim' && (
+                <div className="mt-4 space-y-2">
+                  <Label htmlFor="processo">Número do processo da venda</Label>
+                  <Input
+                    id="processo"
+                    placeholder="Digite o número do processo"
+                    value={processoNumero}
+                    onChange={(e) => setProcessoNumero(e.target.value)}
+                    disabled={isAnswered}
+                  />
+                </div>
+              )}
+            </div>
+          </div>
+        </ScrollArea>
+
+        <DialogFooter className="flex-shrink-0 border-t px-6 py-4 gap-2 sm:gap-0">
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             {isAnswered ? 'Fechar' : 'Cancelar'}
           </Button>
