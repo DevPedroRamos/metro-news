@@ -245,7 +245,7 @@ const UberDetailDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-[95vw] sm:max-w-md md:max-w-lg max-h-[85vh] flex flex-col p-0">
+      <DialogContent className="max-w-[95vw] sm:max-w-md md:max-w-lg max-h-[85vh] flex flex-col p-0 overflow-hidden">
         <DialogHeader className="flex-shrink-0 px-6 pt-6 pb-2">
           <DialogTitle className="flex items-center gap-2">
             <Car className="h-5 w-5" />
@@ -256,7 +256,7 @@ const UberDetailDialog = ({
           </DialogDescription>
         </DialogHeader>
 
-        <ScrollArea className="flex-1 px-6">
+        <div className="flex-1 overflow-y-auto px-6">
           <div className="space-y-4 py-4">
             {/* Data e Valor */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -346,7 +346,7 @@ const UberDetailDialog = ({
               )}
             </div>
           </div>
-        </ScrollArea>
+        </div>
 
         <DialogFooter className="flex-shrink-0 border-t px-6 py-4 gap-2 sm:gap-0">
           <Button variant="outline" onClick={() => onOpenChange(false)}>
