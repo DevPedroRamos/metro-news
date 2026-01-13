@@ -52,6 +52,7 @@ const menuItems = [
       { title: 'Saldo CEF', url: '/pagamentos/saldo-cef' },
       { title: 'Distratos', url: '/pagamentos/distratos' },
       { title: 'Outros', url: '/pagamentos/outros' },
+      { title: 'Uber', url: '/pagamentos/uber' },
     ]
   },
   { title: 'Meu Perfil', url: '/perfil', icon: User },
