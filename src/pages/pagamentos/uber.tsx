@@ -12,7 +12,6 @@ import {
   DialogFooter,
   DialogDescription 
 } from '@/components/ui/dialog';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -136,6 +135,14 @@ const UberCard = ({ trip, onClick }: { trip: UberTrip; onClick: () => void }) =>
     >
       <CardContent className="p-4">
         <div className="flex flex-col gap-3">
+          {/* Solicitante */}
+          {trip.nome_solicitante && (
+            <div className="flex items-center gap-2 text-sm">
+              <User className="h-4 w-4 text-muted-foreground" />
+              <span className="font-medium">{trip.nome_solicitante}</span>
+            </div>
+          )}
+
           {/* Rota */}
           <div className="flex items-start gap-2">
             <MapPin className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
@@ -165,7 +172,7 @@ const UberCard = ({ trip, onClick }: { trip: UberTrip; onClick: () => void }) =>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <User className="h-4 w-4" />
               <span>
-                {[trip.nome_convidado, trip.sobrenome_convidado].filter(Boolean).join(' ')}
+                Convidado: {[trip.nome_convidado, trip.sobrenome_convidado].filter(Boolean).join(' ')}
               </span>
             </div>
           )}
@@ -196,13 +203,15 @@ const UberDetailDialog = ({
   open, 
   onOpenChange,
   onSave,
-  updating
+  updating,
+  canEdit
 }: { 
   trip: UberTrip | null; 
   open: boolean; 
   onOpenChange: (open: boolean) => void;
   onSave: (tripId: string, vendaInfo: string) => Promise<boolean>;
   updating: boolean;
+  canEdit: boolean;
 }) => {
   const [isVenda, setIsVenda] = useState<'sim' | 'nao'>('nao');
   const [processoNumero, setProcessoNumero] = useState('');
@@ -242,6 +251,7 @@ const UberDetailDialog = ({
   if (!trip) return null;
 
   const isAnswered = !!trip.venda_info;
+  const showEditForm = canEdit && !isAnswered;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -252,12 +262,22 @@ const UberDetailDialog = ({
             Detalhes da Corrida
           </DialogTitle>
           <DialogDescription>
-            Visualize os detalhes e informe se esta corrida foi para uma venda.
+            {canEdit 
+              ? 'Visualize os detalhes e informe se esta corrida foi para uma venda.'
+              : 'Visualize os detalhes da corrida (somente leitura).'}
           </DialogDescription>
         </DialogHeader>
 
         <div className="flex-1 overflow-y-auto px-6">
           <div className="space-y-4 py-4">
+            {/* Solicitante */}
+            {trip.nome_solicitante && (
+              <div className="space-y-1">
+                <Label className="text-muted-foreground text-xs">Solicitante</Label>
+                <p className="font-medium">{trip.nome_solicitante}</p>
+              </div>
+            )}
+
             {/* Data e Valor */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1">
@@ -312,47 +332,66 @@ const UberDetailDialog = ({
               </div>
             )}
 
-            {/* Separator */}
-            <div className="border-t pt-4">
-              <Label className="font-medium">Esta corrida foi para uma venda?</Label>
-              
-              <RadioGroup 
-                value={isVenda} 
-                onValueChange={(value) => setIsVenda(value as 'sim' | 'nao')}
-                className="mt-3"
-                disabled={isAnswered}
-              >
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="sim" id="sim" />
-                  <Label htmlFor="sim" className="cursor-pointer">Sim</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="nao" id="nao" />
-                  <Label htmlFor="nao" className="cursor-pointer">Não</Label>
-                </div>
-              </RadioGroup>
+            {/* Formulário de edição - apenas para gerentes e corridas não respondidas */}
+            {showEditForm && (
+              <div className="border-t pt-4">
+                <Label className="font-medium">Esta corrida foi para uma venda?</Label>
+                
+                <RadioGroup 
+                  value={isVenda} 
+                  onValueChange={(value) => setIsVenda(value as 'sim' | 'nao')}
+                  className="mt-3"
+                >
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="sim" id="sim" />
+                    <Label htmlFor="sim" className="cursor-pointer">Sim</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="nao" id="nao" />
+                    <Label htmlFor="nao" className="cursor-pointer">Não</Label>
+                  </div>
+                </RadioGroup>
 
-              {isVenda === 'sim' && (
-                <div className="mt-4 space-y-2">
-                  <Label htmlFor="processo">Número do processo da venda</Label>
-                  <Input
-                    id="processo"
-                    placeholder="Digite o número do processo"
-                    value={processoNumero}
-                    onChange={(e) => setProcessoNumero(e.target.value)}
-                    disabled={isAnswered}
-                  />
+                {isVenda === 'sim' && (
+                  <div className="mt-4 space-y-2">
+                    <Label htmlFor="processo">Número do processo da venda</Label>
+                    <Input
+                      id="processo"
+                      placeholder="Digite o número do processo"
+                      value={processoNumero}
+                      onChange={(e) => setProcessoNumero(e.target.value)}
+                    />
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Status da corrida - somente leitura para todos quando já respondida */}
+            {isAnswered && (
+              <div className="border-t pt-4">
+                <Label className="text-muted-foreground text-xs">Status da Corrida</Label>
+                <div className="mt-2">
+                  {trip.venda_info === 'não' ? (
+                    <Badge variant="outline" className="bg-slate-50 text-slate-700 border-slate-200">
+                      Não é venda
+                    </Badge>
+                  ) : (
+                    <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200">
+                      <CheckCircle2 className="h-3 w-3 mr-1" />
+                      Venda #{trip.venda_info}
+                    </Badge>
+                  )}
                 </div>
-              )}
-            </div>
+              </div>
+            )}
           </div>
         </div>
 
         <DialogFooter className="flex-shrink-0 border-t px-6 py-4 gap-2 sm:gap-0">
           <Button variant="outline" onClick={() => onOpenChange(false)}>
-            {isAnswered ? 'Fechar' : 'Cancelar'}
+            {showEditForm ? 'Cancelar' : 'Fechar'}
           </Button>
-          {!isAnswered && (
+          {showEditForm && (
             <Button 
               onClick={handleSave} 
               disabled={updating || (isVenda === 'sim' && !processoNumero.trim())}
@@ -368,7 +407,7 @@ const UberDetailDialog = ({
 
 // Main Page Component
 export default function Uber() {
-  const { trips, stats, loading, error, filter, setFilter, updating, updateVendaInfo } = useUber();
+  const { trips, stats, loading, error, filter, setFilter, updating, updateVendaInfo, canEdit, userRole } = useUber();
   const { period, loading: periodLoading } = useCurrentPeriod();
   const [selectedTrip, setSelectedTrip] = useState<UberTrip | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -397,13 +436,18 @@ export default function Uber() {
           Uber Corporativo
         </h1>
         <p className="text-muted-foreground mt-1">
-          Gestão de corridas e vinculação com vendas
+          {canEdit ? 'Gestão de corridas e vinculação com vendas' : 'Visualização de corridas da equipe'}
           {period && (
             <span className="ml-2 text-sm">
               • Período: {period.start} a {period.end}
             </span>
           )}
         </p>
+        {!canEdit && userRole && (
+          <Badge variant="secondary" className="mt-2">
+            Visualização: {userRole === 'superintendente' ? 'Superintendência' : userRole === 'diretor' ? 'Diretoria' : 'Completa'}
+          </Badge>
+        )}
       </div>
 
       {/* Stats */}
@@ -459,6 +503,7 @@ export default function Uber() {
         onOpenChange={setDialogOpen}
         onSave={updateVendaInfo}
         updating={updating}
+        canEdit={canEdit}
       />
     </div>
   );

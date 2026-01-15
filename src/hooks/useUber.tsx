@@ -37,6 +37,11 @@ export const useUber = () => {
   const [filter, setFilter] = useState<UberFilter>('todos');
   const [updating, setUpdating] = useState(false);
 
+  // Determina se o usuário pode editar baseado no role
+  const canEdit = useMemo(() => {
+    return userData?.role === 'gerente';
+  }, [userData?.role]);
+
   const fetchTrips = useCallback(async () => {
     if (!userData?.apelido || !period?.id) {
       setTrips([]);
@@ -48,23 +53,88 @@ export const useUber = () => {
       setLoading(true);
       setError(null);
 
+      const role = userData.role;
+      let apelidos: string[] = [];
+
+      if (role === 'gerente') {
+        // Gerente vê apenas suas próprias corridas
+        apelidos = [userData.apelido];
+      } else if (role === 'superintendente') {
+        // Superintendente vê corridas de todos os gerentes da sua superintendência
+        const { data: gerentesData, error: gerentesError } = await supabase
+          .from('users')
+          .select('apelido')
+          .eq('role', 'gerente')
+          .eq('superintendente', userData.apelido);
+
+        if (gerentesError) throw gerentesError;
+        apelidos = gerentesData?.map(g => g.apelido) || [];
+      } else if (role === 'diretor') {
+        // Diretor vê corridas de todos os gerentes da sua diretoria
+        // Primeiro busca os superintendentes
+        const { data: supsData, error: supsError } = await supabase
+          .from('users')
+          .select('apelido')
+          .eq('role', 'superintendente')
+          .eq('diretor', userData.apelido);
+
+        if (supsError) throw supsError;
+        const supApelidos = supsData?.map(s => s.apelido) || [];
+
+        if (supApelidos.length > 0) {
+          // Depois busca os gerentes desses superintendentes
+          const { data: gerentesData, error: gerentesError } = await supabase
+            .from('users')
+            .select('apelido')
+            .eq('role', 'gerente')
+            .in('superintendente', supApelidos);
+
+          if (gerentesError) throw gerentesError;
+          apelidos = gerentesData?.map(g => g.apelido) || [];
+        }
+      } else if (role === 'adm') {
+        // Admin vê todas as corridas - não filtra por apelido
+        const { data, error: fetchError } = await supabase
+          .from('uber')
+          .select('*')
+          .eq('periodo_id', period.id)
+          .order('data_transacao', { ascending: false });
+
+        if (fetchError) throw fetchError;
+        setTrips(data || []);
+        return;
+      }
+
+      // Se não encontrou apelidos para buscar
+      if (apelidos.length === 0) {
+        setTrips([]);
+        return;
+      }
+
+      // Busca corridas usando OR para múltiplos apelidos com ilike
       const { data, error: fetchError } = await supabase
         .from('uber')
         .select('*')
         .eq('periodo_id', period.id)
-        .ilike('nome_solicitante', `%${userData.apelido}%`)
         .order('data_transacao', { ascending: false });
 
       if (fetchError) throw fetchError;
 
-      setTrips(data || []);
+      // Filtra localmente pois ilike com OR não é tão simples
+      const filteredTrips = (data || []).filter(trip => 
+        apelidos.some(apelido => 
+          trip.nome_solicitante?.toLowerCase().includes(apelido.toLowerCase())
+        )
+      );
+
+      setTrips(filteredTrips);
     } catch (err) {
       console.error('Erro ao buscar corridas Uber:', err);
       setError(err instanceof Error ? err.message : 'Erro ao buscar dados');
     } finally {
       setLoading(false);
     }
-  }, [userData?.apelido, period?.id]);
+  }, [userData?.apelido, userData?.role, period?.id]);
 
   useEffect(() => {
     fetchTrips();
@@ -91,6 +161,12 @@ export const useUber = () => {
   }, [trips, filter]);
 
   const updateVendaInfo = useCallback(async (tripId: string, vendaInfo: string) => {
+    // Verifica se pode editar antes de atualizar
+    if (!canEdit) {
+      toast.error('Você não tem permissão para editar');
+      return false;
+    }
+
     try {
       setUpdating(true);
 
@@ -115,7 +191,7 @@ export const useUber = () => {
     } finally {
       setUpdating(false);
     }
-  }, []);
+  }, [canEdit]);
 
   return {
     trips: filteredTrips,
@@ -128,5 +204,7 @@ export const useUber = () => {
     updating,
     updateVendaInfo,
     refetch: fetchTrips,
+    canEdit,
+    userRole: userData?.role || null,
   };
 };
