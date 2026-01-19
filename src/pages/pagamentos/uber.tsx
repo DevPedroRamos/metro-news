@@ -46,7 +46,7 @@ const truncateAddress = (address: string | null, maxLength = 40) => {
 };
 
 // Stats Component
-const UberStats = ({ stats, loading }: { stats: { total: number; aguardando: number; respondidos: number; valorTotal: number }; loading: boolean }) => {
+const UberStats = ({ stats, loading }: { stats: { total: number; aguardando: number; respondidos: number; valorDescontar: number }; loading: boolean }) => {
   if (loading) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
@@ -101,15 +101,15 @@ const UberStats = ({ stats, loading }: { stats: { total: number; aguardando: num
         </CardContent>
       </Card>
 
-      <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
+      <Card className="bg-gradient-to-br from-red-50 to-red-100 border-red-200">
         <CardContent className="p-4">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-blue-500/10 rounded-lg">
-              <DollarSign className="h-5 w-5 text-blue-600" />
+            <div className="p-2 bg-red-500/10 rounded-lg">
+              <DollarSign className="h-5 w-5 text-red-600" />
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Valor Total</p>
-              <p className="text-xl font-bold text-blue-700">{formatCurrency(stats.valorTotal)}</p>
+              <p className="text-sm text-muted-foreground">Valor a Descontar</p>
+              <p className="text-xl font-bold text-red-700">{formatCurrency(stats.valorDescontar)}</p>
             </div>
           </div>
         </CardContent>

@@ -23,7 +23,7 @@ export interface UberStats {
   total: number;
   aguardando: number;
   respondidos: number;
-  valorTotal: number;
+  valorDescontar: number;
 }
 
 export type UberFilter = 'todos' | 'aguardando' | 'respondidos';
@@ -144,9 +144,11 @@ export const useUber = () => {
     const total = trips.length;
     const aguardando = trips.filter(t => !t.venda_info).length;
     const respondidos = trips.filter(t => t.venda_info).length;
-    const valorTotal = trips.reduce((acc, t) => acc + (t.valor || 0), 0);
+    const valorDescontar = trips
+      .filter(t => t.venda_info === 'não')
+      .reduce((acc, t) => acc + (t.valor || 0), 0);
 
-    return { total, aguardando, respondidos, valorTotal };
+    return { total, aguardando, respondidos, valorDescontar };
   }, [trips]);
 
   const filteredTrips = useMemo(() => {
